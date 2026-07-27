@@ -1,0 +1,40 @@
+import { MapPin, MessageCircle, UserRound } from "lucide-react";
+
+export function HelpSection() {
+  return (
+    <section className="mx-auto max-w-6xl px-4 pb-12 sm:px-6 lg:px-8">
+      <div className="overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm sm:flex sm:items-center">
+        <div className="p-6 sm:flex-1 sm:p-8">
+          <h2 className="text-lg font-bold text-gray-900 sm:text-xl">
+            Butuh Bantuan Lebih Lanjut?
+          </h2>
+          <p className="mt-2 text-sm leading-relaxed text-gray-500">
+            Hubungi petugas kami melalui WhatsApp atau kunjungi kantor
+            kelurahan pada jam kerja (08:00 - 16:00 WITA).
+          </p>
+          <div className="mt-4 flex flex-wrap gap-3">
+            <a
+              href="#"
+              className="inline-flex items-center gap-2 rounded-full bg-green-600 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-green-700"
+            >
+              <MessageCircle className="size-4" />
+              WhatsApp
+            </a>
+            <a
+              href="#"
+              className="inline-flex items-center gap-2 rounded-full border border-gray-200 px-4 py-2.5 text-sm font-semibold text-gray-700 transition-colors hover:bg-gray-50"
+            >
+              <MapPin className="size-4" />
+              Peta Lokasi
+            </a>
+          </div>
+        </div>
+        <div className="h-40 bg-gradient-to-br from-green-100 to-green-200 sm:h-48 sm:w-56 sm:shrink-0">
+          <div className="flex size-full items-center justify-center text-green-700/40">
+            <UserRound className="size-12" />
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}

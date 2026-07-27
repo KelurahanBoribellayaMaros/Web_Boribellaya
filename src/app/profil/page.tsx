@@ -1,0 +1,80 @@
+import type { Metadata } from "next";
+import { BookOpen, Eye, Target, CheckCircle2 } from "lucide-react";
+import { ProfileCard } from "@/components/profil/ProfileCard";
+import { LeadershipCard } from "@/components/profil/LeadershipCard";
+import { OrgChart } from "@/components/profil/OrgChart";
+import { history, vision, missions, leader, orgChart } from "@/lib/profile-data";
+
+export const metadata: Metadata = {
+  title: "Profil Kelurahan | Kelurahan Boribellaya",
+  description:
+    "Sejarah, visi, misi, dan struktur pemerintahan Kelurahan Boribellaya.",
+};
+
+export default function ProfilPage() {
+  return (
+    <div className="mx-auto max-w-5xl px-4 py-10 sm:px-6 sm:py-12 lg:px-8">
+      <div className="text-center">
+        <h1 className="text-2xl font-bold text-gray-900 sm:text-3xl">
+          Profil Kelurahan
+        </h1>
+        <p className="mx-auto mt-2 max-w-xl text-sm text-gray-500 sm:text-base">
+          Mengenal lebih dekat sejarah, visi, misi, dan struktur pemerintahan
+          Kelurahan Boribellaya.
+        </p>
+      </div>
+
+      <div className="mt-8 space-y-6 sm:mt-10">
+        <ProfileCard icon={BookOpen} title="Sejarah Singkat">
+          <div className="space-y-3 text-sm leading-relaxed text-gray-600">
+            {history.map((paragraph) => (
+              <p key={paragraph.slice(0, 24)}>{paragraph}</p>
+            ))}
+          </div>
+        </ProfileCard>
+
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+          <ProfileCard icon={Eye} title="Visi">
+            <p className="text-sm leading-relaxed text-gray-600 italic">
+              &ldquo;{vision}&rdquo;
+            </p>
+          </ProfileCard>
+
+          <ProfileCard icon={Target} title="Misi">
+            <ul className="space-y-3">
+              {missions.map((mission) => (
+                <li key={mission.slice(0, 24)} className="flex items-start gap-2.5">
+                  <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-green-600" />
+                  <span className="text-sm leading-relaxed text-gray-600">
+                    {mission}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </ProfileCard>
+        </div>
+
+        <section>
+          <h2 className="text-lg font-bold text-gray-900 sm:text-xl">
+            Profil Pimpinan
+          </h2>
+          <div className="mt-4">
+            <LeadershipCard {...leader} />
+          </div>
+        </section>
+
+        <section>
+          <h2 className="text-lg font-bold text-gray-900 sm:text-xl">
+            Struktur Organisasi
+          </h2>
+          <p className="mt-1 text-sm text-gray-500">
+            Susunan aparatur pemerintahan Kelurahan Boribellaya.
+          </p>
+          <div className="mt-6 rounded-2xl border border-gray-100 bg-white p-5 shadow-sm sm:p-8">
+            <OrgChart root={orgChart} />
+          </div>
+        </section>
+      </div>
+    </div>
+  );
+}
