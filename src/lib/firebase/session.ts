@@ -38,3 +38,11 @@ export async function requireAdmin(): Promise<Session> {
   }
   return session;
 }
+
+export async function requireSession(): Promise<Session> {
+  const session = await getSession();
+  if (!session) {
+    redirect("/login");
+  }
+  return session;
+}

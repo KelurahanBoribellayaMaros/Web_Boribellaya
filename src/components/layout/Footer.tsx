@@ -8,10 +8,10 @@ export function Footer() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="bg-green-900 px-4 py-10 text-center sm:px-6 lg:px-8">
+    <footer className="bg-[#1e3a5f] px-4 py-10 text-center sm:px-6 lg:px-8">
       <div className="mx-auto max-w-6xl">
         <h2 className="text-lg font-bold text-white">Kelurahan Boribellaya</h2>
-        <p className="mt-2 text-sm text-green-200">
+        <p className="mt-2 text-sm text-blue-200">
           © {year} Kelurahan Boribellaya. Melayani dengan Sepenuh Hati.
         </p>
         <ul className="mt-6 flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
@@ -19,7 +19,7 @@ export function Footer() {
             <li key={link.label}>
               <a
                 href={link.href}
-                className="text-sm text-green-200 transition-colors hover:text-white"
+                className="text-sm text-blue-200 transition-colors hover:text-white"
               >
                 {link.label}
               </a>

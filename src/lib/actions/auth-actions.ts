@@ -5,14 +5,19 @@ import { redirect } from "next/navigation";
 import { adminAuth, adminDb } from "@/lib/firebase/admin";
 import { SESSION_COOKIE_NAME } from "@/lib/firebase/session";
 
-const SESSION_EXPIRES_IN_MS = 5 * 24 * 60 * 60 * 1000; // 5 days (platform max: 14 days)
+const REMEMBERED_EXPIRES_IN_MS = 14 * 24 * 60 * 60 * 1000; // 14 days (platform max)
+const NOT_REMEMBERED_EXPIRES_IN_MS = 24 * 60 * 60 * 1000; // 1 day
 
 export async function createSessionAction(
-  idToken: string
+  idToken: string,
+  rememberMe: boolean = true
 ): Promise<{ role: "admin" | "warga" }> {
   const decoded = await adminAuth.verifyIdToken(idToken);
+  const expiresInMs = rememberMe
+    ? REMEMBERED_EXPIRES_IN_MS
+    : NOT_REMEMBERED_EXPIRES_IN_MS;
   const sessionCookie = await adminAuth.createSessionCookie(idToken, {
-    expiresIn: SESSION_EXPIRES_IN_MS,
+    expiresIn: expiresInMs,
   });
 
   const cookieStore = await cookies();
@@ -21,7 +26,9 @@ export async function createSessionAction(
     secure: process.env.NODE_ENV === "production",
     sameSite: "lax",
     path: "/",
-    maxAge: SESSION_EXPIRES_IN_MS / 1000,
+    // Omitting maxAge for "not remembered" makes it a browser-session cookie
+    // (cleared when the browser closes) instead of a persistent one.
+    ...(rememberMe ? { maxAge: expiresInMs / 1000 } : {}),
   });
 
   const role: "admin" | "warga" = decoded.role === "admin" ? "admin" : "warga";

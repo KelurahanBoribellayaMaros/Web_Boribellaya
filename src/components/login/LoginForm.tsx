@@ -15,6 +15,7 @@ export function LoginForm() {
   const [activeTab, setActiveTab] = useState<LoginTab>("warga");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [rememberMe, setRememberMe] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -29,10 +30,16 @@ export function LoginForm() {
       const idToken = await credential.user.getIdToken();
       // Destination is always driven by the account's real role, never by
       // which tab was selected here — the tabs are just a visual hint.
-      const { role } = await createSessionAction(idToken);
+      const { role } = await createSessionAction(idToken, rememberMe);
       router.push(role === "admin" ? "/admin" : "/");
-    } catch {
-      setError("Email atau kata sandi salah.");
+    } catch (err) {
+      console.error(err);
+      const code =
+        err && typeof err === "object" && "code" in err
+          ? String((err as { code: unknown }).code)
+          : null;
+      const message = err instanceof Error ? err.message : null;
+      setError(code || message || "Email atau kata sandi salah.");
       setIsSubmitting(false);
     }
   }
@@ -43,22 +50,20 @@ export function LoginForm() {
         <button
           type="button"
           onClick={() => setActiveTab("warga")}
-          className={`rounded-lg py-2 text-sm font-semibold transition-colors ${
-            activeTab === "warga"
+          className={`rounded-lg py-2 text-sm font-semibold transition-colors ${activeTab === "warga"
               ? "bg-white text-green-800 shadow-sm"
               : "text-gray-500 hover:text-gray-700"
-          }`}
+            }`}
         >
           Warga
         </button>
         <button
           type="button"
           onClick={() => setActiveTab("admin")}
-          className={`rounded-lg py-2 text-sm font-semibold transition-colors ${
-            activeTab === "admin"
+          className={`rounded-lg py-2 text-sm font-semibold transition-colors ${activeTab === "admin"
               ? "bg-white text-green-800 shadow-sm"
               : "text-gray-500 hover:text-gray-700"
-          }`}
+            }`}
         >
           Admin
         </button>
@@ -123,13 +128,15 @@ export function LoginForm() {
           <label className="flex items-center gap-2 text-gray-600">
             <input
               type="checkbox"
+              checked={rememberMe}
+              onChange={(event) => setRememberMe(event.target.checked)}
               className="size-4 rounded border-gray-300 text-green-700 focus:ring-green-600"
             />
             Ingat Saya
           </label>
-          <a href="#" className="font-medium text-green-700 hover:text-green-800">
+          <Link href="/lupa-sandi" className="font-medium text-green-700 hover:text-green-800">
             Lupa Sandi?
-          </a>
+          </Link>
         </div>
 
         {error && <p className="text-sm text-red-600">{error}</p>}
