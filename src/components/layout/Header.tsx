@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { CircleUserRound, LogOut, Menu, Search, Settings, X } from "lucide-react";
+import { Bell, CircleUserRound, LogOut, Menu, Settings, X } from "lucide-react";
 import { logoutAction } from "@/lib/actions/auth-actions";
 import type { Session } from "@/lib/firebase/session";
 
@@ -14,10 +14,10 @@ type NavLink =
 
 const navLinks: NavLink[] = [
   { label: "Beranda", type: "anchor", id: "beranda" },
-  { label: "Berita", type: "page", href: "/berita" },
-  { label: "Data Penduduk", type: "anchor", id: "data-penduduk" },
-  { label: "Layanan", type: "page", href: "/layanan" },
   { label: "Profil", type: "page", href: "/profil" },
+  { label: "Berita", type: "page", href: "/berita" },
+  { label: "Layanan", type: "page", href: "/layanan" },
+  { label: "PPID", type: "page", href: "/ppid" },
 ];
 
 function linkHref(link: NavLink): string {
@@ -31,6 +31,7 @@ export function Header({ session }: { session: Session | null }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeId, setActiveId] = useState("beranda");
   const [isAccountMenuOpen, setIsAccountMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
   const accountMenuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -68,6 +69,7 @@ export function Header({ session }: { session: Session | null }) {
         }
       }
       setActiveId(current);
+      setIsScrolled(window.scrollY > 20);
     }
 
     function onScroll() {
@@ -93,9 +95,15 @@ export function Header({ session }: { session: Session | null }) {
     return isHome && activeId === link.id;
   }
 
+  const isTransparent = isHome && !isScrolled;
+
   return (
-    <header className="sticky top-0 z-30 bg-green-800">
-      <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3 sm:px-6 lg:px-8">
+    <header
+      className={`fixed inset-x-0 top-0 z-30 transition-colors duration-300 ${
+        isTransparent ? "bg-transparent" : "bg-[#003f88]"
+      }`}
+    >
+      <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-2 py-3 sm:px-3 lg:px-4">
         <div className="flex items-center gap-3">
           <button
             type="button"
@@ -118,7 +126,7 @@ export function Header({ session }: { session: Session | null }) {
               <span className="block text-base font-bold text-white sm:text-lg">
                 Kelurahan Boribellaya
               </span>
-              <span className="block text-xs text-green-100/80">
+              <span className="block text-xs text-[#d8d6d4]">
                 Kabupaten Maros
               </span>
             </span>
@@ -133,11 +141,10 @@ export function Header({ session }: { session: Session | null }) {
                 key={link.label}
                 href={linkHref(link)}
                 aria-current={isActive ? "page" : undefined}
-                className={`relative py-1 text-sm font-medium transition-colors ${
-                  isActive
-                    ? "text-white after:absolute after:inset-x-0 after:-bottom-[13px] after:h-0.5 after:rounded-full after:bg-white"
-                    : "text-green-100/70 hover:text-white"
-                }`}
+                className={`relative py-1 text-sm font-medium transition-colors ${isActive
+                  ? "text-white after:absolute after:inset-x-0 after:-bottom-[13px] after:h-0.5 after:rounded-full after:bg-white"
+                  : "text-green-100/70 hover:text-white"
+                  }`}
               >
                 {link.label}
               </Link>
@@ -149,9 +156,9 @@ export function Header({ session }: { session: Session | null }) {
           <button
             type="button"
             className="flex size-9 items-center justify-center rounded-full text-white transition-colors hover:bg-white/10"
-            aria-label="Cari"
+            aria-label="Notifikasi"
           >
-            <Search className="size-5" />
+            <Bell className="size-5" />
           </button>
           {session ? (
             <div className="relative" ref={accountMenuRef}>
@@ -218,7 +225,7 @@ export function Header({ session }: { session: Session | null }) {
       </div>
 
       {isMenuOpen && (
-        <nav className="border-t border-white/10 bg-green-800 px-4 py-3 md:hidden">
+        <nav className="border-t border-white/10 bg-green-800 px-2 py-3 md:hidden">
           <ul className="flex flex-col gap-1">
             {navLinks.map((link) => {
               const isActive = isLinkActive(link);
@@ -228,11 +235,10 @@ export function Header({ session }: { session: Session | null }) {
                     href={linkHref(link)}
                     onClick={() => setIsMenuOpen(false)}
                     aria-current={isActive ? "page" : undefined}
-                    className={`block rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
-                      isActive
-                        ? "bg-white/10 text-white"
-                        : "text-green-100/70 hover:bg-white/10 hover:text-white"
-                    }`}
+                    className={`block rounded-lg px-3 py-2 text-sm font-medium transition-colors ${isActive
+                      ? "bg-white/10 text-white"
+                      : "text-green-100/70 hover:bg-white/10 hover:text-white"
+                      }`}
                   >
                     {link.label}
                   </Link>

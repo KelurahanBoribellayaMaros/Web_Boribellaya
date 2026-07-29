@@ -2,7 +2,7 @@ import { MapPin, MessageCircle, UserRound } from "lucide-react";
 
 export function HelpSection() {
   return (
-    <section className="mx-auto max-w-6xl px-4 pb-12 sm:px-6 lg:px-8">
+    <section className="mx-auto max-w-6xl px-2 pb-12 sm:px-3 lg:px-4">
       <div className="overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm sm:flex sm:items-center">
         <div className="p-6 sm:flex-1 sm:p-8">
           <h2 className="text-lg font-bold text-gray-900 sm:text-xl">

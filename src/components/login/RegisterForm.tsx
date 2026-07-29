@@ -51,7 +51,8 @@ export function RegisterForm() {
       await updateProfile(credential.user, { displayName: name });
       const idToken = await credential.user.getIdToken(true);
       const { role } = await createSessionAction(idToken);
-      router.push(role === "admin" ? "/admin" : "/");
+      const toast = `toast=${encodeURIComponent("Akun berhasil dibuat. Selamat datang!")}`;
+      router.push(role === "admin" ? `/admin?${toast}` : `/?${toast}`);
     } catch (err) {
       setError(authErrorMessage(err));
       setIsSubmitting(false);

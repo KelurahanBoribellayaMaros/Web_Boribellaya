@@ -2,33 +2,15 @@ import "server-only";
 import { cache } from "react";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import { adminAuth } from "@/lib/firebase/admin";
+import { decodeSessionCookie, SESSION_COOKIE_NAME } from "@/lib/firebase/session-cookie";
+import type { Session } from "@/lib/firebase/session-cookie";
 
-export const SESSION_COOKIE_NAME = "session";
-
-export type Session = {
-  uid: string;
-  email: string | null;
-  name: string | null;
-  role: "admin" | "warga";
-};
+export { SESSION_COOKIE_NAME };
+export type { Session };
 
 export const getSession = cache(async (): Promise<Session | null> => {
   const cookieStore = await cookies();
-  const sessionCookie = cookieStore.get(SESSION_COOKIE_NAME)?.value;
-  if (!sessionCookie) return null;
-
-  try {
-    const decoded = await adminAuth.verifySessionCookie(sessionCookie, false);
-    return {
-      uid: decoded.uid,
-      email: decoded.email ?? null,
-      name: decoded.name ?? null,
-      role: decoded.role === "admin" ? "admin" : "warga",
-    };
-  } catch {
-    return null;
-  }
+  return decodeSessionCookie(cookieStore.get(SESSION_COOKIE_NAME)?.value);
 });
 
 export async function requireAdmin(): Promise<Session> {

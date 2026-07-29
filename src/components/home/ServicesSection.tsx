@@ -6,7 +6,7 @@ export function ServicesSection() {
   return (
     <section
       id="layanan"
-      className="mx-auto max-w-6xl scroll-mt-20 px-4 py-10 sm:px-6 sm:py-12 lg:px-8"
+      className="mx-auto max-w-6xl scroll-mt-20 px-2 py-10 sm:px-3 sm:py-12 lg:px-4"
     >
       <div className="flex items-end justify-between gap-4">
         <div>

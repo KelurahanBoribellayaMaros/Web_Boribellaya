@@ -1,0 +1,87 @@
+import type { Metadata } from "next";
+import Link from "next/link";
+import { FileQuestion, Scale, Users } from "lucide-react";
+import { ProfileCard } from "@/components/profil/ProfileCard";
+import { OrgChart } from "@/components/profil/OrgChart";
+import { PpidDocumentList } from "@/components/ppid/PpidDocumentList";
+import { ppidAbout } from "@/lib/ppid-data";
+import { getPpidDocuments } from "@/lib/firebase/ppid-repository";
+import { getLeader } from "@/lib/firebase/struktur-repository";
+
+export const dynamic = "force-dynamic";
+
+export const metadata: Metadata = {
+  title: "PPID | Kelurahan Boribellaya",
+  description:
+    "Informasi publik yang wajib disediakan dan diumumkan sesuai Undang-Undang Keterbukaan Informasi Publik.",
+};
+
+export default async function PpidPage() {
+  const [documents, leader] = await Promise.all([getPpidDocuments(), getLeader()]);
+
+  const ppidStructure = {
+    name: leader.name,
+    position: "Atasan PPID",
+    children: [{ name: "Budi Santoso, S.Sos.", position: "PPID Pelaksana" }],
+  };
+
+  return (
+    <div className="mx-auto max-w-5xl px-2 py-10 sm:px-3 sm:py-12 lg:px-4">
+      <div className="text-center">
+        <div className="flex items-center justify-center gap-2">
+          <span className="h-px w-8 bg-[#2b9348]" />
+          <span className="text-xs font-semibold tracking-widest text-[#2b9348] uppercase">
+            Keterbukaan Informasi
+          </span>
+          <span className="h-px w-8 bg-[#2b9348]" />
+        </div>
+        <h1 className="mt-3 text-2xl font-bold text-gray-900 sm:text-3xl">
+          Informasi Publik (PPID)
+        </h1>
+        <p className="mx-auto mt-2 max-w-xl text-sm text-gray-500 sm:text-base">
+          Dokumen resmi yang wajib disediakan dan diumumkan sesuai
+          Undang-Undang Keterbukaan Informasi Publik.
+        </p>
+      </div>
+
+      <div className="mt-8 space-y-6 sm:mt-10">
+        <ProfileCard icon={Scale} title="Profil PPID">
+          <p className="text-sm leading-relaxed text-gray-600">{ppidAbout}</p>
+        </ProfileCard>
+
+        <section>
+          <h2 className="flex items-center gap-2 text-lg font-bold text-gray-900 sm:text-xl">
+            <Users className="size-5 text-[#2b9348]" />
+            Struktur PPID
+          </h2>
+          <div className="mt-4 rounded-2xl border border-gray-100 bg-white p-5 shadow-sm sm:p-8">
+            <OrgChart root={ppidStructure} />
+          </div>
+        </section>
+
+        <section>
+          <div className="flex flex-wrap items-end justify-between gap-3">
+            <div>
+              <h2 className="text-lg font-bold text-gray-900 sm:text-xl">
+                Daftar Informasi Publik
+              </h2>
+              <p className="mt-1 text-sm text-gray-500">
+                Telusuri dokumen berdasarkan kategori keterbukaan informasi.
+              </p>
+            </div>
+            <Link
+              href="/ppid/ajukan"
+              className="flex shrink-0 items-center gap-1.5 rounded-full border border-[#2b9348] px-4 py-2 text-sm font-semibold text-[#2b9348] transition-colors hover:bg-green-50"
+            >
+              <FileQuestion className="size-4" />
+              Ajukan Permohonan Informasi
+            </Link>
+          </div>
+          <div className="mt-4">
+            <PpidDocumentList documents={documents} />
+          </div>
+        </section>
+      </div>
+    </div>
+  );
+}

@@ -3,7 +3,7 @@ import { LayananCard } from "@/components/layanan/LayananCard";
 
 export function LayananListSection({ items }: { items: LayananItem[] }) {
   return (
-    <section className="mx-auto max-w-6xl px-4 py-10 sm:px-6 sm:py-12 lg:px-8">
+    <section className="mx-auto max-w-6xl px-2 py-10 sm:px-3 sm:py-12 lg:px-4">
       <h2 className="text-lg font-bold text-gray-900 sm:text-xl">
         Layanan Online
       </h2>

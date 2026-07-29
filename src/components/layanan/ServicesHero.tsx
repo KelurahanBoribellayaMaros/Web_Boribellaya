@@ -2,7 +2,7 @@ import { Smartphone } from "lucide-react";
 
 export function ServicesHero() {
   return (
-    <section className="px-4 pt-6 sm:px-6 lg:px-8">
+    <section className="px-2 pt-6 sm:px-3 lg:px-4">
       <div className="mx-auto max-w-6xl rounded-3xl bg-gradient-to-br from-green-700 to-green-900 px-6 py-12 text-center sm:py-16">
         <span className="inline-flex size-12 items-center justify-center rounded-2xl bg-white/10 text-white">
           <Smartphone className="size-6" />

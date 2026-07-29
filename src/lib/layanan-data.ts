@@ -21,7 +21,7 @@ export const sopSteps: SopStep[] = [
   {
     step: 2,
     icon: Send,
-    title: "Ajukan Online",
+    title: "Ajukan Online/Offline",
     description:
       "Isi formulir dan unggah dokumen melalui portal layanan kami.",
   },
@@ -37,7 +37,7 @@ export const sopSteps: SopStep[] = [
     icon: CheckCircle2,
     title: "Selesai",
     description:
-      "Dokumen Anda siap diambil atau dikirim via kurir digital.",
+      "Dokumen Anda siap diambil di kantor Kelurahan Boribellaya.",
   },
 ];
 
@@ -49,7 +49,7 @@ export const layananItems: LayananItem[] = [
     description:
       "Layanan pengurusan KK, KTP, Akta Kelahiran, dan Surat Kematian secara mandiri.",
     cta: "Ajukan Sekarang",
-    href: "#",
+    href: "/layanan/administrasi-kependudukan/ajukan",
     variant: "solid",
   },
   {
@@ -59,7 +59,7 @@ export const layananItems: LayananItem[] = [
     description:
       "SKU, Surat Keterangan Domisili, dan surat pengantar lainnya untuk seluruh keperluan administrasi.",
     cta: "Ajukan Sekarang",
-    href: "#",
+    href: "/layanan/surat-keterangan-umum/ajukan",
     variant: "solid",
   },
   {
@@ -69,7 +69,7 @@ export const layananItems: LayananItem[] = [
     description:
       "Informasi dan pengajuan BLT, PKH, dan bantuan pemerintah lainnya.",
     cta: "Ajukan",
-    href: "#",
+    href: "/layanan/bantuan-sosial/ajukan",
     variant: "solid",
   },
   {
@@ -79,7 +79,7 @@ export const layananItems: LayananItem[] = [
     description:
       "Sampaikan keluhan fasilitas umum atau lingkungan Anda di sini.",
     cta: "Kirim Laporan",
-    href: "#",
+    href: "/layanan/lapor-keluhan/ajukan",
     variant: "solid",
   },
   {
@@ -89,7 +89,7 @@ export const layananItems: LayananItem[] = [
     description:
       "Akses data penduduk, laporan anggaran, dan transparansi kelurahan.",
     cta: "Lihat Data",
-    href: "#",
+    href: "/ppid",
     variant: "outline",
   },
 ];

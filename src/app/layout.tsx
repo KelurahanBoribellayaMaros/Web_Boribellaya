@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { Geist, Geist_Mono } from "next/font/google";
 import { SiteChrome } from "@/components/layout/SiteChrome";
+import { ToastProvider } from "@/components/ui/ToastProvider";
+import { ToastListener } from "@/components/ui/ToastListener";
 import { getSession } from "@/lib/firebase/session";
 import "./globals.css";
 
@@ -33,7 +36,12 @@ export default async function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col">
-        <SiteChrome session={session}>{children}</SiteChrome>
+        <ToastProvider>
+          <Suspense fallback={null}>
+            <ToastListener />
+          </Suspense>
+          <SiteChrome session={session}>{children}</SiteChrome>
+        </ToastProvider>
       </body>
     </html>
   );

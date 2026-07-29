@@ -4,6 +4,7 @@ import { useState, type FormEvent } from "react";
 import { sendPasswordResetEmail, type AuthError } from "firebase/auth";
 import { Mail, Send } from "lucide-react";
 import { auth } from "@/lib/firebase/client";
+import { useToast } from "@/components/ui/ToastProvider";
 
 const SUCCESS_MESSAGE =
   "Jika email tersebut terdaftar, tautan untuk mengatur ulang kata sandi telah dikirim. Silakan cek kotak masuk (dan folder spam) Anda.";
@@ -24,6 +25,7 @@ function authErrorMessage(error: unknown): string | null {
 }
 
 export function ForgotPasswordForm() {
+  const { showToast } = useToast();
   const [email, setEmail] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
@@ -37,10 +39,12 @@ export function ForgotPasswordForm() {
     try {
       await sendPasswordResetEmail(auth, email);
       setSuccess(true);
+      showToast("Tautan reset kata sandi telah dikirim.");
     } catch (err) {
       const message = authErrorMessage(err);
       if (message === null) {
         setSuccess(true);
+        showToast("Tautan reset kata sandi telah dikirim.");
       } else {
         setError(message);
       }

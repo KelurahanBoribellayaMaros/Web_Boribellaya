@@ -45,9 +45,9 @@ export function Hero() {
   }
 
   return (
-    <section id="beranda" className="scroll-mt-20 px-4 pt-6 sm:px-6 lg:px-8">
+    <section id="beranda" className="-mt-16 scroll-mt-0">
       <div
-        className="relative mx-auto max-w-6xl touch-pan-y overflow-hidden rounded-3xl select-none"
+        className="relative touch-pan-y overflow-hidden select-none"
         onPointerDown={handlePointerDown}
         onPointerMove={handlePointerMove}
         onPointerUp={endDrag}
@@ -56,18 +56,14 @@ export function Hero() {
       >
         <div
           ref={trackRef}
-          className={`flex ${
-            isDragging ? "" : "transition-transform duration-300 ease-out"
-          }`}
+          className={`flex ${isDragging ? "" : "transition-transform duration-300 ease-out"
+            }`}
           style={{
             transform: `translateX(calc(${-index * 100}% + ${dragOffset}px))`,
           }}
         >
           {heroImages.map((image, i) => (
-            <div
-              key={i}
-              className="relative h-[420px] w-full shrink-0 sm:h-[480px] lg:h-[560px]"
-            >
+            <div key={i} className="relative h-screen w-full shrink-0">
               <Image
                 src={image.src}
                 alt={image.alt}
@@ -75,45 +71,48 @@ export function Hero() {
                 priority={i === 0}
                 draggable={false}
                 className="object-cover"
-                sizes="(min-width: 1024px) 1152px, 100vw"
+                sizes="100vw"
               />
             </div>
           ))}
         </div>
 
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-black/60 to-transparent" />
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-black/5" />
 
-        <div className="pointer-events-none absolute inset-x-0 bottom-0 p-6 sm:p-10 lg:p-14">
-          <div className="max-w-xl">
-            <div className="flex items-center gap-2">
-              <span className="h-px w-8 bg-amber-400" />
-              <span className="text-xs font-semibold tracking-widest text-amber-400 uppercase">
-                Portal Resmi Pemerintah Kelurahan
-              </span>
-            </div>
-            <h1 className="mt-4 text-3xl font-bold text-white sm:text-4xl lg:text-5xl">
-              Kelurahan Boribellaya
-            </h1>
-            <p className="mt-4 max-w-lg text-sm text-white/80 sm:text-base">
-              Selamat datang di portal resmi kami. Akses layanan publik,
-              informasi terkini, dan administrasi kependudukan dengan lebih
-              cepat, mudah, dan transparan.
-            </p>
-            <div className="pointer-events-auto mt-6 flex flex-wrap gap-3">
-              <Link
-                href="#layanan"
-                className="inline-flex items-center gap-2 rounded-full bg-white px-5 py-3 text-sm font-semibold text-green-900 transition-colors hover:bg-green-50"
-              >
-                <FileText className="size-4" />
-                Informasi Publik
-              </Link>
-              <Link
-                href="#berita"
-                className="inline-flex items-center gap-2 rounded-full border border-white/40 bg-white/10 px-5 py-3 text-sm font-semibold text-white backdrop-blur-sm transition-colors hover:bg-white/20"
-              >
-                Baca Berita
-                <ArrowRight className="size-4" />
-              </Link>
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 pb-14 sm:pb-20 lg:pb-28">
+          <div className="mx-auto max-w-6xl px-2 sm:px-3 lg:px-4">
+            <div className="max-w-xl">
+              <div className="flex items-center gap-2">
+                <span className="h-px w-8 bg-[#fdd85d]" />
+                <span className="text-xs font-semibold tracking-widest text-[#fdd85d] uppercase">
+                  Portal Resmi Pemerintah Kelurahan
+                </span>
+              </div>
+              <h1 className="mt-4 text-3xl font-bold text-white sm:text-4xl lg:text-5xl">
+                Kelurahan Boribellaya
+              </h1>
+              <p className="mt-4 max-w-lg text-sm text-white/80 sm:text-base">
+                Selamat datang di portal resmi kami. Akses layanan publik,
+                informasi terkini, dan administrasi kependudukan dengan lebih
+                cepat, mudah, dan transparan.
+              </p>
+              <div className="pointer-events-auto mt-6 flex flex-wrap gap-3">
+                <Link
+                  href="#layanan"
+                  className="inline-flex items-center gap-2 rounded-full bg-white px-5 py-3 text-sm font-semibold text-green-900 transition-colors hover:bg-green-50"
+                >
+                  <FileText className="size-4" />
+                  Informasi Publik
+                </Link>
+                <Link
+                  href="#berita"
+                  className="inline-flex items-center gap-2 rounded-full border border-white/40 bg-white/10 px-5 py-3 text-sm font-semibold text-white backdrop-blur-sm transition-colors hover:bg-white/20"
+                >
+                  Baca Berita
+                  <ArrowRight className="size-4" />
+                </Link>
+              </div>
             </div>
           </div>
         </div>
@@ -144,9 +143,8 @@ export function Hero() {
                   type="button"
                   onClick={() => goTo(i)}
                   aria-label={`Ke foto ${i + 1}`}
-                  className={`h-1.5 rounded-full transition-all ${
-                    i === index ? "w-6 bg-white" : "w-1.5 bg-white/40"
-                  }`}
+                  className={`h-1.5 rounded-full transition-all ${i === index ? "w-6 bg-white" : "w-1.5 bg-white/40"
+                    }`}
                 />
               ))}
             </div>

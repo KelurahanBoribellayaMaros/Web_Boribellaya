@@ -1,5 +1,3 @@
-import type { Leader, OrgNode } from "@/types/profile";
-
 export const history: string[] = [
   'Kelurahan Boribellaya, terletak di jantung Kecamatan Turikale, Kabupaten Maros, menyimpan sejarah panjang sebagai pusat pemukiman yang berkembang pesat seiring dengan dinamika wilayah sekitarnya. Berawal dari sebuah perkampungan agraris yang subur, nama "Boribellaya" sendiri merefleksikan kearifan lokal masyarakat dalam mengelola lahan dan merawat kebersamaan.',
   "Seiring berjalannya waktu dan pesatnya pembangunan di Kabupaten Maros, Boribellaya bertransformasi menjadi kawasan urban yang strategis, menjembatani aktivitas pemerintahan dan perdagangan. Perubahan status menjadi kelurahan menandai babak baru dalam administrasi pelayanan publik, memungkinkan pendekatan yang lebih modern dan responsif terhadap kebutuhan warga.",
@@ -7,30 +5,13 @@ export const history: string[] = [
 ];
 
 export const vision =
-  "Mewujudkan Kelurahan Boribellaya yang Mandiri, Sejahtera, dan Berbudaya melalui Pelayanan Publik yang Prima.";
+  "Maros Sejahtera, Religius dan Berdaya Saing.";
 
 export const missions: string[] = [
-  "Meningkatkan kualitas pelayanan administrasi publik yang cepat, tepat, dan transparan.",
-  "Mendorong partisipasi aktif masyarakat dalam pembangunan dan menjaga kebersihan lingkungan.",
-  "Memberdayakan ekonomi kerakyatan melalui dukungan terhadap UMKM lokal.",
+  "Meningkatkan Kualitas Penyelenggara Birokrasi dan Pelayanan Publik.",
+  "Meningkatkan Pembangunan Sumber Daya Manusia.",
+  "Meningkatkan Keterjangkauan Kebutuhan Dasar dan Pelayanan Secara Inklusif.",
+  "Meningkatkan Ketahanan Ekonomi Daerah Berbasis Potensi Lokal",
+  "Memantapkan Pembangunan Infrastruktur Ekonomi dan Pemerataan Wilayah",
+  "Meningkatkan Kualitas Lingkungan Hidup dan Ketahanan Bencana"
 ];
-
-export const leader: Leader = {
-  name: "Andi M. Ridwan, S.STP., M.Si.",
-  position: "Kepala Kelurahan",
-  nip: "NIP. 19850720 200501 1 003",
-  bio: "Menjabat sebagai Lurah Boribellaya sejak tahun 2021, Bapak Andi M. Ridwan berkomitmen membawa perubahan positif melalui inovasi pelayanan digital dan pendekatan langsung kepada masyarakat.",
-  email: "lurah.boribellaya@maroskab.go.id",
-  term: "Masa Jabatan: 2021 - Sekarang",
-};
-
-export const orgChart: OrgNode = {
-  name: leader.name,
-  position: "Lurah",
-  children: [
-    {
-      name: "Budi Santoso, S.Sos.",
-      position: "Kasi Pemerintahan",
-    },
-  ],
-};

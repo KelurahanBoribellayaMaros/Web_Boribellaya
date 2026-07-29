@@ -10,6 +10,7 @@ import {
 } from "firebase/auth";
 import { Eye, EyeOff, Lock, Mail } from "lucide-react";
 import { auth } from "@/lib/firebase/client";
+import { useToast } from "@/components/ui/ToastProvider";
 
 function authErrorMessage(error: unknown): string {
   const code = (error as AuthError)?.code;
@@ -31,6 +32,7 @@ function authErrorMessage(error: unknown): string {
 }
 
 export function CredentialsForm({ currentEmail }: { currentEmail: string }) {
+  const { showToast } = useToast();
   const [currentPassword, setCurrentPassword] = useState("");
   const [newEmail, setNewEmail] = useState(currentEmail);
   const [newPassword, setNewPassword] = useState("");
@@ -80,6 +82,7 @@ export function CredentialsForm({ currentEmail }: { currentEmail: string }) {
         setError("Tidak ada perubahan untuk disimpan.");
       } else {
         setSuccess(messages.join(" "));
+        showToast("Kredensial berhasil diperbarui.");
         setCurrentPassword("");
         setNewPassword("");
         setConfirmPassword("");

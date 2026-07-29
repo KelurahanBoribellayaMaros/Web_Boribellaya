@@ -28,10 +28,9 @@ export function LoginForm() {
     try {
       const credential = await signInWithEmailAndPassword(auth, email, password);
       const idToken = await credential.user.getIdToken();
-      // Destination is always driven by the account's real role, never by
-      // which tab was selected here — the tabs are just a visual hint.
       const { role } = await createSessionAction(idToken, rememberMe);
-      router.push(role === "admin" ? "/admin" : "/");
+      const toast = `toast=${encodeURIComponent("Berhasil masuk. Selamat datang kembali!")}`;
+      router.push(role === "admin" ? `/admin?${toast}` : `/?${toast}`);
     } catch (err) {
       console.error(err);
       const code =
@@ -51,8 +50,8 @@ export function LoginForm() {
           type="button"
           onClick={() => setActiveTab("warga")}
           className={`rounded-lg py-2 text-sm font-semibold transition-colors ${activeTab === "warga"
-              ? "bg-white text-green-800 shadow-sm"
-              : "text-gray-500 hover:text-gray-700"
+            ? "bg-white text-green-800 shadow-sm"
+            : "text-gray-500 hover:text-gray-700"
             }`}
         >
           Warga
@@ -61,8 +60,8 @@ export function LoginForm() {
           type="button"
           onClick={() => setActiveTab("admin")}
           className={`rounded-lg py-2 text-sm font-semibold transition-colors ${activeTab === "admin"
-              ? "bg-white text-green-800 shadow-sm"
-              : "text-gray-500 hover:text-gray-700"
+            ? "bg-white text-green-800 shadow-sm"
+            : "text-gray-500 hover:text-gray-700"
             }`}
         >
           Admin

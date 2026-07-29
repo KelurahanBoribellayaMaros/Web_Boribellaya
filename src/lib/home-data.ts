@@ -1,6 +1,5 @@
 import { FileText, Receipt } from "lucide-react";
-import { Users, UsersRound, Mars, Venus } from "lucide-react";
-import type { HeroImage, PopulationStat, ServiceItem } from "@/types/home";
+import type { HeroImage, ServiceItem } from "@/types/home";
 
 export const heroImages: HeroImage[] = [
   {
@@ -28,13 +27,6 @@ export const services: ServiceItem[] = [
   },
 ];
 
-export const populationStats: PopulationStat[] = [
-  { icon: Users, label: "Total Penduduk", value: 12450 },
-  { icon: UsersRound, label: "Kepala Keluarga", value: 3210 },
-  { icon: Mars, label: "Laki-laki", value: 6120 },
-  { icon: Venus, label: "Perempuan", value: 6330 },
-];
-
 export function formatDate(iso: string): string {
   return new Date(iso).toLocaleDateString("id-ID", {
     day: "numeric",
@@ -45,4 +37,14 @@ export function formatDate(iso: string): string {
 
 export function formatNumber(value: number): string {
   return value.toLocaleString("id-ID");
+}
+
+export function timeAgo(iso: string): string {
+  const minutes = Math.floor((Date.now() - new Date(iso).getTime()) / 60000);
+  if (minutes < 1) return "Baru saja";
+  if (minutes < 60) return `${minutes} menit yang lalu`;
+  const hours = Math.floor(minutes / 60);
+  if (hours < 24) return `${hours} jam yang lalu`;
+  const days = Math.floor(hours / 24);
+  return `${days} hari yang lalu`;
 }

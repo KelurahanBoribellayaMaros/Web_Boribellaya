@@ -8,7 +8,7 @@ export function Footer() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="bg-[#1e3a5f] px-4 py-10 text-center sm:px-6 lg:px-8">
+    <footer className="bg-[#293241] px-2 py-10 text-center sm:px-3 lg:px-4">
       <div className="mx-auto max-w-6xl">
         <h2 className="text-lg font-bold text-white">Kelurahan Boribellaya</h2>
         <p className="mt-2 text-sm text-blue-200">

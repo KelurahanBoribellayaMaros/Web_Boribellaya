@@ -3,7 +3,10 @@ import { BookOpen, Eye, Target, CheckCircle2 } from "lucide-react";
 import { ProfileCard } from "@/components/profil/ProfileCard";
 import { LeadershipCard } from "@/components/profil/LeadershipCard";
 import { OrgChart } from "@/components/profil/OrgChart";
-import { history, vision, missions, leader, orgChart } from "@/lib/profile-data";
+import { history, vision, missions } from "@/lib/profile-data";
+import { getLeader, getOrgChart } from "@/lib/firebase/struktur-repository";
+
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Profil Kelurahan | Kelurahan Boribellaya",
@@ -11,9 +14,11 @@ export const metadata: Metadata = {
     "Sejarah, visi, misi, dan struktur pemerintahan Kelurahan Boribellaya.",
 };
 
-export default function ProfilPage() {
+export default async function ProfilPage() {
+  const [leader, orgChart] = await Promise.all([getLeader(), getOrgChart()]);
+
   return (
-    <div className="mx-auto max-w-5xl px-4 py-10 sm:px-6 sm:py-12 lg:px-8">
+    <div className="mx-auto max-w-5xl px-2 py-10 sm:px-3 sm:py-12 lg:px-4">
       <div className="text-center">
         <h1 className="text-2xl font-bold text-gray-900 sm:text-3xl">
           Profil Kelurahan

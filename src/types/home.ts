@@ -21,8 +21,12 @@ export type NewsItem = {
   slug: string;
   title: string;
   excerpt: string;
+  content: string;
   date: string;
   category: NewsCategory;
+  coverImage?: string;
+  createdAt: string;
+  updatedAt: string;
 };
 
 export type HeroImage = {

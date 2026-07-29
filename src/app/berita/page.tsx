@@ -14,7 +14,7 @@ export default async function BeritaPage() {
   const news = await getNews();
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6 sm:py-12 lg:px-8">
+    <div className="mx-auto max-w-6xl px-2 py-10 sm:px-3 sm:py-12 lg:px-4">
       <div className="text-center">
         <h1 className="text-2xl font-bold text-gray-900 sm:text-3xl">
           Berita & Pengumuman

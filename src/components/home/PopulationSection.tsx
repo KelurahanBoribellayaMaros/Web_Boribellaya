@@ -1,12 +1,21 @@
-import { ChevronRight } from "lucide-react";
-import { populationStats } from "@/lib/home-data";
+import { ChevronRight, Mars, Users, UsersRound, Venus } from "lucide-react";
+import { getPopulationStats } from "@/lib/firebase/population-repository";
 import { StatCard } from "@/components/ui/StatCard";
 
-export function PopulationSection() {
+export async function PopulationSection() {
+  const stats = await getPopulationStats();
+
+  const items = [
+    { icon: Users, label: "Total Penduduk", value: stats.totalPenduduk },
+    { icon: UsersRound, label: "Kepala Keluarga", value: stats.kepalaKeluarga },
+    { icon: Mars, label: "Laki-laki", value: stats.lakiLaki },
+    { icon: Venus, label: "Perempuan", value: stats.perempuan },
+  ];
+
   return (
     <section
       id="data-penduduk"
-      className="mx-auto max-w-6xl scroll-mt-20 px-4 py-10 sm:px-6 sm:py-12 lg:px-8"
+      className="mx-auto max-w-6xl scroll-mt-20 px-2 py-10 sm:px-3 sm:py-12 lg:px-4"
     >
       <div className="flex items-end justify-between gap-4">
         <div>
@@ -27,7 +36,7 @@ export function PopulationSection() {
       </div>
 
       <div className="mt-6 grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-4">
-        {populationStats.map((stat) => (
+        {items.map((stat) => (
           <StatCard key={stat.label} {...stat} />
         ))}
       </div>

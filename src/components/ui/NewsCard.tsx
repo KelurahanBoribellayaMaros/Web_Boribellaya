@@ -3,16 +3,32 @@ import { Calendar, ImageIcon } from "lucide-react";
 import type { NewsItem } from "@/types/home";
 import { formatDate } from "@/lib/home-data";
 
-export function NewsCard({ slug, title, excerpt, date, category }: NewsItem) {
+export function NewsCard({
+  slug,
+  title,
+  excerpt,
+  date,
+  category,
+  coverImage,
+}: NewsItem) {
   return (
     <Link
       href={`/berita/${slug}`}
       className="group block overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm transition-shadow hover:shadow-md"
     >
       <div className="relative aspect-video bg-gradient-to-br from-green-100 to-green-200">
-        <div className="flex h-full w-full items-center justify-center text-green-700/40">
-          <ImageIcon className="size-10" />
-        </div>
+        {coverImage ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={coverImage}
+            alt={title}
+            className="size-full object-cover"
+          />
+        ) : (
+          <div className="flex h-full w-full items-center justify-center text-green-700/40">
+            <ImageIcon className="size-10" />
+          </div>
+        )}
         {category === "pengumuman" && (
           <span className="absolute top-3 left-3 rounded-full bg-green-600 px-3 py-1 text-xs font-semibold text-white">
             Pengumuman
