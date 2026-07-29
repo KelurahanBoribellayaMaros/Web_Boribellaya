@@ -4,20 +4,34 @@ import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Bell, CircleUserRound, LogOut, Menu, Settings, X } from "lucide-react";
+import {
+  Bell,
+  CircleUserRound,
+  FileBarChart,
+  Home,
+  LogOut,
+  Menu,
+  Newspaper,
+  Settings,
+  User,
+  Wrench,
+  X,
+} from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 import { logoutAction } from "@/lib/actions/auth-actions";
 import type { Session } from "@/lib/firebase/session";
 
-type NavLink =
-  | { label: string; type: "anchor"; id: string }
-  | { label: string; type: "page"; href: string };
+type NavLink = (
+  | { type: "anchor"; id: string }
+  | { type: "page"; href: string }
+) & { label: string; icon: LucideIcon };
 
 const navLinks: NavLink[] = [
-  { label: "Beranda", type: "anchor", id: "beranda" },
-  { label: "Profil", type: "page", href: "/profil" },
-  { label: "Berita", type: "page", href: "/berita" },
-  { label: "Layanan", type: "page", href: "/layanan" },
-  { label: "PPID", type: "page", href: "/ppid" },
+  { label: "Beranda", type: "anchor", id: "beranda", icon: Home },
+  { label: "Profil", type: "page", href: "/profil", icon: User },
+  { label: "Berita", type: "page", href: "/berita", icon: Newspaper },
+  { label: "Layanan", type: "page", href: "/layanan", icon: Wrench },
+  { label: "PPID", type: "page", href: "/ppid", icon: FileBarChart },
 ];
 
 function linkHref(link: NavLink): string {
@@ -108,7 +122,7 @@ export function Header({ session }: { session: Session | null }) {
           <button
             type="button"
             onClick={() => setIsMenuOpen((open) => !open)}
-            className="flex size-9 items-center justify-center rounded-full text-white transition-colors hover:bg-white/10 md:hidden"
+            className="flex size-10 items-center justify-center rounded-full text-white transition-colors hover:bg-white/10 md:hidden"
             aria-label={isMenuOpen ? "Tutup menu" : "Buka menu"}
             aria-expanded={isMenuOpen}
           >
@@ -155,7 +169,7 @@ export function Header({ session }: { session: Session | null }) {
         <div className="flex items-center gap-1">
           <button
             type="button"
-            className="flex size-9 items-center justify-center rounded-full text-white transition-colors hover:bg-white/10"
+            className="flex size-10 items-center justify-center rounded-full text-white transition-colors hover:bg-white/10"
             aria-label="Notifikasi"
           >
             <Bell className="size-5" />
@@ -167,7 +181,7 @@ export function Header({ session }: { session: Session | null }) {
                 onClick={() => setIsAccountMenuOpen((open) => !open)}
                 aria-label="Menu akun"
                 aria-expanded={isAccountMenuOpen}
-                className="flex size-9 items-center justify-center rounded-full text-white transition-colors hover:bg-white/10 sm:hidden"
+                className="flex size-10 items-center justify-center rounded-full text-white transition-colors hover:bg-white/10 sm:hidden"
               >
                 <CircleUserRound className="size-5" />
               </button>
@@ -207,7 +221,7 @@ export function Header({ session }: { session: Session | null }) {
             <>
               <Link
                 href="/login"
-                className="flex size-9 items-center justify-center rounded-full text-white transition-colors hover:bg-white/10 sm:hidden"
+                className="flex size-10 items-center justify-center rounded-full text-white transition-colors hover:bg-white/10 sm:hidden"
                 aria-label="Masuk"
               >
                 <CircleUserRound className="size-5" />
@@ -225,7 +239,7 @@ export function Header({ session }: { session: Session | null }) {
       </div>
 
       {isMenuOpen && (
-        <nav className="border-t border-white/10 bg-green-800 px-2 py-3 md:hidden">
+        <nav className="border-t border-white/10 bg-[#003f88] px-2 py-3 md:hidden">
           <ul className="flex flex-col gap-1">
             {navLinks.map((link) => {
               const isActive = isLinkActive(link);
@@ -235,11 +249,12 @@ export function Header({ session }: { session: Session | null }) {
                     href={linkHref(link)}
                     onClick={() => setIsMenuOpen(false)}
                     aria-current={isActive ? "page" : undefined}
-                    className={`block rounded-lg px-3 py-2 text-sm font-medium transition-colors ${isActive
+                    className={`flex items-center gap-3 rounded-lg px-3 py-3 text-sm font-medium transition-colors ${isActive
                       ? "bg-white/10 text-white"
                       : "text-green-100/70 hover:bg-white/10 hover:text-white"
                       }`}
                   >
+                    <link.icon className="size-5 shrink-0" />
                     {link.label}
                   </Link>
                 </li>
