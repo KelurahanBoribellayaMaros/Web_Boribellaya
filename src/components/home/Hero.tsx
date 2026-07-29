@@ -63,7 +63,7 @@ export function Hero() {
           }}
         >
           {heroImages.map((image, i) => (
-            <div key={i} className="relative h-screen w-full shrink-0">
+            <div key={i} className="relative h-[70dvh] w-full shrink-0 sm:h-dvh">
               <Image
                 src={image.src}
                 alt={image.alt}
