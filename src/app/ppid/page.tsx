@@ -27,7 +27,7 @@ export default async function PpidPage() {
 
   return (
     <div className="mx-auto max-w-5xl px-2 py-10 sm:px-3 sm:py-12 lg:px-4">
-      <div className="text-center">
+      <div className="rounded-2xl bg-[#003459] px-6 py-10 text-center sm:px-10 sm:py-12">
         <div className="flex items-center justify-center gap-2">
           <span className="h-px w-8 bg-[#2b9348]" />
           <span className="text-xs font-semibold tracking-widest text-[#2b9348] uppercase">
@@ -35,10 +35,10 @@ export default async function PpidPage() {
           </span>
           <span className="h-px w-8 bg-[#2b9348]" />
         </div>
-        <h1 className="mt-3 text-2xl font-bold text-gray-900 sm:text-3xl">
+        <h1 className="mt-3 text-2xl font-bold text-white sm:text-3xl">
           Informasi Publik (PPID)
         </h1>
-        <p className="mx-auto mt-2 max-w-xl text-sm text-gray-500 sm:text-base">
+        <p className="mx-auto mt-2 max-w-xl text-sm text-white/80 sm:text-base">
           Dokumen resmi yang wajib disediakan dan diumumkan sesuai
           Undang-Undang Keterbukaan Informasi Publik.
         </p>
@@ -55,7 +55,7 @@ export default async function PpidPage() {
             Struktur PPID
           </h2>
           <div className="mt-4 rounded-2xl border border-gray-100 bg-white p-5 shadow-sm sm:p-8">
-            <OrgChart root={ppidStructure} />
+            <OrgChart root={ppidStructure} variant="blue" />
           </div>
         </section>
 

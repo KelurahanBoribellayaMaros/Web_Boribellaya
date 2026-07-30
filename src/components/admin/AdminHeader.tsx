@@ -25,7 +25,7 @@ export function AdminHeader({ session }: { session: Session }) {
   }, [isMenuOpen]);
 
   return (
-    <header className="bg-[#003f88]">
+    <header className="bg-[#003459]">
       <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-2 py-3 sm:px-3 lg:px-4">
         <Link href="/admin" className="flex items-center gap-2.5">
           <Image

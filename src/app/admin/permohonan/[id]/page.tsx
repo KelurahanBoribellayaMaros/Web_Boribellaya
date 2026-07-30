@@ -3,7 +3,7 @@ import { Inbox } from "lucide-react";
 import { requireAdmin } from "@/lib/firebase/session";
 import { getPermohonanById } from "@/lib/firebase/permohonan-repository";
 import { updatePermohonanStatusAction } from "@/lib/actions/permohonan-actions";
-import { statusLabels } from "@/types/permohonan";
+import { copyFormatLabels, identityCategoryLabels, statusLabels } from "@/types/permohonan";
 import { formatDate } from "@/lib/home-data";
 import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
 
@@ -46,24 +46,62 @@ export default async function AdminPermohonanDetailPage({
         </h1>
 
         <dl className="mt-4 space-y-2 text-sm">
+          {item.identityCategory && (
+            <div className="flex gap-2">
+              <dt className="w-36 shrink-0 text-gray-500">Kategori Pemohon</dt>
+              <dd className="text-gray-900">{identityCategoryLabels[item.identityCategory]}</dd>
+            </div>
+          )}
+          {item.nik && (
+            <div className="flex gap-2">
+              <dt className="w-36 shrink-0 text-gray-500">NIK</dt>
+              <dd className="text-gray-900">{item.nik}</dd>
+            </div>
+          )}
           <div className="flex gap-2">
-            <dt className="w-28 shrink-0 text-gray-500">Nama</dt>
+            <dt className="w-36 shrink-0 text-gray-500">Nama</dt>
             <dd className="text-gray-900">{item.name}</dd>
           </div>
+          {item.address && (
+            <div className="flex gap-2">
+              <dt className="w-36 shrink-0 text-gray-500">Alamat</dt>
+              <dd className="text-gray-900">{item.address}</dd>
+            </div>
+          )}
           <div className="flex gap-2">
-            <dt className="w-28 shrink-0 text-gray-500">Email</dt>
+            <dt className="w-36 shrink-0 text-gray-500">Email</dt>
             <dd className="text-gray-900">{item.email}</dd>
           </div>
           {item.phone && (
             <div className="flex gap-2">
-              <dt className="w-28 shrink-0 text-gray-500">No. HP</dt>
+              <dt className="w-36 shrink-0 text-gray-500">No. HP</dt>
               <dd className="text-gray-900">{item.phone}</dd>
             </div>
           )}
+          {item.occupation && (
+            <div className="flex gap-2">
+              <dt className="w-36 shrink-0 text-gray-500">Pekerjaan</dt>
+              <dd className="text-gray-900">{item.occupation}</dd>
+            </div>
+          )}
           <div className="flex gap-2">
-            <dt className="w-28 shrink-0 text-gray-500">Keperluan</dt>
+            <dt className="w-36 shrink-0 text-gray-500">
+              {item.type === "informasi" ? "Rincian Informasi" : "Keperluan"}
+            </dt>
             <dd className="text-gray-900">{item.description}</dd>
           </div>
+          {item.usagePurpose && (
+            <div className="flex gap-2">
+              <dt className="w-36 shrink-0 text-gray-500">Tujuan Penggunaan</dt>
+              <dd className="text-gray-900">{item.usagePurpose}</dd>
+            </div>
+          )}
+          {item.copyFormat && (
+            <div className="flex gap-2">
+              <dt className="w-36 shrink-0 text-gray-500">Format Salinan</dt>
+              <dd className="text-gray-900">{copyFormatLabels[item.copyFormat]}</dd>
+            </div>
+          )}
         </dl>
 
         <form

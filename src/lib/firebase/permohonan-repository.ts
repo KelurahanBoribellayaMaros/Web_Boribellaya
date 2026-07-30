@@ -15,6 +15,12 @@ function toPermohonan(id: string, data: FirebaseFirestore.DocumentData): Permoho
     status: data.status,
     createdAt: data.createdAt,
     updatedAt: data.updatedAt,
+    nik: data.nik ?? undefined,
+    identityCategory: data.identityCategory ?? undefined,
+    address: data.address ?? undefined,
+    occupation: data.occupation ?? undefined,
+    usagePurpose: data.usagePurpose ?? undefined,
+    copyFormat: data.copyFormat ?? undefined,
   };
 }
 
@@ -38,6 +44,19 @@ export async function getPermohonanList(filters?: {
       if (filters?.type && item.type !== filters.type) return false;
       return true;
     });
+}
+
+export async function getPermohonanByEmail(email: string): Promise<Permohonan[]> {
+  // Filtered in-memory for the same reason as getPermohonanList — avoids
+  // needing a composite index for email+orderBy on this small collection.
+  const snapshot = await adminDb
+    .collection("permohonan")
+    .orderBy("updatedAt", "desc")
+    .get();
+
+  return snapshot.docs
+    .map((doc) => toPermohonan(doc.id, doc.data()))
+    .filter((item) => item.email === email);
 }
 
 export async function getPermohonanById(id: string): Promise<Permohonan | null> {

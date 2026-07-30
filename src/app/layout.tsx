@@ -5,6 +5,7 @@ import { SiteChrome } from "@/components/layout/SiteChrome";
 import { ToastProvider } from "@/components/ui/ToastProvider";
 import { ToastListener } from "@/components/ui/ToastListener";
 import { getSession } from "@/lib/firebase/session";
+import { getNotificationsForUser } from "@/lib/firebase/notifications-repository";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -29,6 +30,9 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const session = await getSession();
+  const notifications = session?.email
+    ? await getNotificationsForUser(session.uid, session.email)
+    : null;
 
   return (
     <html
@@ -40,7 +44,9 @@ export default async function RootLayout({
           <Suspense fallback={null}>
             <ToastListener />
           </Suspense>
-          <SiteChrome session={session}>{children}</SiteChrome>
+          <SiteChrome session={session} notifications={notifications}>
+            {children}
+          </SiteChrome>
         </ToastProvider>
       </body>
     </html>

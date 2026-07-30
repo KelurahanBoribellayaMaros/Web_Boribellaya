@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import { layananItems } from "@/lib/layanan-data";
-import { getSession } from "@/lib/firebase/session";
+import { requireSession } from "@/lib/firebase/session";
 import { PermohonanForm } from "@/components/permohonan/PermohonanForm";
 
 export default async function AjukanLayananPage({
@@ -15,7 +15,7 @@ export default async function AjukanLayananPage({
     notFound();
   }
 
-  const session = await getSession();
+  const session = await requireSession();
 
   return (
     <div className="mx-auto max-w-md px-3 py-10 sm:px-4 sm:py-12">
@@ -31,8 +31,8 @@ export default async function AjukanLayananPage({
           type="layanan"
           category={item.slug}
           categoryLabel={item.title}
-          prefillName={session?.name ?? undefined}
-          prefillEmail={session?.email ?? undefined}
+          accountEmail={session.email ?? ""}
+          prefillName={session.name ?? undefined}
         />
       </div>
     </div>
