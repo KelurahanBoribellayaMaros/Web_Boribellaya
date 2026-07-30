@@ -16,7 +16,7 @@ export function NewsCard({
       href={`/berita/${slug}`}
       className="group block overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm transition-shadow hover:shadow-md"
     >
-      <div className="relative aspect-video bg-gradient-to-br from-green-100 to-green-200">
+      <div className="relative aspect-video bg-gradient-to-br from-blue-100 to-blue-200">
         {coverImage ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img
@@ -25,7 +25,7 @@ export function NewsCard({
             className="size-full object-cover"
           />
         ) : (
-          <div className="flex h-full w-full items-center justify-center text-green-700/40">
+          <div className="flex h-full w-full items-center justify-center text-[#003459]/40">
             <ImageIcon className="size-10" />
           </div>
         )}

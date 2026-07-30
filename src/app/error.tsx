@@ -28,7 +28,7 @@ export default function Error({
       <button
         type="button"
         onClick={() => unstable_retry()}
-        className="flex items-center gap-2 rounded-full bg-green-800 px-6 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-green-900"
+        className="flex items-center gap-2 rounded-full bg-[#003459] px-6 py-2.5 text-sm font-semibold text-white transition-colors hover:opacity-90"
       >
         <RotateCw className="size-4" />
         Coba Lagi

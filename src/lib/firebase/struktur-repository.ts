@@ -72,3 +72,26 @@ export async function getOrgChart(): Promise<OrgNode> {
     children: positions.map((p) => ({ name: p.name, position: p.position })),
   };
 }
+
+export type PpidPelaksana = {
+  name: string;
+  position: string;
+};
+
+// Same placeholder philosophy as EMPTY_LEADER — never default to a specific
+// person's name before an admin has actually configured this.
+const EMPTY_PPID_PELAKSANA: PpidPelaksana = {
+  name: "Data belum tersedia",
+  position: "PPID Pelaksana",
+};
+
+export async function getPpidPelaksana(): Promise<PpidPelaksana> {
+  const doc = await adminDb.collection("settings").doc("ppid_pelaksana").get();
+  if (!doc.exists) return EMPTY_PPID_PELAKSANA;
+
+  const data = doc.data()!;
+  return {
+    name: data.name ?? EMPTY_PPID_PELAKSANA.name,
+    position: data.position ?? EMPTY_PPID_PELAKSANA.position,
+  };
+}

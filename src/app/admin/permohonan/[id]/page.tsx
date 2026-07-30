@@ -130,7 +130,7 @@ export default async function AdminPermohonanDetailPage({
           </div>
           <button
             type="submit"
-            className="rounded-xl bg-green-800 px-6 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-green-900"
+            className="rounded-xl bg-[#003459] px-6 py-2.5 text-sm font-semibold text-white transition-colors hover:opacity-90"
           >
             Simpan Status
           </button>

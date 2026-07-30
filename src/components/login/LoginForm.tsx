@@ -50,7 +50,7 @@ export function LoginForm() {
           type="button"
           onClick={() => setActiveTab("warga")}
           className={`rounded-lg py-2 text-sm font-semibold transition-colors ${activeTab === "warga"
-            ? "bg-white text-green-800 shadow-sm"
+            ? "bg-white text-[#003459] shadow-sm"
             : "text-gray-500 hover:text-gray-700"
             }`}
         >
@@ -60,7 +60,7 @@ export function LoginForm() {
           type="button"
           onClick={() => setActiveTab("admin")}
           className={`rounded-lg py-2 text-sm font-semibold transition-colors ${activeTab === "admin"
-            ? "bg-white text-green-800 shadow-sm"
+            ? "bg-white text-[#003459] shadow-sm"
             : "text-gray-500 hover:text-gray-700"
             }`}
         >
@@ -133,7 +133,7 @@ export function LoginForm() {
             />
             Ingat Saya
           </label>
-          <Link href="/lupa-sandi" className="font-medium text-green-700 hover:text-green-800">
+          <Link href="/lupa-sandi" className="font-medium text-[#003459] hover:opacity-80">
             Lupa Sandi?
           </Link>
         </div>
@@ -143,7 +143,7 @@ export function LoginForm() {
         <button
           type="submit"
           disabled={isSubmitting}
-          className="flex w-full items-center justify-center gap-2 rounded-xl bg-green-800 py-3.5 text-sm font-semibold text-white transition-colors hover:bg-green-900 disabled:cursor-not-allowed disabled:opacity-60"
+          className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#003459] py-3.5 text-sm font-semibold text-white transition-colors hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
         >
           {isSubmitting ? "Memproses..." : "Masuk"}
           <LogIn className="size-4" />
@@ -158,7 +158,7 @@ export function LoginForm() {
           </p>
           <Link
             href="/daftar"
-            className="mt-3 flex w-full items-center justify-center rounded-xl border border-green-700 py-3 text-sm font-semibold text-green-700 transition-colors hover:bg-green-50"
+            className="mt-3 flex w-full items-center justify-center rounded-xl border border-[#003459] py-3 text-sm font-semibold text-[#003459] transition-colors hover:bg-blue-50"
           >
             Daftar Akun Baru
           </Link>

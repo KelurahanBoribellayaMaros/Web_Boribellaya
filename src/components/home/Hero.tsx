@@ -2,8 +2,7 @@
 
 import { useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
 import Image from "next/image";
-import Link from "next/link";
-import { ArrowRight, ChevronLeft, ChevronRight, FileText } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { heroImages } from "@/lib/home-data";
 
 const SWIPE_THRESHOLD_RATIO = 0.15;
@@ -88,6 +87,7 @@ export function Hero() {
                 <span className="text-xs font-semibold tracking-widest text-[#fdd85d] uppercase">
                   Portal Resmi Pemerintah Kelurahan
                 </span>
+                <span className="h-px w-8 bg-[#fdd85d]" />
               </div>
               <h1 className="mt-4 text-3xl font-bold text-white sm:text-4xl lg:text-5xl">
                 Kelurahan Boribellaya
@@ -97,22 +97,6 @@ export function Hero() {
                 informasi terkini, dan administrasi kependudukan dengan lebih
                 cepat, mudah, dan transparan.
               </p>
-              <div className="pointer-events-auto mt-6 flex flex-wrap gap-3">
-                <Link
-                  href="#layanan"
-                  className="inline-flex items-center gap-2 rounded-full bg-white px-5 py-3 text-sm font-semibold text-green-900 transition-colors hover:bg-green-50"
-                >
-                  <FileText className="size-4" />
-                  Informasi Publik
-                </Link>
-                <Link
-                  href="#berita"
-                  className="inline-flex items-center gap-2 rounded-full border border-white/40 bg-white/10 px-5 py-3 text-sm font-semibold text-white backdrop-blur-sm transition-colors hover:bg-white/20"
-                >
-                  Baca Berita
-                  <ArrowRight className="size-4" />
-                </Link>
-              </div>
             </div>
           </div>
         </div>

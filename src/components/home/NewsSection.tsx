@@ -22,7 +22,7 @@ export async function NewsSection() {
         </div>
         <Link
           href="/berita"
-          className="hidden shrink-0 items-center gap-0.5 text-sm font-medium text-green-700 hover:text-green-800 sm:inline-flex"
+          className="hidden shrink-0 items-center gap-0.5 text-sm font-medium text-[#003459] hover:opacity-80 sm:inline-flex"
         >
           Lihat Semua Berita
           <ChevronRight className="size-4" />
@@ -37,7 +37,7 @@ export async function NewsSection() {
 
       <Link
         href="/berita"
-        className="mt-6 flex items-center justify-center gap-0.5 text-sm font-medium text-green-700 hover:text-green-800 sm:hidden"
+        className="mt-6 flex items-center justify-center gap-0.5 text-sm font-medium text-[#003459] hover:opacity-80 sm:hidden"
       >
         Lihat Semua Berita
         <ChevronRight className="size-4" />

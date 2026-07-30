@@ -21,11 +21,11 @@ export default async function ProfilPage() {
     <div className="mx-auto max-w-5xl px-2 py-10 sm:px-3 sm:py-12 lg:px-4">
       <div className="rounded-2xl bg-[#003459] px-6 py-10 text-center sm:px-10 sm:py-12">
         <div className="flex items-center justify-center gap-2">
-          <span className="h-px w-8 bg-[#2b9348]" />
-          <span className="text-xs font-semibold tracking-widest text-[#2b9348] uppercase">
+          <span className="h-px w-8 bg-[#fdd85d]" />
+          <span className="text-xs font-semibold tracking-widest text-[#fdd85d] uppercase">
             Profil Pemerintahan
           </span>
-          <span className="h-px w-8 bg-[#2b9348]" />
+          <span className="h-px w-8 bg-[#fdd85d]" />
         </div>
         <h1 className="mt-3 text-2xl font-bold text-white sm:text-3xl">
           Profil Kelurahan
@@ -56,7 +56,7 @@ export default async function ProfilPage() {
             <ul className="space-y-3">
               {missions.map((mission) => (
                 <li key={mission.slice(0, 24)} className="flex items-start gap-2.5">
-                  <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-green-600" />
+                  <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-[#003459]" />
                   <span className="text-sm leading-relaxed text-gray-600">
                     {mission}
                   </span>
@@ -83,7 +83,7 @@ export default async function ProfilPage() {
             Susunan aparatur pemerintahan Kelurahan Boribellaya.
           </p>
           <div className="mt-6 rounded-2xl border border-gray-100 bg-white p-5 shadow-sm sm:p-8">
-            <OrgChart root={orgChart} />
+            <OrgChart root={orgChart} variant="blue" />
           </div>
         </section>
       </div>

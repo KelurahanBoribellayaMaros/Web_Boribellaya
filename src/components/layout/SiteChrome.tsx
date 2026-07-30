@@ -25,7 +25,7 @@ export function SiteChrome({
   return (
     <>
       <Header session={session} notifications={notifications} />
-      <main className="flex-1 pt-16">{children}</main>
+      <main className="flex-1 bg-gradient-to-b from-green-50 to-white pt-16">{children}</main>
       <Footer />
     </>
   );

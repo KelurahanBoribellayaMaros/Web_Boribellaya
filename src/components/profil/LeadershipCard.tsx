@@ -25,12 +25,12 @@ export function LeadershipCard({
                 className="size-full object-cover"
               />
             ) : (
-              <div className="flex size-full items-center justify-center bg-gradient-to-br from-green-100 to-green-200 text-green-700/50">
+              <div className="flex size-full items-center justify-center bg-gradient-to-br from-blue-100 to-blue-200 text-[#003459]/50">
                 <User className="size-10" />
               </div>
             )}
           </div>
-          <span className="absolute right-0 bottom-0 flex size-7 items-center justify-center rounded-full bg-white text-green-600 ring-2 ring-white">
+          <span className="absolute right-0 bottom-0 flex size-7 items-center justify-center rounded-full bg-white text-[#003459] ring-2 ring-white">
             <BadgeCheck className="size-6" />
           </span>
         </div>
@@ -45,11 +45,11 @@ export function LeadershipCard({
 
           <div className="mt-4 flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:gap-x-6 sm:gap-y-2">
             <span className="flex items-center justify-center gap-2 text-sm text-gray-500 sm:justify-start">
-              <Mail className="size-4 shrink-0 text-green-600" />
+              <Mail className="size-4 shrink-0 text-[#003459]" />
               {email}
             </span>
             <span className="flex items-center justify-center gap-2 text-sm text-gray-500 sm:justify-start">
-              <Calendar className="size-4 shrink-0 text-green-600" />
+              <Calendar className="size-4 shrink-0 text-[#003459]" />
               {term}
             </span>
           </div>

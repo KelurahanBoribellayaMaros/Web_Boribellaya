@@ -13,11 +13,11 @@ export default async function AkunPage() {
     <div className="mx-auto max-w-md px-2 py-10 sm:px-3 sm:py-12 lg:px-4">
       <div className="rounded-2xl bg-[#003459] px-6 py-10 text-center sm:px-8 sm:py-12">
         <div className="flex items-center justify-center gap-2">
-          <span className="h-px w-8 bg-[#2b9348]" />
-          <span className="text-xs font-semibold tracking-widest text-[#2b9348] uppercase">
+          <span className="h-px w-8 bg-[#fdd85d]" />
+          <span className="text-xs font-semibold tracking-widest text-[#fdd85d] uppercase">
             Pengaturan Akun
           </span>
-          <span className="h-px w-8 bg-[#2b9348]" />
+          <span className="h-px w-8 bg-[#fdd85d]" />
         </div>
         <h1 className="mt-3 text-2xl font-bold text-white sm:text-3xl">
           Ubah Kredensial

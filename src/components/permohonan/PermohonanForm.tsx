@@ -100,7 +100,7 @@ export function PermohonanForm({
 
       <button
         type="submit"
-        className="flex w-full items-center justify-center gap-2 rounded-xl bg-green-800 py-3.5 text-sm font-semibold text-white transition-colors hover:bg-green-900"
+        className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#003459] py-3.5 text-sm font-semibold text-white transition-colors hover:opacity-90"
       >
         Kirim Permohonan
         <Send className="size-4" />

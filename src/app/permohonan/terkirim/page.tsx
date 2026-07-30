@@ -11,7 +11,7 @@ export default function PermohonanTerkirimPage() {
   return (
     <div className="mx-auto max-w-md px-3 py-16 text-center sm:px-4">
       <PermohonanSuccessToast />
-      <span className="mx-auto flex size-16 items-center justify-center rounded-full bg-green-100 text-green-700">
+      <span className="mx-auto flex size-16 items-center justify-center rounded-full bg-blue-100 text-[#003459]">
         <CheckCircle2 className="size-8" />
       </span>
       <h1 className="mt-6 text-2xl font-bold text-gray-900">
@@ -24,7 +24,7 @@ export default function PermohonanTerkirimPage() {
       </p>
       <Link
         href="/"
-        className="mt-6 inline-flex items-center justify-center rounded-full bg-green-800 px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-green-900"
+        className="mt-6 inline-flex items-center justify-center rounded-full bg-[#003459] px-6 py-3 text-sm font-semibold text-white transition-colors hover:opacity-90"
       >
         Kembali ke Beranda
       </Link>

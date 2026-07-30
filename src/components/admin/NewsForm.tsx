@@ -1,4 +1,5 @@
 import { ImageIcon } from "lucide-react";
+import { DatePicker } from "@/components/ui/DatePicker";
 import type { NewsItem } from "@/types/home";
 
 type NewsFormProps = {
@@ -38,7 +39,7 @@ export function NewsForm({ action, defaultValues, submitLabel }: NewsFormProps) 
             name="coverImage"
             type="file"
             accept="image/jpeg,image/png,image/webp"
-            className="w-full text-sm text-gray-700 file:mr-4 file:rounded-full file:border-0 file:bg-green-100 file:px-4 file:py-1.5 file:text-sm file:font-semibold file:text-green-700"
+            className="w-full text-sm text-gray-700 file:mr-4 file:rounded-full file:border-0 file:bg-blue-100 file:px-4 file:py-1.5 file:text-sm file:font-semibold file:text-[#003459]"
           />
         </div>
         <p className="mt-1.5 text-xs text-gray-400">
@@ -113,13 +114,11 @@ export function NewsForm({ action, defaultValues, submitLabel }: NewsFormProps) 
           >
             Tanggal
           </label>
-          <input
+          <DatePicker
             id="date"
             name="date"
-            type="date"
             required
             defaultValue={defaultValues?.date}
-            className="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm text-gray-900 outline-none focus:border-green-600 focus:ring-2 focus:ring-green-600/20"
           />
         </div>
 
@@ -144,7 +143,7 @@ export function NewsForm({ action, defaultValues, submitLabel }: NewsFormProps) 
 
       <button
         type="submit"
-        className="w-full rounded-xl bg-green-800 py-3 text-sm font-semibold text-white transition-colors hover:bg-green-900"
+        className="w-full rounded-xl bg-[#003459] py-3 text-sm font-semibold text-white transition-colors hover:opacity-90"
       >
         {submitLabel}
       </button>

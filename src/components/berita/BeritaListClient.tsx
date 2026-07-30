@@ -44,7 +44,7 @@ export function BeritaListClient({ items }: { items: NewsItem[] }) {
           />
           <button
             type="submit"
-            className="shrink-0 rounded-xl bg-green-700 px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-green-800"
+            className="shrink-0 rounded-xl bg-[#003459] px-6 py-3 text-sm font-semibold text-white transition-colors hover:opacity-90"
           >
             Cari
           </button>
@@ -59,8 +59,8 @@ export function BeritaListClient({ items }: { items: NewsItem[] }) {
               aria-pressed={category === f.value}
               className={`rounded-full px-4 py-2 text-sm font-semibold transition-colors ${
                 category === f.value
-                  ? "bg-green-700 text-white"
-                  : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                  ? "bg-[#003459] text-white"
+                  : "bg-white text-gray-600 border border-gray-200 hover:bg-gray-50"
               }`}
             >
               {f.label}

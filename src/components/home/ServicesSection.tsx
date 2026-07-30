@@ -19,7 +19,7 @@ export function ServicesSection() {
         </div>
         <a
           href="/layanan"
-          className="hidden shrink-0 items-center gap-0.5 text-sm font-medium text-green-700 hover:text-green-800 sm:inline-flex"
+          className="hidden shrink-0 items-center gap-0.5 text-sm font-medium text-[#003459] hover:opacity-80 sm:inline-flex"
         >
           Lihat Semua Layanan
           <ChevronRight className="size-4" />
@@ -34,7 +34,7 @@ export function ServicesSection() {
 
       <a
         href="/layanan"
-        className="mt-6 flex items-center justify-center gap-0.5 text-sm font-medium text-green-700 hover:text-green-800 sm:hidden"
+        className="mt-6 flex items-center justify-center gap-0.5 text-sm font-medium text-[#003459] hover:opacity-80 sm:hidden"
       >
         Lihat Semua Layanan
         <ChevronRight className="size-4" />

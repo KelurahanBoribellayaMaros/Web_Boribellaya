@@ -90,3 +90,19 @@ export async function deleteOrgPositionAction(id: string): Promise<void> {
     toastRedirectUrl("/admin/struktur-organisasi", "Posisi berhasil dihapus.")
   );
 }
+
+export async function updatePpidPelaksanaAction(formData: FormData): Promise<void> {
+  await requireAdmin();
+
+  const name = String(formData.get("name") ?? "").trim();
+  const position = String(formData.get("position") ?? "").trim();
+
+  await adminDb.collection("settings").doc("ppid_pelaksana").set(
+    { name, position, updatedAt: new Date().toISOString() },
+    { merge: true }
+  );
+
+  redirect(
+    toastRedirectUrl("/admin/struktur-organisasi", "Struktur PPID berhasil diperbarui.")
+  );
+}

@@ -51,6 +51,10 @@ export async function createPpidDocumentAction(input: {
 }): Promise<void> {
   await requireAdmin();
 
+  if (!input.date) {
+    throw new Error("Tanggal wajib diisi.");
+  }
+
   const { data: publicUrlData } = supabaseAdmin.storage
     .from(PPID_BUCKET)
     .getPublicUrl(input.path);

@@ -9,6 +9,7 @@ import {
   CircleUserRound,
   FileBarChart,
   Home,
+  LayoutDashboard,
   LogOut,
   Menu,
   Newspaper,
@@ -197,9 +198,9 @@ export function Header({
                 key={link.label}
                 href={linkHref(link)}
                 aria-current={isActive ? "page" : undefined}
-                className={`relative py-1 text-sm font-medium transition-colors ${isActive
-                  ? "text-white after:absolute after:inset-x-0 after:-bottom-[13px] after:h-0.5 after:rounded-full after:bg-white"
-                  : "text-green-100/70 hover:text-white"
+                className={`relative py-1 text-sm font-medium text-white transition-colors after:absolute after:inset-x-0 after:-bottom-[13px] after:h-0.5 after:rounded-full after:bg-white after:transition-opacity ${isActive
+                  ? "after:opacity-100"
+                  : "after:opacity-0 hover:after:opacity-100"
                   }`}
               >
                 {link.label}
@@ -286,6 +287,16 @@ export function Header({
 
               {isAccountMenuOpen && (
                 <div className="absolute right-0 z-40 mt-2 w-52 overflow-hidden rounded-xl border border-gray-100 bg-white py-1 shadow-lg">
+                  {session.role === "admin" && (
+                    <Link
+                      href="/admin"
+                      onClick={() => setIsAccountMenuOpen(false)}
+                      className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-700 transition-colors hover:bg-gray-50"
+                    >
+                      <LayoutDashboard className="size-4" />
+                      Dashboard Admin
+                    </Link>
+                  )}
                   <Link
                     href="/akun"
                     onClick={() => setIsAccountMenuOpen(false)}

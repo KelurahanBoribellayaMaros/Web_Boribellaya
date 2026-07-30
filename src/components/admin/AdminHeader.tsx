@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { CircleUserRound, LogOut, Settings } from "lucide-react";
+import { CircleUserRound, Home, LogOut, Settings } from "lucide-react";
 import { logoutAction } from "@/lib/actions/auth-actions";
 import type { Session } from "@/lib/firebase/session";
 
@@ -59,6 +59,14 @@ export function AdminHeader({ session }: { session: Session }) {
 
           {isMenuOpen && (
             <div className="absolute right-0 z-40 mt-2 w-52 overflow-hidden rounded-xl border border-gray-100 bg-white py-1 shadow-lg">
+              <Link
+                href="/"
+                onClick={() => setIsMenuOpen(false)}
+                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-700 transition-colors hover:bg-gray-50"
+              >
+                <Home className="size-4" />
+                Tampilan Warga
+              </Link>
               <Link
                 href="/akun"
                 onClick={() => setIsMenuOpen(false)}

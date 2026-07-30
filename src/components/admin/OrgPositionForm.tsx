@@ -67,7 +67,7 @@ export function OrgPositionForm({
 
       <button
         type="submit"
-        className="w-full rounded-xl bg-green-800 py-3 text-sm font-semibold text-white transition-colors hover:bg-green-900"
+        className="w-full rounded-xl bg-[#003459] py-3 text-sm font-semibold text-[#fdd85d] transition-colors hover:opacity-90"
       >
         {submitLabel}
       </button>

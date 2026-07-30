@@ -222,18 +222,18 @@ export function PermohonanInformasiForm({
                 Format Salinan Informasi
               </span>
               <div className="grid grid-cols-2 gap-3">
-                <label className="flex cursor-pointer items-center justify-center gap-2 rounded-xl border border-gray-200 px-4 py-3 text-sm font-medium text-gray-700 transition-colors has-[:checked]:border-[#2b9348] has-[:checked]:bg-green-50 has-[:checked]:text-[#2b9348]">
+                <label className="flex cursor-pointer items-center justify-center gap-2 rounded-xl border border-gray-200 px-4 py-3 text-sm font-medium text-gray-700 transition-colors has-[:checked]:border-[#003459] has-[:checked]:bg-blue-50 has-[:checked]:text-[#003459]">
                   <input
                     type="radio"
                     name="copyFormat"
                     value="softcopy"
                     defaultChecked
-                    className="accent-[#2b9348]"
+                    className="accent-[#003459]"
                   />
                   Softcopy
                 </label>
-                <label className="flex cursor-pointer items-center justify-center gap-2 rounded-xl border border-gray-200 px-4 py-3 text-sm font-medium text-gray-700 transition-colors has-[:checked]:border-[#2b9348] has-[:checked]:bg-green-50 has-[:checked]:text-[#2b9348]">
-                  <input type="radio" name="copyFormat" value="hardcopy" className="accent-[#2b9348]" />
+                <label className="flex cursor-pointer items-center justify-center gap-2 rounded-xl border border-gray-200 px-4 py-3 text-sm font-medium text-gray-700 transition-colors has-[:checked]:border-[#003459] has-[:checked]:bg-blue-50 has-[:checked]:text-[#003459]">
+                  <input type="radio" name="copyFormat" value="hardcopy" className="accent-[#003459]" />
                   Hardcopy
                 </label>
               </div>
@@ -244,7 +244,7 @@ export function PermohonanInformasiForm({
 
       <button
         type="submit"
-        className="flex w-full items-center justify-center gap-2 rounded-xl bg-green-800 py-3.5 text-sm font-semibold text-white transition-colors hover:bg-green-900 lg:w-auto lg:px-10"
+        className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#003459] py-3.5 text-sm font-semibold text-white transition-colors hover:opacity-90 lg:w-auto lg:px-10"
       >
         Kirim Permohonan
         <Send className="size-4" />

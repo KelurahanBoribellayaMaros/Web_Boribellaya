@@ -9,19 +9,26 @@ export const metadata: Metadata = {
 
 export default function LoginPage() {
   return (
-    <div className="bg-gradient-to-b from-green-50 to-white px-2 py-12 sm:px-3 lg:px-4">
-      <div className="mx-auto max-w-md">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold text-green-800 sm:text-3xl">
+    <div className="px-2 py-10 sm:px-3 sm:py-12 lg:px-4">
+      <div className="mx-auto max-w-5xl">
+        <div className="rounded-2xl bg-[#003459] px-6 py-10 text-center sm:px-10 sm:py-12">
+          <div className="flex items-center justify-center gap-2">
+            <span className="h-px w-8 bg-[#fdd85d]" />
+            <span className="text-xs font-semibold tracking-widest text-[#fdd85d] uppercase">
+              Masuk ke Akun
+            </span>
+            <span className="h-px w-8 bg-[#fdd85d]" />
+          </div>
+          <h1 className="mt-3 text-2xl font-bold text-white sm:text-3xl">
             Sistem Informasi Kelurahan
           </h1>
-          <p className="mt-3 text-sm text-gray-600 sm:text-base">
+          <p className="mx-auto mt-2 max-w-xl text-sm text-white/80 sm:text-base">
             Silakan masuk untuk mengakses layanan digital dan administrasi
             kelurahan.
           </p>
         </div>
 
-        <div className="mt-8">
+        <div className="mx-auto mt-8 max-w-md">
           <LoginForm />
         </div>
       </div>

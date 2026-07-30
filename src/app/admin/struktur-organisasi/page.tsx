@@ -1,15 +1,27 @@
 import Link from "next/link";
-import { Building2, Plus, User, UserCog, Users } from "lucide-react";
+import { Building2, Plus, Scale, User, UserCog, Users } from "lucide-react";
 import { requireAdmin } from "@/lib/firebase/session";
-import { getLeader, getOrgPositions } from "@/lib/firebase/struktur-repository";
-import { updateLeaderAction, deleteOrgPositionAction } from "@/lib/actions/struktur-actions";
+import {
+  getLeader,
+  getOrgPositions,
+  getPpidPelaksana,
+} from "@/lib/firebase/struktur-repository";
+import {
+  updateLeaderAction,
+  deleteOrgPositionAction,
+  updatePpidPelaksanaAction,
+} from "@/lib/actions/struktur-actions";
 import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
 
 export const dynamic = "force-dynamic";
 
 export default async function AdminStrukturOrganisasiPage() {
   await requireAdmin();
-  const [leader, positions] = await Promise.all([getLeader(), getOrgPositions()]);
+  const [leader, positions, ppidPelaksana] = await Promise.all([
+    getLeader(),
+    getOrgPositions(),
+    getPpidPelaksana(),
+  ]);
 
   return (
     <div className="mx-auto max-w-3xl px-3 py-10 sm:px-4 lg:px-6">
@@ -53,7 +65,7 @@ export default async function AdminStrukturOrganisasiPage() {
                 name="photo"
                 type="file"
                 accept="image/jpeg,image/png,image/webp"
-                className="w-full text-sm text-gray-700 file:mr-4 file:rounded-full file:border-0 file:bg-green-100 file:px-4 file:py-1.5 file:text-sm file:font-semibold file:text-green-700"
+                className="w-full text-sm text-gray-700 file:mr-4 file:rounded-full file:border-0 file:bg-blue-100 file:px-4 file:py-1.5 file:text-sm file:font-semibold file:text-[#003459]"
               />
             </div>
             <p className="mt-1.5 text-xs text-gray-400">
@@ -150,7 +162,7 @@ export default async function AdminStrukturOrganisasiPage() {
 
           <button
             type="submit"
-            className="w-full rounded-xl bg-green-800 py-3 text-sm font-semibold text-white transition-colors hover:bg-green-900 sm:w-auto sm:px-8"
+            className="w-full rounded-xl bg-[#003459] py-3 text-sm font-semibold text-white transition-colors hover:opacity-90 sm:w-auto sm:px-8"
           >
             Simpan Profil Pimpinan
           </button>
@@ -165,7 +177,7 @@ export default async function AdminStrukturOrganisasiPage() {
           </h2>
           <Link
             href="/admin/struktur-organisasi/baru"
-            className="flex shrink-0 items-center gap-1.5 rounded-full bg-green-800 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-green-900"
+            className="flex shrink-0 items-center gap-1.5 rounded-full bg-[#003459] px-4 py-2 text-sm font-semibold text-white transition-colors hover:opacity-90"
           >
             <Plus className="size-4" />
             Tambah Posisi
@@ -210,6 +222,60 @@ export default async function AdminStrukturOrganisasiPage() {
             </div>
           ))}
         </div>
+      </section>
+
+      <section className="mt-8">
+        <h2 className="flex items-center gap-2 font-semibold text-gray-900">
+          <Scale className="size-4 text-indigo-600" />
+          Struktur PPID
+        </h2>
+        <p className="mt-1 text-sm text-gray-500">
+          Lurah otomatis menjadi Atasan PPID. Atur siapa yang menjabat sebagai
+          PPID Pelaksana di sini.
+        </p>
+        <form
+          action={updatePpidPelaksanaAction}
+          className="mt-3 grid grid-cols-1 gap-4 rounded-2xl border border-gray-200 bg-white p-6 shadow-sm sm:grid-cols-2"
+        >
+          <div>
+            <label
+              htmlFor="ppid-name"
+              className="mb-1.5 block text-sm font-medium text-gray-700"
+            >
+              Nama PPID Pelaksana
+            </label>
+            <input
+              id="ppid-name"
+              name="name"
+              type="text"
+              required
+              defaultValue={ppidPelaksana.name}
+              className="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm text-gray-900 outline-none focus:border-green-600 focus:ring-2 focus:ring-green-600/20"
+            />
+          </div>
+          <div>
+            <label
+              htmlFor="ppid-position"
+              className="mb-1.5 block text-sm font-medium text-gray-700"
+            >
+              Jabatan
+            </label>
+            <input
+              id="ppid-position"
+              name="position"
+              type="text"
+              required
+              defaultValue={ppidPelaksana.position}
+              className="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm text-gray-900 outline-none focus:border-green-600 focus:ring-2 focus:ring-green-600/20"
+            />
+          </div>
+          <button
+            type="submit"
+            className="w-full rounded-xl bg-[#003459] py-3 text-sm font-semibold text-white transition-colors hover:opacity-90 sm:col-span-2 sm:w-auto sm:px-8"
+          >
+            Simpan Struktur PPID
+          </button>
+        </form>
       </section>
     </div>
   );

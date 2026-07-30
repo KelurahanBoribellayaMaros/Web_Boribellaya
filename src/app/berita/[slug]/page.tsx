@@ -72,7 +72,7 @@ export default async function BeritaDetailPage({
           className="mt-6 aspect-video w-full rounded-2xl object-cover"
         />
       ) : (
-        <div className="mt-6 flex aspect-video w-full items-center justify-center rounded-2xl bg-gradient-to-br from-green-100 to-green-200 text-green-700/40">
+        <div className="mt-6 flex aspect-video w-full items-center justify-center rounded-2xl bg-gradient-to-br from-blue-100 to-blue-200 text-[#003459]/40">
           <ImageIcon className="size-12" />
         </div>
       )}

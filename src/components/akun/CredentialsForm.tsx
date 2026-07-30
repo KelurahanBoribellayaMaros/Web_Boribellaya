@@ -195,7 +195,7 @@ export function CredentialsForm({ currentEmail }: { currentEmail: string }) {
       <button
         type="submit"
         disabled={isSubmitting}
-        className="w-full rounded-xl bg-green-800 py-3.5 text-sm font-semibold text-white transition-colors hover:bg-green-900 disabled:cursor-not-allowed disabled:opacity-60"
+        className="w-full rounded-xl bg-[#003459] py-3.5 text-sm font-semibold text-white transition-colors hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
       >
         {isSubmitting ? "Menyimpan..." : "Simpan Perubahan"}
       </button>

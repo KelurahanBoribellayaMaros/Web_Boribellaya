@@ -28,7 +28,7 @@ export async function PopulationSection() {
         </div>
         <a
           href="#"
-          className="hidden shrink-0 items-center gap-0.5 text-sm font-medium text-green-700 hover:text-green-800 sm:inline-flex"
+          className="hidden shrink-0 items-center gap-0.5 text-sm font-medium text-[#003459] hover:opacity-80 sm:inline-flex"
         >
           Lihat Selengkapnya
           <ChevronRight className="size-4" />
@@ -43,7 +43,7 @@ export async function PopulationSection() {
 
       <a
         href="#"
-        className="mt-6 flex items-center justify-center gap-0.5 text-sm font-medium text-green-700 hover:text-green-800 sm:hidden"
+        className="mt-6 flex items-center justify-center gap-0.5 text-sm font-medium text-[#003459] hover:opacity-80 sm:hidden"
       >
         Lihat Selengkapnya
         <ChevronRight className="size-4" />

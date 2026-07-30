@@ -29,8 +29,8 @@ export function HelpSection() {
             </a>
           </div>
         </div>
-        <div className="h-40 bg-gradient-to-br from-green-100 to-green-200 sm:h-48 sm:w-56 sm:shrink-0">
-          <div className="flex size-full items-center justify-center text-green-700/40">
+        <div className="h-40 bg-gradient-to-br from-blue-100 to-blue-200 sm:h-48 sm:w-56 sm:shrink-0">
+          <div className="flex size-full items-center justify-center text-[#003459]/40">
             <UserRound className="size-12" />
           </div>
         </div>

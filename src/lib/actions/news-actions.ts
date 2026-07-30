@@ -19,11 +19,16 @@ function slugify(title: string): string {
 }
 
 function readNewsInput(formData: FormData) {
+  const date = String(formData.get("date") ?? "");
+  if (!date) {
+    throw new Error("Tanggal wajib diisi.");
+  }
+
   return {
     title: String(formData.get("title") ?? ""),
     excerpt: String(formData.get("excerpt") ?? ""),
     content: String(formData.get("content") ?? ""),
-    date: String(formData.get("date") ?? ""),
+    date,
     category: (formData.get("category") === "pengumuman"
       ? "pengumuman"
       : "berita") satisfies NewsCategory,

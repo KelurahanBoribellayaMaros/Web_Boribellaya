@@ -18,7 +18,7 @@ type AdminPageHeaderProps = {
 
 export function AdminPageHeader({
   icon: Icon,
-  iconClass = "bg-green-100 text-green-700",
+  iconClass = "bg-blue-100 text-[#003459]",
   title,
   description,
   backHref,
@@ -61,7 +61,7 @@ export function AdminPageHeader({
         {action && (
           <Link
             href={action.href}
-            className="flex shrink-0 items-center gap-1.5 rounded-full bg-green-800 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-green-900"
+            className="flex shrink-0 items-center gap-1.5 rounded-full bg-[#003459] px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:opacity-90"
           >
             {action.icon && <action.icon className="size-4" />}
             {action.label}

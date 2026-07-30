@@ -52,7 +52,7 @@ export default async function AdminDashboardPage() {
     },
     {
       icon: Users,
-      iconClass: "bg-green-100 text-green-700",
+      iconClass: "bg-blue-100 text-[#003459]",
       label: "Warga Terdaftar",
       value: formatNumber(population.totalPenduduk),
       badge: `${formatNumber(population.kepalaKeluarga)} KK`,
@@ -105,7 +105,7 @@ export default async function AdminDashboardPage() {
     },
     {
       icon: Users,
-      iconClass: "bg-green-100 text-green-700",
+      iconClass: "bg-blue-100 text-[#003459]",
       title: "Data Penduduk",
       description: "Perbarui statistik kependudukan di beranda.",
       href: "/admin/data-penduduk",

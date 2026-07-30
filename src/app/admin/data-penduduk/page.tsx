@@ -14,7 +14,7 @@ export default async function AdminDataPendudukPage() {
     <div className="mx-auto max-w-2xl px-3 py-10 sm:px-4 lg:px-6">
       <AdminPageHeader
         icon={Users}
-        iconClass="bg-green-100 text-green-700"
+        iconClass="bg-blue-100 text-[#003459]"
         title="Perbarui Data Penduduk"
         description="Angka ini tampil di beranda pada bagian statistik demografi."
       />
@@ -99,7 +99,7 @@ export default async function AdminDataPendudukPage() {
 
         <button
           type="submit"
-          className="w-full rounded-xl bg-green-800 py-3 text-sm font-semibold text-white transition-colors hover:bg-green-900"
+          className="w-full rounded-xl bg-[#003459] py-3 text-sm font-semibold text-white transition-colors hover:opacity-90"
         >
           Simpan Perubahan
         </button>

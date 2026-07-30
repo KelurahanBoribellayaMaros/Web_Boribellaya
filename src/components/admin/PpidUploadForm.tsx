@@ -2,6 +2,7 @@
 
 import { useState, type FormEvent } from "react";
 import { UploadCloud } from "lucide-react";
+import { DatePicker } from "@/components/ui/DatePicker";
 import { supabaseBrowser, PPID_BUCKET } from "@/lib/supabase/browser-client";
 import {
   createPpidUploadUrlAction,
@@ -29,6 +30,10 @@ export function PpidUploadForm() {
     event.preventDefault();
     setError(null);
 
+    if (!date) {
+      setError("Tanggal wajib diisi.");
+      return;
+    }
     if (!file) {
       setError("Pilih file PDF atau DOCX terlebih dahulu.");
       return;
@@ -125,14 +130,7 @@ export function PpidUploadForm() {
           <label htmlFor="date" className="mb-1.5 block text-sm font-medium text-gray-700">
             Tanggal
           </label>
-          <input
-            id="date"
-            type="date"
-            required
-            value={date}
-            onChange={(event) => setDate(event.target.value)}
-            className="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm text-gray-900 outline-none focus:border-green-600 focus:ring-2 focus:ring-green-600/20"
-          />
+          <DatePicker id="date" required value={date} onChange={setDate} />
         </div>
       </div>
 
@@ -146,7 +144,7 @@ export function PpidUploadForm() {
           required
           accept=".pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
           onChange={(event) => setFile(event.target.files?.[0] ?? null)}
-          className="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm text-gray-900 outline-none file:mr-4 file:rounded-full file:border-0 file:bg-green-100 file:px-4 file:py-1.5 file:text-sm file:font-semibold file:text-green-700 focus:border-green-600 focus:ring-2 focus:ring-green-600/20"
+          className="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm text-gray-900 outline-none file:mr-4 file:rounded-full file:border-0 file:bg-blue-100 file:px-4 file:py-1.5 file:text-sm file:font-semibold file:text-[#003459] focus:border-green-600 focus:ring-2 focus:ring-green-600/20"
         />
       </div>
 
@@ -155,7 +153,7 @@ export function PpidUploadForm() {
       <button
         type="submit"
         disabled={isSubmitting}
-        className="flex w-full items-center justify-center gap-2 rounded-xl bg-green-800 py-3 text-sm font-semibold text-white transition-colors hover:bg-green-900 disabled:cursor-not-allowed disabled:opacity-60"
+        className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#003459] py-3 text-sm font-semibold text-white transition-colors hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
       >
         {isSubmitting ? "Mengunggah..." : "Unggah Dokumen"}
         <UploadCloud className="size-4" />

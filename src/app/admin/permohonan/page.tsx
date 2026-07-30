@@ -74,8 +74,8 @@ export default async function AdminPermohonanPage({
               href={filterHref({ status: f.value })}
               className={`rounded-full px-4 py-2 text-sm font-semibold transition-colors ${
                 (params.status ?? "semua") === f.value
-                  ? "bg-green-800 text-white"
-                  : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                  ? "bg-[#003459] text-white"
+                  : "bg-white text-gray-600 border border-gray-200 hover:bg-gray-50"
               }`}
             >
               {f.label}
@@ -90,7 +90,7 @@ export default async function AdminPermohonanPage({
               className={`rounded-full px-4 py-2 text-sm font-semibold transition-colors ${
                 (params.type ?? "semua") === f.value
                   ? "bg-gray-800 text-white"
-                  : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                  : "bg-white text-gray-600 border border-gray-200 hover:bg-gray-50"
               }`}
             >
               {f.label}

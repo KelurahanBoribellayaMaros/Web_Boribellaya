@@ -45,7 +45,7 @@ export function PpidDocumentList({ documents }: { documents: PpidDocument[] }) {
           />
           <button
             type="submit"
-            className="shrink-0 rounded-xl bg-[#2b9348] px-6 py-3 text-sm font-semibold text-white transition-colors hover:opacity-90"
+            className="shrink-0 rounded-xl bg-[#003459] px-6 py-3 text-sm font-semibold text-white transition-colors hover:opacity-90"
           >
             Cari
           </button>
@@ -60,8 +60,8 @@ export function PpidDocumentList({ documents }: { documents: PpidDocument[] }) {
               aria-pressed={category === f.value}
               className={`rounded-full px-4 py-2 text-sm font-semibold transition-colors ${
                 category === f.value
-                  ? "bg-[#2b9348] text-white"
-                  : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                  ? "bg-[#003459] text-white"
+                  : "bg-white text-gray-600 border border-gray-200 hover:bg-gray-50"
               }`}
             >
               {f.label}
