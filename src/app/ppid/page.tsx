@@ -7,6 +7,7 @@ import { PpidDocumentList } from "@/components/ppid/PpidDocumentList";
 import { ppidAbout } from "@/lib/ppid-data";
 import { getPpidDocuments } from "@/lib/firebase/ppid-repository";
 import { getLeader, getPpidPelaksana } from "@/lib/firebase/struktur-repository";
+import { Reveal } from "@/components/ui/Reveal";
 
 export const dynamic = "force-dynamic";
 
@@ -49,41 +50,47 @@ export default async function PpidPage() {
       </div>
 
       <div className="mt-8 space-y-6 sm:mt-10">
-        <ProfileCard icon={Scale} title="Profil PPID">
-          <p className="text-sm leading-relaxed text-gray-600">{ppidAbout}</p>
-        </ProfileCard>
+        <Reveal>
+          <ProfileCard icon={Scale} title="Profil PPID">
+            <p className="text-sm leading-relaxed text-gray-600">{ppidAbout}</p>
+          </ProfileCard>
+        </Reveal>
 
-        <section>
-          <h2 className="text-lg font-bold text-gray-900 sm:text-xl">
-            Struktur PPID
-          </h2>
-          <div className="mt-4 rounded-2xl border border-gray-100 bg-white p-5 shadow-sm sm:p-8">
-            <OrgChart root={ppidStructure} variant="blue" />
-          </div>
-        </section>
-
-        <section>
-          <div className="flex flex-wrap items-end justify-between gap-3">
-            <div>
-              <h2 className="text-lg font-bold text-gray-900 sm:text-xl">
-                Daftar Informasi Publik
-              </h2>
-              <p className="mt-1 text-sm text-gray-500">
-                Telusuri dokumen berdasarkan kategori keterbukaan informasi.
-              </p>
+        <Reveal>
+          <section>
+            <h2 className="text-lg font-bold text-gray-900 sm:text-xl">
+              Struktur PPID
+            </h2>
+            <div className="mt-4 rounded-2xl border border-gray-100 bg-white p-5 shadow-sm sm:p-8">
+              <OrgChart root={ppidStructure} variant="blue" />
             </div>
-            <Link
-              href="/ppid/ajukan"
-              className="flex shrink-0 items-center gap-1.5 rounded-full border border-[#003459] px-4 py-2 text-sm font-semibold text-[#003459] transition-colors hover:bg-blue-50"
-            >
-              <FileQuestion className="size-4" />
-              Ajukan Permohonan Informasi
-            </Link>
-          </div>
-          <div className="mt-4">
-            <PpidDocumentList documents={documents} />
-          </div>
-        </section>
+          </section>
+        </Reveal>
+
+        <Reveal>
+          <section>
+            <div className="flex flex-wrap items-end justify-between gap-3">
+              <div>
+                <h2 className="text-lg font-bold text-gray-900 sm:text-xl">
+                  Daftar Informasi Publik
+                </h2>
+                <p className="mt-1 text-sm text-gray-500">
+                  Telusuri dokumen berdasarkan kategori keterbukaan informasi.
+                </p>
+              </div>
+              <Link
+                href="/ppid/ajukan"
+                className="flex shrink-0 items-center gap-1.5 rounded-full border border-[#003459] px-4 py-2 text-sm font-semibold text-[#003459] transition-colors hover:bg-blue-50"
+              >
+                <FileQuestion className="size-4" />
+                Ajukan Permohonan Informasi
+              </Link>
+            </div>
+            <div className="mt-4">
+              <PpidDocumentList documents={documents} />
+            </div>
+          </section>
+        </Reveal>
       </div>
     </div>
   );

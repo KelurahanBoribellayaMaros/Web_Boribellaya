@@ -1,5 +1,6 @@
 import type { LayananItem } from "@/types/layanan";
 import { LayananCard } from "@/components/layanan/LayananCard";
+import { Reveal } from "@/components/ui/Reveal";
 
 export function LayananListSection({ items }: { items: LayananItem[] }) {
   return (
@@ -12,8 +13,10 @@ export function LayananListSection({ items }: { items: LayananItem[] }) {
       </p>
 
       <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {items.map((item) => (
-          <LayananCard key={item.slug} {...item} />
+        {items.map((item, index) => (
+          <Reveal key={item.slug} delay={(index % 3) * 100}>
+            <LayananCard {...item} />
+          </Reveal>
         ))}
       </div>
     </section>

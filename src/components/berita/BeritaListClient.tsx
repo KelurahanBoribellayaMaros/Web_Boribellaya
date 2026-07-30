@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { Search } from "lucide-react";
 import type { NewsCategory, NewsItem } from "@/types/home";
 import { NewsCard } from "@/components/ui/NewsCard";
+import { Reveal } from "@/components/ui/Reveal";
 
 const filters: { label: string; value: NewsCategory | "semua" }[] = [
   { label: "Semua", value: "semua" },
@@ -71,8 +72,10 @@ export function BeritaListClient({ items }: { items: NewsItem[] }) {
 
       {filtered.length > 0 ? (
         <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {filtered.map((item) => (
-            <NewsCard key={item.id} {...item} />
+          {filtered.map((item, index) => (
+            <Reveal key={item.id} delay={(index % 6) * 80}>
+              <NewsCard {...item} />
+            </Reveal>
           ))}
         </div>
       ) : (

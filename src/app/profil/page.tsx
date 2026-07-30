@@ -5,6 +5,7 @@ import { LeadershipCard } from "@/components/profil/LeadershipCard";
 import { OrgChart } from "@/components/profil/OrgChart";
 import { history, vision, missions } from "@/lib/profile-data";
 import { getLeader, getOrgChart } from "@/lib/firebase/struktur-repository";
+import { Reveal } from "@/components/ui/Reveal";
 
 export const dynamic = "force-dynamic";
 
@@ -37,55 +38,65 @@ export default async function ProfilPage() {
       </div>
 
       <div className="mt-8 space-y-6 sm:mt-10">
-        <ProfileCard icon={BookOpen} title="Sejarah Singkat">
-          <div className="space-y-3 text-sm leading-relaxed text-gray-600">
-            {history.map((paragraph) => (
-              <p key={paragraph.slice(0, 24)}>{paragraph}</p>
-            ))}
-          </div>
-        </ProfileCard>
+        <Reveal>
+          <ProfileCard icon={BookOpen} title="Sejarah Singkat">
+            <div className="space-y-3 text-sm leading-relaxed text-gray-600">
+              {history.map((paragraph) => (
+                <p key={paragraph.slice(0, 24)}>{paragraph}</p>
+              ))}
+            </div>
+          </ProfileCard>
+        </Reveal>
 
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-          <ProfileCard icon={Eye} title="Visi">
-            <p className="text-sm leading-relaxed text-gray-600 italic">
-              &ldquo;{vision}&rdquo;
-            </p>
-          </ProfileCard>
+          <Reveal>
+            <ProfileCard icon={Eye} title="Visi">
+              <p className="text-sm leading-relaxed text-gray-600 italic">
+                &ldquo;{vision}&rdquo;
+              </p>
+            </ProfileCard>
+          </Reveal>
 
-          <ProfileCard icon={Target} title="Misi">
-            <ul className="space-y-3">
-              {missions.map((mission) => (
-                <li key={mission.slice(0, 24)} className="flex items-start gap-2.5">
-                  <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-[#003459]" />
-                  <span className="text-sm leading-relaxed text-gray-600">
-                    {mission}
-                  </span>
-                </li>
-              ))}
-            </ul>
-          </ProfileCard>
+          <Reveal delay={100}>
+            <ProfileCard icon={Target} title="Misi">
+              <ul className="space-y-3">
+                {missions.map((mission) => (
+                  <li key={mission.slice(0, 24)} className="flex items-start gap-2.5">
+                    <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-[#003459]" />
+                    <span className="text-sm leading-relaxed text-gray-600">
+                      {mission}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </ProfileCard>
+          </Reveal>
         </div>
 
-        <section>
-          <h2 className="text-lg font-bold text-gray-900 sm:text-xl">
-            Profil Pimpinan
-          </h2>
-          <div className="mt-4">
-            <LeadershipCard {...leader} />
-          </div>
-        </section>
+        <Reveal>
+          <section>
+            <h2 className="text-lg font-bold text-gray-900 sm:text-xl">
+              Profil Pimpinan
+            </h2>
+            <div className="mt-4">
+              <LeadershipCard {...leader} />
+            </div>
+          </section>
+        </Reveal>
 
-        <section>
-          <h2 className="text-lg font-bold text-gray-900 sm:text-xl">
-            Struktur Organisasi
-          </h2>
-          <p className="mt-1 text-sm text-gray-500">
-            Susunan aparatur pemerintahan Kelurahan Boribellaya.
-          </p>
-          <div className="mt-6 rounded-2xl border border-gray-100 bg-white p-5 shadow-sm sm:p-8">
-            <OrgChart root={orgChart} variant="blue" />
-          </div>
-        </section>
+        <Reveal>
+          <section>
+            <h2 className="text-lg font-bold text-gray-900 sm:text-xl">
+              Struktur Organisasi
+            </h2>
+            <p className="mt-1 text-sm text-gray-500">
+              Susunan aparatur pemerintahan Kelurahan Boribellaya.
+            </p>
+            <div className="mt-6 rounded-2xl border border-gray-100 bg-white p-5 shadow-sm sm:p-8">
+              <OrgChart root={orgChart} variant="blue" />
+            </div>
+          </section>
+        </Reveal>
       </div>
     </div>
   );

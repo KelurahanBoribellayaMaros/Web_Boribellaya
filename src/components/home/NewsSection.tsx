@@ -2,6 +2,7 @@ import Link from "next/link";
 import { ChevronRight } from "lucide-react";
 import { getNews } from "@/lib/firebase/news-repository";
 import { NewsCard } from "@/components/ui/NewsCard";
+import { Reveal } from "@/components/ui/Reveal";
 
 export async function NewsSection() {
   const news = await getNews();
@@ -30,8 +31,10 @@ export async function NewsSection() {
       </div>
 
       <div className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-3">
-        {news.slice(0, 3).map((item) => (
-          <NewsCard key={item.id} {...item} />
+        {news.slice(0, 3).map((item, index) => (
+          <Reveal key={item.id} delay={index * 100}>
+            <NewsCard {...item} />
+          </Reveal>
         ))}
       </div>
 

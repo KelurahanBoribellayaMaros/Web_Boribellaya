@@ -1,6 +1,7 @@
 import { ChevronRight } from "lucide-react";
 import { services } from "@/lib/home-data";
 import { ServiceCard } from "@/components/ui/ServiceCard";
+import { Reveal } from "@/components/ui/Reveal";
 
 export function ServicesSection() {
   return (
@@ -27,8 +28,10 @@ export function ServicesSection() {
       </div>
 
       <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
-        {services.map((service) => (
-          <ServiceCard key={service.slug} {...service} />
+        {services.map((service, index) => (
+          <Reveal key={service.slug} delay={index * 100}>
+            <ServiceCard {...service} />
+          </Reveal>
         ))}
       </div>
 

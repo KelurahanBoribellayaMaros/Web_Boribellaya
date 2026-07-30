@@ -1,4 +1,5 @@
 import type { SopStep } from "@/types/layanan";
+import { Reveal } from "@/components/ui/Reveal";
 
 export function SopSteps({ steps }: { steps: SopStep[] }) {
   return (
@@ -7,7 +8,7 @@ export function SopSteps({ steps }: { steps: SopStep[] }) {
         Alur Pelayanan
       </h2>
 
-      <div className="mt-4 rounded-2xl border border-gray-100 bg-white p-5 shadow-sm sm:p-8">
+      <Reveal className="mt-4 rounded-2xl border border-gray-100 bg-white p-5 shadow-sm sm:p-8">
         {/* Mobile: vertical timeline */}
         <div className="relative space-y-8 lg:hidden">
           <div
@@ -49,7 +50,7 @@ export function SopSteps({ steps }: { steps: SopStep[] }) {
             </div>
           ))}
         </div>
-      </div>
+      </Reveal>
     </section>
   );
 }

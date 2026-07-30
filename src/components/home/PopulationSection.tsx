@@ -1,6 +1,7 @@
 import { ChevronRight, Mars, Users, UsersRound, Venus } from "lucide-react";
 import { getPopulationStats } from "@/lib/firebase/population-repository";
 import { StatCard } from "@/components/ui/StatCard";
+import { Reveal } from "@/components/ui/Reveal";
 
 export async function PopulationSection() {
   const stats = await getPopulationStats();
@@ -36,8 +37,10 @@ export async function PopulationSection() {
       </div>
 
       <div className="mt-6 grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-4">
-        {items.map((stat) => (
-          <StatCard key={stat.label} {...stat} />
+        {items.map((stat, index) => (
+          <Reveal key={stat.label} delay={index * 100}>
+            <StatCard {...stat} />
+          </Reveal>
         ))}
       </div>
 
