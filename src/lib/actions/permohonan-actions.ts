@@ -10,6 +10,12 @@ import { toastRedirectUrl } from "@/lib/toast-redirect";
 import { statusLabels } from "@/types/permohonan";
 import type { PermohonanStatus, PermohonanType } from "@/types/permohonan";
 
+const emailFooter = `
+  <p style="margin-top:24px;padding-top:12px;border-top:1px solid #e5e7eb;color:#6b7280;font-size:12px;">
+    Email otomatis dari sistem Kelurahan Boribellaya. Mohon tidak membalas email ini.
+  </p>
+`;
+
 function newPermohonanEmailHtml(params: {
   id: string;
   type: PermohonanType;
@@ -29,6 +35,7 @@ function newPermohonanEmailHtml(params: {
       <li><strong>Email:</strong> ${params.email}</li>
     </ul>
     <p><a href="${detailUrl}">Lihat &amp; proses permohonan ini</a></p>
+    ${emailFooter}
   `;
 }
 
@@ -46,6 +53,7 @@ function statusChangeEmailHtml(params: {
       <li><strong>Status baru:</strong> ${statusLabels[params.status]}</li>
     </ul>
     <p>Masuk ke akun Anda di <a href="${getSiteUrl()}">${getSiteUrl()}</a> untuk melihat detailnya.</p>
+    ${emailFooter}
   `;
 }
 

@@ -22,6 +22,21 @@ export function getSiteUrl(): string {
   return "http://localhost:3000";
 }
 
+// A plain-text alternative alongside the HTML body makes the message a
+// proper multipart email, which spam filters treat as more legitimate than
+// HTML-only mail — derived automatically so call sites only write HTML once.
+function htmlToText(html: string): string {
+  return html
+    .replace(/<br\s*\/?>/gi, "\n")
+    .replace(/<\/(p|li|div|h[1-6])>/gi, "\n")
+    .replace(/<li>/gi, "- ")
+    .replace(/<[^>]+>/g, "")
+    .replace(/&amp;/g, "&")
+    .replace(/&nbsp;/g, " ")
+    .replace(/\n{3,}/g, "\n\n")
+    .trim();
+}
+
 export async function sendEmail({
   to,
   subject,
@@ -36,5 +51,6 @@ export async function sendEmail({
     to,
     subject,
     html,
+    text: htmlToText(html),
   });
 }
