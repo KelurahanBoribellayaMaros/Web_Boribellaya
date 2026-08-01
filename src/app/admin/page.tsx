@@ -5,6 +5,7 @@ import {
   Building2,
   FileCheck2,
   Inbox,
+  MapPin,
   Newspaper,
   Users,
   Wrench,
@@ -116,6 +117,13 @@ export default async function AdminDashboardPage() {
       title: "Struktur Organisasi",
       description: "Kelola profil pimpinan dan struktur organisasi.",
       href: "/admin/struktur-organisasi",
+    },
+    {
+      icon: MapPin,
+      iconClass: "bg-teal-100 text-teal-700",
+      title: "Kontak & Lokasi",
+      description: "Atur alamat, kontak, jam operasional, dan peta lokasi.",
+      href: "/admin/kontak",
     },
   ];
 

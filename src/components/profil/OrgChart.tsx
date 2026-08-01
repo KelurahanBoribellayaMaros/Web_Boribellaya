@@ -17,8 +17,8 @@ function NodeBox({
     variant === "blue"
       ? "border-[#003459] bg-[#003459] text-white"
       : "border-green-700 bg-green-700 text-white";
-  const rootLabelClass = variant === "blue" ? "text-[#2b9348]" : "text-green-100";
-  const childLabelClass = variant === "blue" ? "text-[#2b9348]" : "text-green-700";
+  const rootLabelClass = variant === "blue" ? "text-[#fdd85d]" : "text-green-100";
+  const childLabelClass = variant === "blue" ? "text-[#003459]" : "text-green-700";
 
   return (
     <div

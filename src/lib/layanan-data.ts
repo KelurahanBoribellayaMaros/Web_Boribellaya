@@ -89,7 +89,7 @@ export const layananItems: LayananItem[] = [
     description:
       "Akses data penduduk, laporan anggaran, dan transparansi kelurahan.",
     cta: "Lihat Data",
-    href: "/ppid",
+    href: "/ppid/informasi",
     variant: "outline",
   },
 ];
