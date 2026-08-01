@@ -9,6 +9,7 @@ import {
   CircleUserRound,
   FileBarChart,
   Home,
+  Inbox,
   LayoutDashboard,
   LogOut,
   Menu,
@@ -93,8 +94,19 @@ export function Header({
       }
     }
 
+    function handleKeyDown(event: KeyboardEvent) {
+      if (event.key === "Escape") {
+        setIsAccountMenuOpen(false);
+        setIsNotifOpen(false);
+      }
+    }
+
     document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("keydown", handleKeyDown);
+    };
   }, [isAccountMenuOpen, isNotifOpen]);
 
   function handleNotifToggle() {
@@ -297,6 +309,14 @@ export function Header({
                       Dashboard Admin
                     </Link>
                   )}
+                  <Link
+                    href="/akun/permohonan"
+                    onClick={() => setIsAccountMenuOpen(false)}
+                    className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-700 transition-colors hover:bg-gray-50"
+                  >
+                    <Inbox className="size-4" />
+                    Riwayat Permohonan
+                  </Link>
                   <Link
                     href="/akun"
                     onClick={() => setIsAccountMenuOpen(false)}

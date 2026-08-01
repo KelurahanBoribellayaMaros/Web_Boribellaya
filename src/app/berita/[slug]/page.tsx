@@ -80,6 +80,10 @@ export default async function BeritaDetailPage({
       <div className="mt-6 space-y-4 text-sm leading-relaxed whitespace-pre-line text-gray-700 sm:text-base">
         {item.content}
       </div>
+
+      {item.source && (
+        <p className="mt-6 text-sm text-gray-400">Sumber: {item.source}</p>
+      )}
     </div>
   );
 }

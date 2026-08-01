@@ -12,6 +12,7 @@ function toNewsItem(id: string, data: FirebaseFirestore.DocumentData): NewsItem 
     date: data.date,
     category: data.category,
     coverImage: data.coverImage ?? undefined,
+    source: data.source ?? undefined,
     createdAt: data.createdAt,
     updatedAt: data.updatedAt,
   };

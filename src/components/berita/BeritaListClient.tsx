@@ -5,6 +5,7 @@ import { Search } from "lucide-react";
 import type { NewsCategory, NewsItem } from "@/types/home";
 import { NewsCard } from "@/components/ui/NewsCard";
 import { Reveal } from "@/components/ui/Reveal";
+import { Pagination } from "@/components/ui/Pagination";
 
 const filters: { label: string; value: NewsCategory | "semua" }[] = [
   { label: "Semua", value: "semua" },
@@ -12,9 +13,12 @@ const filters: { label: string; value: NewsCategory | "semua" }[] = [
   { label: "Pengumuman", value: "pengumuman" },
 ];
 
+const ITEMS_PER_PAGE = 9;
+
 export function BeritaListClient({ items }: { items: NewsItem[] }) {
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState<NewsCategory | "semua">("semua");
+  const [page, setPage] = useState(1);
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -28,6 +32,22 @@ export function BeritaListClient({ items }: { items: NewsItem[] }) {
     });
   }, [items, query, category]);
 
+  const totalPages = Math.max(1, Math.ceil(filtered.length / ITEMS_PER_PAGE));
+  const paginated = filtered.slice(
+    (page - 1) * ITEMS_PER_PAGE,
+    page * ITEMS_PER_PAGE
+  );
+
+  function updateQuery(value: string) {
+    setQuery(value);
+    setPage(1);
+  }
+
+  function updateCategory(value: NewsCategory | "semua") {
+    setCategory(value);
+    setPage(1);
+  }
+
   return (
     <div>
       <div className="mx-auto max-w-2xl">
@@ -39,7 +59,7 @@ export function BeritaListClient({ items }: { items: NewsItem[] }) {
           <input
             type="search"
             value={query}
-            onChange={(e) => setQuery(e.target.value)}
+            onChange={(e) => updateQuery(e.target.value)}
             placeholder="Cari berita atau pengumuman..."
             className="w-full bg-transparent py-3 text-base text-gray-900 outline-none placeholder:text-gray-400"
           />
@@ -56,7 +76,7 @@ export function BeritaListClient({ items }: { items: NewsItem[] }) {
             <button
               key={f.value}
               type="button"
-              onClick={() => setCategory(f.value)}
+              onClick={() => updateCategory(f.value)}
               aria-pressed={category === f.value}
               className={`rounded-full px-4 py-2 text-sm font-semibold transition-colors ${
                 category === f.value
@@ -71,13 +91,16 @@ export function BeritaListClient({ items }: { items: NewsItem[] }) {
       </div>
 
       {filtered.length > 0 ? (
-        <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {filtered.map((item, index) => (
-            <Reveal key={item.id} delay={(index % 6) * 80}>
-              <NewsCard {...item} />
-            </Reveal>
-          ))}
-        </div>
+        <>
+          <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {paginated.map((item, index) => (
+              <Reveal key={item.id} delay={(index % 6) * 80}>
+                <NewsCard {...item} />
+              </Reveal>
+            ))}
+          </div>
+          <Pagination page={page} totalPages={totalPages} onChange={setPage} />
+        </>
       ) : (
         <div className="mt-10 flex flex-col items-center gap-2 py-10 text-center text-gray-400">
           <Search className="size-8" />

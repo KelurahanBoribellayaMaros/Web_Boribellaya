@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import { layananItems } from "@/lib/layanan-data";
-import { requireSession } from "@/lib/firebase/session";
+import { requireVerifiedSession } from "@/lib/firebase/session";
 import { PermohonanForm } from "@/components/permohonan/PermohonanForm";
 
 export default async function AjukanLayananPage({
@@ -15,7 +15,7 @@ export default async function AjukanLayananPage({
     notFound();
   }
 
-  const session = await requireSession();
+  const session = await requireVerifiedSession();
 
   return (
     <div className="mx-auto max-w-md px-3 py-10 sm:px-4 sm:py-12">

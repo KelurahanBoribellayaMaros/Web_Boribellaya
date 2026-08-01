@@ -6,7 +6,7 @@ type NewsFormProps = {
   action: (formData: FormData) => void | Promise<void>;
   defaultValues?: Pick<
     NewsItem,
-    "title" | "excerpt" | "content" | "date" | "category" | "coverImage"
+    "title" | "excerpt" | "content" | "date" | "category" | "coverImage" | "source"
   >;
   submitLabel: string;
 };
@@ -103,6 +103,27 @@ export function NewsForm({ action, defaultValues, submitLabel }: NewsFormProps) 
         />
         <p className="mt-1.5 text-xs text-gray-400">
           Isi lengkap berita yang tampil saat warga membuka halaman detail.
+        </p>
+      </div>
+
+      <div>
+        <label
+          htmlFor="source"
+          className="mb-1.5 block text-sm font-medium text-gray-700"
+        >
+          Sumber Berita
+        </label>
+        <input
+          id="source"
+          name="source"
+          type="text"
+          defaultValue={defaultValues?.source}
+          placeholder="Contoh: Humas Pemkab Maros (opsional)"
+          className="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm text-gray-900 outline-none focus:border-green-600 focus:ring-2 focus:ring-green-600/20"
+        />
+        <p className="mt-1.5 text-xs text-gray-400">
+          Isi jika berita ini mengutip atau berasal dari sumber lain. Biarkan
+          kosong jika tidak ada.
         </p>
       </div>
 

@@ -2,7 +2,7 @@
 
 import { redirect } from "next/navigation";
 import { adminDb } from "@/lib/firebase/admin";
-import { requireAdmin, requireSession } from "@/lib/firebase/session";
+import { requireAdmin, requireVerifiedSession } from "@/lib/firebase/session";
 import { getPermohonanById } from "@/lib/firebase/permohonan-repository";
 import { getAdminEmails } from "@/lib/firebase/users-repository";
 import { getSiteUrl, sendEmail } from "@/lib/email";
@@ -12,7 +12,8 @@ import type { PermohonanStatus, PermohonanType } from "@/types/permohonan";
 
 const emailFooter = `
   <p style="margin-top:24px;padding-top:12px;border-top:1px solid #e5e7eb;color:#6b7280;font-size:12px;">
-    Email otomatis dari sistem Kelurahan Boribellaya. Mohon tidak membalas email ini.
+    Email ini dikirim oleh sistem Kelurahan Boribellaya. Ada pertanyaan?
+    Silakan balas email ini, kami akan membacanya.
   </p>
 `;
 
@@ -63,9 +64,10 @@ export async function submitPermohonanAction(
   categoryLabel: string,
   formData: FormData
 ): Promise<void> {
-  // Requires login so every request is tied to a real account email —
-  // never trust a client-submitted email field for this.
-  const session = await requireSession();
+  // Requires login (with a verified email) so every request is tied to a
+  // real, reachable account email — never trust a client-submitted email
+  // field for this.
+  const session = await requireVerifiedSession();
   if (!session.email) {
     throw new Error("Email akun tidak ditemukan. Silakan masuk kembali.");
   }

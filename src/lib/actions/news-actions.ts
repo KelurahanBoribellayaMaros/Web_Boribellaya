@@ -24,6 +24,8 @@ function readNewsInput(formData: FormData) {
     throw new Error("Tanggal wajib diisi.");
   }
 
+  const source = String(formData.get("source") ?? "").trim();
+
   return {
     title: String(formData.get("title") ?? ""),
     excerpt: String(formData.get("excerpt") ?? ""),
@@ -32,6 +34,7 @@ function readNewsInput(formData: FormData) {
     category: (formData.get("category") === "pengumuman"
       ? "pengumuman"
       : "berita") satisfies NewsCategory,
+    source: source || null,
   };
 }
 

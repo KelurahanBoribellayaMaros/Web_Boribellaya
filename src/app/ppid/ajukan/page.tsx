@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { requireSession } from "@/lib/firebase/session";
+import { requireVerifiedSession } from "@/lib/firebase/session";
 import { PermohonanInformasiForm } from "@/components/permohonan/PermohonanInformasiForm";
 
 export const metadata: Metadata = {
@@ -7,7 +7,7 @@ export const metadata: Metadata = {
 };
 
 export default async function AjukanInformasiPage() {
-  const session = await requireSession();
+  const session = await requireVerifiedSession();
 
   return (
     <div className="mx-auto max-w-4xl px-2 py-10 sm:px-3 sm:py-12 lg:px-4">

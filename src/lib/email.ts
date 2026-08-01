@@ -48,6 +48,7 @@ export async function sendEmail({
 }): Promise<void> {
   await getTransporter().sendMail({
     from: `"Kelurahan Boribellaya" <${process.env.GMAIL_USER}>`,
+    replyTo: process.env.GMAIL_USER,
     to,
     subject,
     html,

@@ -25,6 +25,7 @@ export type NewsItem = {
   date: string;
   category: NewsCategory;
   coverImage?: string;
+  source?: string;
   createdAt: string;
   updatedAt: string;
 };

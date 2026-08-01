@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { Search } from "lucide-react";
 import type { PpidCategory, PpidDocument } from "@/types/ppid";
 import { PpidDocumentCard } from "@/components/ppid/PpidDocumentCard";
+import { Pagination } from "@/components/ui/Pagination";
 
 const filters: { label: string; value: PpidCategory | "semua" }[] = [
   { label: "Semua", value: "semua" },
@@ -12,9 +13,12 @@ const filters: { label: string; value: PpidCategory | "semua" }[] = [
   { label: "Serta Merta", value: "serta-merta" },
 ];
 
+const ITEMS_PER_PAGE = 8;
+
 export function PpidDocumentList({ documents }: { documents: PpidDocument[] }) {
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState<PpidCategory | "semua">("semua");
+  const [page, setPage] = useState(1);
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -28,6 +32,22 @@ export function PpidDocumentList({ documents }: { documents: PpidDocument[] }) {
     });
   }, [documents, query, category]);
 
+  const totalPages = Math.max(1, Math.ceil(filtered.length / ITEMS_PER_PAGE));
+  const paginated = filtered.slice(
+    (page - 1) * ITEMS_PER_PAGE,
+    page * ITEMS_PER_PAGE
+  );
+
+  function updateQuery(value: string) {
+    setQuery(value);
+    setPage(1);
+  }
+
+  function updateCategory(value: PpidCategory | "semua") {
+    setCategory(value);
+    setPage(1);
+  }
+
   return (
     <div>
       <div className="mx-auto max-w-2xl">
@@ -39,7 +59,7 @@ export function PpidDocumentList({ documents }: { documents: PpidDocument[] }) {
           <input
             type="search"
             value={query}
-            onChange={(event) => setQuery(event.target.value)}
+            onChange={(event) => updateQuery(event.target.value)}
             placeholder="Cari dokumen..."
             className="w-full bg-transparent py-3 text-base text-gray-900 outline-none placeholder:text-gray-400"
           />
@@ -56,7 +76,7 @@ export function PpidDocumentList({ documents }: { documents: PpidDocument[] }) {
             <button
               key={f.value}
               type="button"
-              onClick={() => setCategory(f.value)}
+              onClick={() => updateCategory(f.value)}
               aria-pressed={category === f.value}
               className={`rounded-full px-4 py-2 text-sm font-semibold transition-colors ${
                 category === f.value
@@ -75,11 +95,14 @@ export function PpidDocumentList({ documents }: { documents: PpidDocument[] }) {
       </p>
 
       {filtered.length > 0 ? (
-        <div className="mt-4 space-y-3">
-          {filtered.map((doc) => (
-            <PpidDocumentCard key={doc.id} {...doc} />
-          ))}
-        </div>
+        <>
+          <div className="mt-4 space-y-3">
+            {paginated.map((doc) => (
+              <PpidDocumentCard key={doc.id} {...doc} />
+            ))}
+          </div>
+          <Pagination page={page} totalPages={totalPages} onChange={setPage} />
+        </>
       ) : (
         <div className="mt-10 flex flex-col items-center gap-2 py-10 text-center text-gray-400">
           <Search className="size-8" />

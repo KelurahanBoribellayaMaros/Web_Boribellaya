@@ -4,6 +4,7 @@ import { useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import {
   createUserWithEmailAndPassword,
+  sendEmailVerification,
   updateProfile,
   type AuthError,
 } from "firebase/auth";
@@ -49,9 +50,12 @@ export function RegisterForm() {
     try {
       const credential = await createUserWithEmailAndPassword(auth, email, password);
       await updateProfile(credential.user, { displayName: name });
+      await sendEmailVerification(credential.user);
       const idToken = await credential.user.getIdToken(true);
       const { role } = await createSessionAction(idToken);
-      const toast = `toast=${encodeURIComponent("Akun berhasil dibuat. Selamat datang!")}`;
+      const toast = `toast=${encodeURIComponent(
+        "Akun berhasil dibuat. Kami telah mengirim email verifikasi ke alamat Anda."
+      )}`;
       router.push(role === "admin" ? `/admin?${toast}` : `/?${toast}`);
     } catch (err) {
       setError(authErrorMessage(err));

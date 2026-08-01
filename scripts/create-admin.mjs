@@ -27,9 +27,12 @@ async function main() {
   try {
     user = await auth.getUserByEmail(email);
     console.log(`Found existing user ${user.uid} for ${email}.`);
-    await auth.updateUser(user.uid, { password });
+    await auth.updateUser(user.uid, { password, emailVerified: true });
   } catch {
-    user = await auth.createUser({ email, password });
+    // Bootstrapped directly by whoever runs this script, not self-registered,
+    // so there's no citizen-facing "is this email reachable" guarantee to
+    // enforce here the way there is for warga sign-ups.
+    user = await auth.createUser({ email, password, emailVerified: true });
     console.log(`Created new user ${user.uid} for ${email}.`);
   }
 
