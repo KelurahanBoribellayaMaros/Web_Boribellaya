@@ -25,7 +25,13 @@ export type Permohonan = {
   occupation?: string;
   usagePurpose?: string;
   copyFormat?: CopyFormat;
+  // Storage paths (private bucket) for citizen-uploaded documents, one per
+  // required document type — only present for layanan submissions that
+  // require file uploads.
+  berkas?: BerkasFile[];
 };
+
+export type BerkasFile = { key: string; label: string; path: string };
 
 export const statusLabels: Record<PermohonanStatus, string> = {
   baru: "Baru",

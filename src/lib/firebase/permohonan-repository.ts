@@ -21,6 +21,7 @@ function toPermohonan(id: string, data: FirebaseFirestore.DocumentData): Permoho
     occupation: data.occupation ?? undefined,
     usagePurpose: data.usagePurpose ?? undefined,
     copyFormat: data.copyFormat ?? undefined,
+    berkas: data.berkas ?? undefined,
   };
 }
 

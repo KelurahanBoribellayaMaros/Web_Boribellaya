@@ -1,5 +1,6 @@
 "use server";
 
+import { randomUUID } from "node:crypto";
 import { redirect } from "next/navigation";
 import { adminDb } from "@/lib/firebase/admin";
 import { requireAdmin, requireVerifiedSession } from "@/lib/firebase/session";
@@ -7,8 +8,43 @@ import { getPermohonanById } from "@/lib/firebase/permohonan-repository";
 import { getAdminEmails } from "@/lib/firebase/users-repository";
 import { getSiteUrl, sendEmail } from "@/lib/email";
 import { toastRedirectUrl } from "@/lib/toast-redirect";
+import { supabaseAdmin, PERMOHONAN_BUCKET } from "@/lib/supabase/client";
 import { statusLabels } from "@/types/permohonan";
 import type { PermohonanStatus, PermohonanType } from "@/types/permohonan";
+
+const ALLOWED_BERKAS_MIME_TYPES: Record<string, string> = {
+  "application/pdf": "pdf",
+  "image/jpeg": "jpg",
+  "image/png": "png",
+};
+
+const MAX_BERKAS_SIZE = 5 * 1024 * 1024; // 5MB
+
+export async function createPermohonanUploadUrlAction(input: {
+  fileType: string;
+  fileSize: number;
+}): Promise<{ path: string; token: string }> {
+  await requireVerifiedSession();
+
+  const extension = ALLOWED_BERKAS_MIME_TYPES[input.fileType];
+  if (!extension) {
+    throw new Error("Hanya file PDF, JPG, atau PNG yang diperbolehkan.");
+  }
+  if (input.fileSize > MAX_BERKAS_SIZE) {
+    throw new Error("Ukuran file maksimal 5MB.");
+  }
+
+  const path = `${randomUUID()}.${extension}`;
+  const { data, error } = await supabaseAdmin.storage
+    .from(PERMOHONAN_BUCKET)
+    .createSignedUploadUrl(path);
+
+  if (error || !data) {
+    throw new Error("Gagal membuat URL unggah. Silakan coba lagi.");
+  }
+
+  return { path: data.path, token: data.token };
+}
 
 const emailFooter = `
   <p style="margin-top:24px;padding-top:12px;border-top:1px solid #e5e7eb;color:#6b7280;font-size:12px;">
@@ -96,6 +132,11 @@ export async function submitPermohonanAction(
   const usagePurpose = String(formData.get("usagePurpose") ?? "").trim();
   const copyFormat = String(formData.get("copyFormat") ?? "").trim();
 
+  // Only sent by layanan forms that require document uploads — absent
+  // (and skipped) for the informasi form.
+  const berkasJson = String(formData.get("berkasJson") ?? "").trim();
+  const berkas = berkasJson ? JSON.parse(berkasJson) : undefined;
+
   const now = new Date().toISOString();
   const docRef = await adminDb.collection("permohonan").add({
     type,
@@ -114,6 +155,7 @@ export async function submitPermohonanAction(
     ...(occupation && { occupation }),
     ...(usagePurpose && { usagePurpose }),
     ...(copyFormat && { copyFormat }),
+    ...(berkas && berkas.length > 0 && { berkas }),
   });
 
   // Best-effort: a citizen's request is already saved regardless of whether

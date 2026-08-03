@@ -8,3 +8,4 @@ export const supabaseBrowser = createClient(
 );
 
 export const PPID_BUCKET = "ppid-documents";
+export const PERMOHONAN_BUCKET = "permohonan-berkas";

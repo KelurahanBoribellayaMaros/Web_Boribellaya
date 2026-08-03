@@ -56,7 +56,7 @@ export function RegisterForm() {
       const toast = `toast=${encodeURIComponent(
         "Akun berhasil dibuat. Kami telah mengirim email verifikasi ke alamat Anda."
       )}`;
-      router.push(role === "admin" ? `/admin?${toast}` : `/?${toast}`);
+      router.push(role === "admin" ? `/admin?${toast}` : `/verifikasi-email?${toast}`);
     } catch (err) {
       setError(authErrorMessage(err));
       setIsSubmitting(false);

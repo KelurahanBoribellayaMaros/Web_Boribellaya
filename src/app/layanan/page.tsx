@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { ServicesHero } from "@/components/layanan/ServicesHero";
 import { SopSteps } from "@/components/layanan/SopSteps";
 import { LayananListSection } from "@/components/layanan/LayananListSection";
+import { SopPelayananSection } from "@/components/layanan/SopPelayananSection";
 import { HelpSection } from "@/components/layanan/HelpSection";
 import { sopSteps, layananItems } from "@/lib/layanan-data";
 import { getKontakInfo } from "@/lib/firebase/kontak-repository";
@@ -22,6 +23,7 @@ export default async function LayananPage() {
       <ServicesHero />
       <SopSteps steps={sopSteps} />
       <LayananListSection items={layananItems} />
+      <SopPelayananSection />
       <HelpSection whatsapp={kontak.whatsapp} />
     </>
   );

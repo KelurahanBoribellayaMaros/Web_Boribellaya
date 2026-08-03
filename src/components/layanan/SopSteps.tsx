@@ -1,3 +1,5 @@
+import Link from "next/link";
+import { ArrowRight } from "lucide-react";
 import type { SopStep } from "@/types/layanan";
 import { Reveal } from "@/components/ui/Reveal";
 
@@ -5,7 +7,7 @@ export function SopSteps({ steps }: { steps: SopStep[] }) {
   return (
     <section className="mx-auto max-w-6xl px-2 py-10 sm:px-3 sm:py-12 lg:px-4">
       <h2 className="text-lg font-bold text-gray-900 sm:text-xl">
-        Alur Pelayanan
+        Alur Pelayanan Online
       </h2>
 
       <Reveal className="mt-4 rounded-2xl border border-gray-100 bg-white p-5 shadow-sm sm:p-8">
@@ -49,6 +51,16 @@ export function SopSteps({ steps }: { steps: SopStep[] }) {
               <p className="mt-1 text-sm text-gray-500">{step.description}</p>
             </div>
           ))}
+        </div>
+
+        <div className="mt-8 flex justify-center border-t border-gray-100 pt-6">
+          <Link
+            href="/layanan#sop-pelayanan"
+            className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#003459] transition-colors hover:underline"
+          >
+            Lihat SOP Pelayanan Lengkap (22 Jenis Surat)
+            <ArrowRight className="size-4" />
+          </Link>
         </div>
       </Reveal>
     </section>

@@ -1,10 +1,9 @@
 import {
   CheckCircle2,
+  CreditCard,
   FileBarChart,
   FileText,
-  HandHeart,
   IdCard,
-  MessageSquareWarning,
   Send,
   ShieldCheck,
 } from "lucide-react";
@@ -21,7 +20,7 @@ export const sopSteps: SopStep[] = [
   {
     step: 2,
     icon: Send,
-    title: "Ajukan Online/Offline",
+    title: "Ajukan Online",
     description:
       "Isi formulir dan unggah dokumen melalui portal layanan kami.",
   },
@@ -43,44 +42,54 @@ export const sopSteps: SopStep[] = [
 
 export const layananItems: LayananItem[] = [
   {
-    slug: "administrasi-kependudukan",
+    slug: "surat-pengantar-skck",
+    icon: ShieldCheck,
+    title: "Surat Pengantar/SKCK",
+    description:
+      "Ajukan surat pengantar untuk pengurusan SKCK (Surat Keterangan Catatan Kepolisian).",
+    cta: "Ajukan Sekarang",
+    href: "/layanan/surat-pengantar-skck/ajukan",
+    variant: "solid",
+    sopNo: 1,
+    berkasRequirements: [
+      { key: "surat-pengantar-rt-rw", label: "Surat Pengantar RT/RW" },
+      { key: "ktp-kk", label: "Foto Copy KTP/KK" },
+      { key: "ijazah", label: "Foto Copy Ijazah" },
+      { key: "bukti-pbb", label: "Bukti Bayar PBB" },
+    ],
+  },
+  {
+    slug: "pengurusan-kk",
     icon: IdCard,
-    title: "Administrasi Kependudukan",
+    title: "Layanan Pengurusan KK",
     description:
-      "Layanan pengurusan KK, KTP, Akta Kelahiran, dan Surat Kematian secara mandiri.",
+      "Ajukan pembuatan, perubahan, atau penerbitan Kartu Keluarga (KK) baru.",
     cta: "Ajukan Sekarang",
-    href: "/layanan/administrasi-kependudukan/ajukan",
+    href: "/layanan/pengurusan-kk/ajukan",
     variant: "solid",
+    sopNo: 13,
+    berkasRequirements: [
+      { key: "surat-pengantar-rt-rw", label: "Surat Pengantar RT/RW" },
+      { key: "buku-nikah", label: "Foto Copy Buku Nikah" },
+      { key: "ktp-kk", label: "Foto Copy KTP/KK" },
+      { key: "bukti-pbb", label: "Bukti Bayar PBB" },
+    ],
   },
   {
-    slug: "surat-keterangan-umum",
-    icon: FileText,
-    title: "Surat Keterangan Umum",
+    slug: "pengurusan-ktp",
+    icon: CreditCard,
+    title: "Layanan Pengurusan KTP",
     description:
-      "SKU, Surat Keterangan Domisili, dan surat pengantar lainnya untuk seluruh keperluan administrasi.",
+      "Ajukan pembuatan, perubahan data, atau penggantian KTP hilang/rusak.",
     cta: "Ajukan Sekarang",
-    href: "/layanan/surat-keterangan-umum/ajukan",
+    href: "/layanan/pengurusan-ktp/ajukan",
     variant: "solid",
-  },
-  {
-    slug: "bantuan-sosial",
-    icon: HandHeart,
-    title: "Bantuan Sosial",
-    description:
-      "Informasi dan pengajuan BLT, PKH, dan bantuan pemerintah lainnya.",
-    cta: "Ajukan",
-    href: "/layanan/bantuan-sosial/ajukan",
-    variant: "solid",
-  },
-  {
-    slug: "lapor-keluhan",
-    icon: MessageSquareWarning,
-    title: "Lapor Keluhan",
-    description:
-      "Sampaikan keluhan fasilitas umum atau lingkungan Anda di sini.",
-    cta: "Kirim Laporan",
-    href: "/layanan/lapor-keluhan/ajukan",
-    variant: "solid",
+    // Tidak ada padanan resmi di SK Lurah (urusan KTP diteruskan ke
+    // Dukcapil) — daftar berkas ini set minimal, bukan dari dokumen resmi.
+    berkasRequirements: [
+      { key: "surat-pengantar-rt-rw", label: "Surat Pengantar RT/RW" },
+      { key: "kk", label: "Foto Copy Kartu Keluarga (KK)" },
+    ],
   },
   {
     slug: "informasi-publik",

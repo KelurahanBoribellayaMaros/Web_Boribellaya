@@ -1,11 +1,12 @@
 import { notFound } from "next/navigation";
-import { Inbox } from "lucide-react";
+import { FileText, Inbox } from "lucide-react";
 import { requireAdmin } from "@/lib/firebase/session";
 import { getPermohonanById } from "@/lib/firebase/permohonan-repository";
 import { updatePermohonanStatusAction } from "@/lib/actions/permohonan-actions";
 import { copyFormatLabels, identityCategoryLabels, statusLabels } from "@/types/permohonan";
 import { formatDate } from "@/lib/home-data";
 import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
+import { supabaseAdmin, PERMOHONAN_BUCKET } from "@/lib/supabase/client";
 
 export default async function AdminPermohonanDetailPage({
   params,
@@ -19,6 +20,17 @@ export default async function AdminPermohonanDetailPage({
   if (!item) {
     notFound();
   }
+
+  const berkasLinks = item.berkas
+    ? await Promise.all(
+        item.berkas.map(async (b) => {
+          const { data } = await supabaseAdmin.storage
+            .from(PERMOHONAN_BUCKET)
+            .createSignedUrl(b.path, 3600);
+          return { label: b.label, url: data?.signedUrl };
+        })
+      )
+    : [];
 
   return (
     <div className="mx-auto max-w-2xl px-3 py-10 sm:px-4 lg:px-6">
@@ -100,6 +112,31 @@ export default async function AdminPermohonanDetailPage({
             <div className="flex gap-2">
               <dt className="w-36 shrink-0 text-gray-500">Format Salinan</dt>
               <dd className="text-gray-900">{copyFormatLabels[item.copyFormat]}</dd>
+            </div>
+          )}
+          {berkasLinks.length > 0 && (
+            <div className="flex gap-2">
+              <dt className="w-36 shrink-0 text-gray-500">Berkas Persyaratan</dt>
+              <dd className="flex flex-col gap-1.5">
+                {berkasLinks.map((b, i) =>
+                  b.url ? (
+                    <a
+                      key={i}
+                      href={b.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 font-semibold text-[#003459] hover:underline"
+                    >
+                      <FileText className="size-4" />
+                      {b.label}
+                    </a>
+                  ) : (
+                    <span key={i} className="text-gray-400">
+                      {b.label} (gagal memuat link)
+                    </span>
+                  )
+                )}
+              </dd>
             </div>
           )}
         </dl>

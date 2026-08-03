@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { layananItems } from "@/lib/layanan-data";
 import { requireVerifiedSession } from "@/lib/firebase/session";
@@ -40,7 +41,21 @@ export default async function AjukanLayananPage({
           categoryLabel={item.title}
           accountEmail={session.email ?? ""}
           prefillName={session.name ?? undefined}
+          berkasRequirements={item.berkasRequirements}
         />
+
+        {item.sopNo && (
+          <p className="mt-4 text-center text-xs text-gray-400">
+            Lihat{" "}
+            <Link
+              href="/layanan#sop-pelayanan"
+              className="font-semibold text-[#003459] hover:underline"
+            >
+              SOP Pelayanan lengkap
+            </Link>{" "}
+            untuk detail alur dan persyaratan.
+          </p>
+        )}
       </div>
     </div>
   );

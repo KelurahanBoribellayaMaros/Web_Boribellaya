@@ -1,6 +1,17 @@
-import { Mail, MessageSquare, Phone, Send, User } from "lucide-react";
-import { submitPermohonanAction } from "@/lib/actions/permohonan-actions";
+"use client";
+
+import { useState, type FormEvent } from "react";
+import { Mail, MessageSquare, Phone, Send, UploadCloud, User } from "lucide-react";
+import {
+  createPermohonanUploadUrlAction,
+  submitPermohonanAction,
+} from "@/lib/actions/permohonan-actions";
+import { supabaseBrowser, PERMOHONAN_BUCKET } from "@/lib/supabase/browser-client";
+import type { BerkasRequirement } from "@/types/layanan";
 import type { PermohonanType } from "@/types/permohonan";
+
+const ALLOWED_BERKAS_TYPES = new Set(["application/pdf", "image/jpeg", "image/png"]);
+const MAX_BERKAS_SIZE = 5 * 1024 * 1024; // 5MB
 
 type PermohonanFormProps = {
   type: PermohonanType;
@@ -8,6 +19,7 @@ type PermohonanFormProps = {
   categoryLabel: string;
   accountEmail: string;
   prefillName?: string;
+  berkasRequirements?: BerkasRequirement[];
 };
 
 export function PermohonanForm({
@@ -16,12 +28,74 @@ export function PermohonanForm({
   categoryLabel,
   accountEmail,
   prefillName,
+  berkasRequirements = [],
 }: PermohonanFormProps) {
-  const action = submitPermohonanAction.bind(null, type, category, categoryLabel);
+  const [files, setFiles] = useState<Record<string, File | null>>({});
+  const [error, setError] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  function setFileFor(key: string, file: File | null) {
+    setFiles((prev) => ({ ...prev, [key]: file }));
+  }
+
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setError(null);
+
+    const formData = new FormData(event.currentTarget);
+
+    for (const req of berkasRequirements) {
+      const file = files[req.key];
+      if (!file) {
+        setError(`Unggah dokumen "${req.label}" terlebih dahulu.`);
+        return;
+      }
+      if (!ALLOWED_BERKAS_TYPES.has(file.type)) {
+        setError(`Dokumen "${req.label}" harus berformat PDF, JPG, atau PNG.`);
+        return;
+      }
+      if (file.size > MAX_BERKAS_SIZE) {
+        setError(`Ukuran dokumen "${req.label}" maksimal 5MB.`);
+        return;
+      }
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      const berkas = await Promise.all(
+        berkasRequirements.map(async (req) => {
+          const file = files[req.key]!;
+          const { path, token } = await createPermohonanUploadUrlAction({
+            fileType: file.type,
+            fileSize: file.size,
+          });
+
+          const { error: uploadError } = await supabaseBrowser.storage
+            .from(PERMOHONAN_BUCKET)
+            .uploadToSignedUrl(path, token, file);
+
+          if (uploadError) {
+            throw new Error(`Gagal mengunggah dokumen "${req.label}". Silakan coba lagi.`);
+          }
+
+          return { key: req.key, label: req.label, path };
+        })
+      );
+
+      if (berkas.length > 0) {
+        formData.set("berkasJson", JSON.stringify(berkas));
+      }
+      await submitPermohonanAction(type, category, categoryLabel, formData);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Terjadi kesalahan. Silakan coba lagi.");
+      setIsSubmitting(false);
+    }
+  }
 
   return (
     <form
-      action={action}
+      onSubmit={handleSubmit}
       className="space-y-4 rounded-2xl border border-gray-100 bg-white p-6 shadow-sm sm:p-8"
     >
       {/* Honeypot: hidden from real users, bots that auto-fill every field will trip it. */}
@@ -98,12 +172,53 @@ export function PermohonanForm({
         </div>
       </div>
 
+      {berkasRequirements.length > 0 && (
+        <div className="space-y-3 rounded-xl border border-blue-100 bg-blue-50 p-4">
+          <p className="text-sm font-semibold text-[#003459]">
+            Dokumen Persyaratan (sesuai SOP)
+          </p>
+          {berkasRequirements.map((req) => (
+            <div key={req.key}>
+              <label
+                htmlFor={`berkas-${req.key}`}
+                className="mb-1.5 block text-xs font-medium text-gray-700"
+              >
+                {req.label}
+              </label>
+              <input
+                id={`berkas-${req.key}`}
+                type="file"
+                required
+                accept=".pdf,.jpg,.jpeg,.png,application/pdf,image/jpeg,image/png"
+                onChange={(event) => setFileFor(req.key, event.target.files?.[0] ?? null)}
+                className="w-full rounded-xl border border-gray-200 bg-white px-4 py-2 text-xs text-gray-900 outline-none file:mr-3 file:rounded-full file:border-0 file:bg-blue-100 file:px-3 file:py-1 file:text-xs file:font-semibold file:text-[#003459] focus:border-green-600 focus:ring-2 focus:ring-green-600/20"
+              />
+            </div>
+          ))}
+          <p className="text-xs text-gray-500">
+            Format PDF, JPG, atau PNG, maksimal 5MB per dokumen.
+          </p>
+        </div>
+      )}
+
+      {error && <p className="text-sm text-red-600">{error}</p>}
+
       <button
         type="submit"
-        className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#003459] py-3.5 text-sm font-semibold text-white transition-colors hover:opacity-90"
+        disabled={isSubmitting}
+        className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#003459] py-3.5 text-sm font-semibold text-white transition-colors hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
       >
-        Kirim Permohonan
-        <Send className="size-4" />
+        {isSubmitting ? (
+          <>
+            Mengunggah...
+            <UploadCloud className="size-4" />
+          </>
+        ) : (
+          <>
+            Kirim Permohonan
+            <Send className="size-4" />
+          </>
+        )}
       </button>
     </form>
   );
