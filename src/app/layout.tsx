@@ -6,6 +6,7 @@ import { ToastProvider } from "@/components/ui/ToastProvider";
 import { ToastListener } from "@/components/ui/ToastListener";
 import { getSession } from "@/lib/firebase/session";
 import { getNotificationsForUser } from "@/lib/firebase/notifications-repository";
+import { getKontakInfo } from "@/lib/firebase/kontak-repository";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -33,6 +34,7 @@ export default async function RootLayout({
   const notifications = session?.email
     ? await getNotificationsForUser(session.uid, session.email)
     : null;
+  const kontak = await getKontakInfo();
 
   return (
     <html
@@ -44,7 +46,7 @@ export default async function RootLayout({
           <Suspense fallback={null}>
             <ToastListener />
           </Suspense>
-          <SiteChrome session={session} notifications={notifications}>
+          <SiteChrome session={session} notifications={notifications} kontak={kontak}>
             {children}
           </SiteChrome>
         </ToastProvider>

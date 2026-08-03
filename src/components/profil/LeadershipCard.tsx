@@ -15,7 +15,7 @@ export function LeadershipCard({
     <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm sm:p-8">
       <div className="flex flex-col items-center text-center sm:flex-row sm:items-start sm:text-left">
         <div className="relative shrink-0">
-          <div className="size-24 overflow-hidden rounded-full ring-4 ring-green-100 sm:size-28">
+          <div className="size-24 overflow-hidden rounded-full ring-4 ring-blue-100 sm:size-28">
             {photo ? (
               <Image
                 src={photo}
@@ -36,7 +36,7 @@ export function LeadershipCard({
         </div>
 
         <div className="mt-4 sm:mt-0 sm:ml-6">
-          <span className="inline-block rounded-full bg-green-100 px-3 py-1 text-xs font-semibold text-green-700">
+          <span className="inline-block rounded-full bg-blue-100 px-3 py-1 text-xs font-semibold text-[#003459]">
             {position}
           </span>
           <h3 className="mt-3 text-xl font-bold text-gray-900">{name}</h3>

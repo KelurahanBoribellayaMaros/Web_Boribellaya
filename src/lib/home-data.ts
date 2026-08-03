@@ -1,29 +1,9 @@
-import { FileText, Receipt } from "lucide-react";
-import type { HeroImage, ServiceItem } from "@/types/home";
+import type { HeroImage } from "@/types/home";
 
 export const heroImages: HeroImage[] = [
   {
     src: "/images/hero/kantor-lurah-1.jpg",
     alt: "Kantor Lurah Boribellaya",
-  },
-];
-
-export const services: ServiceItem[] = [
-  {
-    slug: "administrasi-surat",
-    icon: FileText,
-    title: "Administrasi Surat",
-    description:
-      "Layanan pengajuan surat keterangan domisili, usaha, dan dokumen resmi lainnya.",
-    href: "/layanan/administrasi-surat",
-  },
-  {
-    slug: "cek-status-pbb",
-    icon: Receipt,
-    title: "Cek Status PBB",
-    description:
-      "Informasi tagihan dan pembayaran Pajak Bumi dan Bangunan secara online.",
-    href: "/layanan/cek-status-pbb",
   },
 ];
 
