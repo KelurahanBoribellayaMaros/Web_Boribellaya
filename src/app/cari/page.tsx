@@ -3,9 +3,12 @@ import Link from "next/link";
 import { FileText, Newspaper, Search, Wrench } from "lucide-react";
 import { getNews } from "@/lib/firebase/news-repository";
 import { getPpidDocuments } from "@/lib/firebase/ppid-repository";
+import { getLayananStatus, isLayananEnabled } from "@/lib/firebase/layanan-repository";
 import { layananItems } from "@/lib/layanan-data";
 import { syaratLayananItems } from "@/lib/syarat-layanan-data";
-import { formatDate } from "@/lib/home-data";
+import { NewsCard } from "@/components/ui/NewsCard";
+import { LayananCard } from "@/components/layanan/LayananCard";
+import { PpidDocumentCard } from "@/components/ppid/PpidDocumentCard";
 
 export const dynamic = "force-dynamic";
 
@@ -37,12 +40,16 @@ export default async function CariPage({
     );
   }
 
-  const [news, documents] = await Promise.all([getNews(), getPpidDocuments()]);
+  const [news, documents, layananStatus] = await Promise.all([
+    getNews(),
+    getPpidDocuments(),
+    getLayananStatus(),
+  ]);
 
   const newsResults = news.filter((item) => matches(query, item.title, item.excerpt));
-  const layananResults = layananItems.filter((item) =>
-    matches(query, item.title, item.description)
-  );
+  const layananResults = layananItems
+    .filter((item) => matches(query, item.title, item.description))
+    .map((item) => ({ ...item, enabled: isLayananEnabled(layananStatus, item.slug) }));
   const documentResults = documents.filter((doc) =>
     matches(query, doc.title, doc.description)
   );
@@ -52,7 +59,7 @@ export default async function CariPage({
     newsResults.length + layananResults.length + documentResults.length + sopResults.length;
 
   return (
-    <div className="mx-auto max-w-3xl px-2 py-10 sm:px-3 sm:py-12 lg:px-4">
+    <div className="mx-auto max-w-6xl px-2 py-10 sm:px-3 sm:py-12 lg:px-4">
       <div className="rounded-2xl bg-[#003459] px-6 py-10 text-center sm:px-10 sm:py-12">
         <div className="flex items-center justify-center gap-2">
           <span className="h-px w-8 bg-[#fdd85d]" />
@@ -85,17 +92,9 @@ export default async function CariPage({
               <Newspaper className="size-4 text-[#003459]" />
               Berita ({newsResults.length})
             </h2>
-            <div className="mt-3 space-y-3">
+            <div className="mt-3 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {newsResults.map((item) => (
-                <Link
-                  key={item.id}
-                  href={`/berita/${item.slug}`}
-                  className="block rounded-2xl border border-gray-100 bg-white p-4 shadow-sm transition-shadow hover:shadow-md"
-                >
-                  <p className="font-semibold text-gray-900">{item.title}</p>
-                  <p className="mt-1 text-sm text-gray-500">{item.excerpt}</p>
-                  <p className="mt-1.5 text-xs text-gray-400">{formatDate(item.date)}</p>
-                </Link>
+                <NewsCard key={item.id} {...item} />
               ))}
             </div>
           </section>
@@ -107,16 +106,9 @@ export default async function CariPage({
               <Wrench className="size-4 text-[#003459]" />
               Layanan ({layananResults.length})
             </h2>
-            <div className="mt-3 space-y-3">
+            <div className="mt-3 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {layananResults.map((item) => (
-                <Link
-                  key={item.slug}
-                  href={item.href}
-                  className="block rounded-2xl border border-gray-100 bg-white p-4 shadow-sm transition-shadow hover:shadow-md"
-                >
-                  <p className="font-semibold text-gray-900">{item.title}</p>
-                  <p className="mt-1 text-sm text-gray-500">{item.description}</p>
-                </Link>
+                <LayananCard key={item.slug} {...item} />
               ))}
             </div>
           </section>
@@ -130,14 +122,7 @@ export default async function CariPage({
             </h2>
             <div className="mt-3 space-y-3">
               {documentResults.map((doc) => (
-                <a
-                  key={doc.id}
-                  href={doc.fileUrl ?? "/informasi-publik"}
-                  className="block rounded-2xl border border-gray-100 bg-white p-4 shadow-sm transition-shadow hover:shadow-md"
-                >
-                  <p className="font-semibold text-gray-900">{doc.title}</p>
-                  <p className="mt-1 text-sm text-gray-500">{doc.description}</p>
-                </a>
+                <PpidDocumentCard key={doc.id} {...doc} />
               ))}
             </div>
           </section>

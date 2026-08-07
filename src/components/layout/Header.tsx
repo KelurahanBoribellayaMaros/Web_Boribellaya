@@ -137,6 +137,25 @@ export function Header() {
     };
   }, [isAccountMenuOpen, isNotifOpen]);
 
+  useEffect(() => {
+    if (!isMenuOpen) return;
+
+    function handleKeyDown(event: KeyboardEvent) {
+      if (event.key === "Escape") setIsMenuOpen(false);
+    }
+
+    // Locked so the page can't scroll behind the open mobile nav — otherwise
+    // the nav (docked under the fixed header) drifts out of sync with a
+    // background that's still scrollable underneath it.
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [isMenuOpen]);
+
   function handleNotifToggle() {
     setIsNotifOpen((open) => {
       const next = !open;
@@ -393,7 +412,15 @@ export function Header() {
       </div>
 
       {isMenuOpen && (
-        <nav className="border-t border-white/10 bg-[#003459] px-2 py-3 md:hidden">
+        <div
+          className="fixed inset-x-0 top-16 bottom-0 bg-black/40 md:hidden"
+          onClick={() => setIsMenuOpen(false)}
+          aria-hidden="true"
+        />
+      )}
+
+      {isMenuOpen && (
+        <nav className="relative z-10 border-t border-white/10 bg-[#003459] px-2 py-3 md:hidden">
           <ul className="flex flex-col gap-1">
             {navLinks.map((link) => {
               const isActive = isLinkActive(link);
