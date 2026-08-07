@@ -17,7 +17,7 @@ export default async function AdminPpidPage() {
       <AdminPageHeader
         icon={FileCheck2}
         iconClass="bg-purple-100 text-purple-700"
-        title="Kelola Informasi Publik (PPID)"
+        title="Kelola Informasi Publik"
         description="Unggah atau hapus dokumen PDF/DOCX untuk keterbukaan informasi."
         action={{ href: "/admin/ppid/baru", label: "Unggah Dokumen", icon: Plus }}
       />

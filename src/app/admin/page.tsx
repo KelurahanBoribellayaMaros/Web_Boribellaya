@@ -4,6 +4,7 @@ import {
   AlertTriangle,
   Building2,
   FileCheck2,
+  History,
   Inbox,
   MapPin,
   Newspaper,
@@ -68,7 +69,7 @@ export default async function AdminDashboardPage() {
     {
       icon: FileCheck2,
       iconClass: "bg-purple-100 text-purple-700",
-      label: "Dokumen PPID",
+      label: "Dokumen Informasi Publik",
       value: formatNumber(ppidDocuments.length),
       badge: undefined,
     },
@@ -93,7 +94,7 @@ export default async function AdminDashboardPage() {
     {
       icon: FileCheck2,
       iconClass: "bg-purple-100 text-purple-700",
-      title: "Kelola PPID",
+      title: "Kelola Informasi Publik",
       description: "Unggah atau hapus dokumen keterbukaan informasi.",
       href: "/admin/ppid",
     },
@@ -125,6 +126,13 @@ export default async function AdminDashboardPage() {
       description: "Atur alamat, kontak, jam operasional, dan peta lokasi.",
       href: "/admin/kontak",
     },
+    {
+      icon: History,
+      iconClass: "bg-gray-100 text-gray-700",
+      title: "Log Aktivitas",
+      description: "Riwayat perubahan data yang dilakukan akun admin.",
+      href: "/admin/audit",
+    },
   ];
 
   const activities: Activity[] = [
@@ -150,7 +158,7 @@ export default async function AdminDashboardPage() {
     ),
     ...ppidDocuments.slice(0, 5).map(
       (d): Activity => ({
-        text: `Dokumen PPID diunggah: ${d.title}`,
+        text: `Dokumen Informasi Publik diunggah: ${d.title}`,
         at: d.createdAt,
         dot: "blue",
       })

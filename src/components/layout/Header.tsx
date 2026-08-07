@@ -7,7 +7,6 @@ import { usePathname } from "next/navigation";
 import {
   Bell,
   CircleUserRound,
-  FileBarChart,
   FileText,
   Home,
   Inbox,
@@ -16,7 +15,6 @@ import {
   MapPin,
   Menu,
   Newspaper,
-  Scale,
   Settings,
   User,
   Wrench,
@@ -31,12 +29,9 @@ import type { PermohonanStatus } from "@/types/permohonan";
 import type { NotificationData, NotificationItem } from "@/types/notification";
 import { timeAgo } from "@/lib/home-data";
 
-type NavChild = { href: string; label: string; icon: LucideIcon };
-
 type NavLink = (
   | { type: "anchor"; id: string }
   | { type: "page"; href: string }
-  | { type: "dropdown"; basePath: string; children: NavChild[] }
 ) & { label: string; icon: LucideIcon };
 
 const navLinks: NavLink[] = [
@@ -44,22 +39,12 @@ const navLinks: NavLink[] = [
   { label: "Profil", type: "page", href: "/profil", icon: User },
   { label: "Berita", type: "page", href: "/berita", icon: Newspaper },
   { label: "Layanan", type: "page", href: "/layanan", icon: Wrench },
-  {
-    label: "PPID",
-    type: "dropdown",
-    basePath: "/ppid",
-    icon: FileBarChart,
-    children: [
-      { href: "/ppid", label: "Profil PPID", icon: Scale },
-      { href: "/ppid/informasi", label: "Daftar Informasi Publik", icon: FileText },
-    ],
-  },
+  { label: "Informasi Publik", type: "page", href: "/informasi-publik", icon: FileText },
   { label: "Kontak", type: "page", href: "/kontak", icon: MapPin },
 ];
 
 function linkHref(link: NavLink): string {
   if (link.type === "anchor") return `/#${link.id}`;
-  if (link.type === "dropdown") return link.basePath;
   return link.href;
 }
 
@@ -180,7 +165,6 @@ export function Header({
 
   function isLinkActive(link: NavLink): boolean {
     if (link.type === "page") return pathname === link.href;
-    if (link.type === "dropdown") return pathname?.startsWith(link.basePath) ?? false;
     return isHome && activeId === link.id;
   }
 
@@ -224,37 +208,6 @@ export function Header({
         <nav className="hidden items-center gap-8 md:flex">
           {navLinks.map((link) => {
             const isActive = isLinkActive(link);
-
-            if (link.type === "dropdown") {
-              return (
-                <div key={link.label} className="group relative py-1">
-                  <Link
-                    href={linkHref(link)}
-                    aria-current={isActive ? "page" : undefined}
-                    className={`relative text-sm font-medium text-white transition-colors after:absolute after:inset-x-0 after:-bottom-[13px] after:h-0.5 after:rounded-full after:bg-white after:transition-opacity ${isActive
-                      ? "after:opacity-100"
-                      : "after:opacity-0 group-hover:after:opacity-100"
-                      }`}
-                  >
-                    {link.label}
-                  </Link>
-                  <div className="invisible absolute top-full left-1/2 z-40 w-56 -translate-x-1/2 pt-3 opacity-0 transition-opacity group-hover:visible group-hover:opacity-100">
-                    <div className="overflow-hidden rounded-xl border border-gray-100 bg-white shadow-lg">
-                      {link.children.map((child) => (
-                        <Link
-                          key={child.href}
-                          href={child.href}
-                          className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-700 transition-colors hover:bg-gray-50"
-                        >
-                          <child.icon className="size-4" />
-                          {child.label}
-                        </Link>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              );
-            }
 
             return (
               <Link
@@ -413,28 +366,6 @@ export function Header({
         <nav className="border-t border-white/10 bg-[#003459] px-2 py-3 md:hidden">
           <ul className="flex flex-col gap-1">
             {navLinks.map((link) => {
-              if (link.type === "dropdown") {
-                return link.children.map((child) => {
-                  const isActive = pathname === child.href;
-                  return (
-                    <li key={child.href}>
-                      <Link
-                        href={child.href}
-                        onClick={() => setIsMenuOpen(false)}
-                        aria-current={isActive ? "page" : undefined}
-                        className={`flex items-center gap-3 rounded-lg px-3 py-3 text-sm font-medium transition-colors ${isActive
-                          ? "bg-white/10 text-white"
-                          : "text-green-100/70 hover:bg-white/10 hover:text-white"
-                          }`}
-                      >
-                        <child.icon className="size-5 shrink-0" />
-                        {child.label}
-                      </Link>
-                    </li>
-                  );
-                });
-              }
-
               const isActive = isLinkActive(link);
               return (
                 <li key={link.label}>

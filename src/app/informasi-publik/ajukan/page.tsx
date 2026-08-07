@@ -23,8 +23,8 @@ export default async function AjukanInformasiPage() {
           Permohonan Informasi Publik
         </h1>
         <p className="mx-auto mt-2 max-w-xl text-sm text-white/80 sm:text-base">
-          Untuk informasi publik yang belum tersedia di daftar dokumen PPID,
-          ajukan permohonan melalui formulir ini.
+          Untuk informasi publik yang belum tersedia di daftar informasi
+          publik, ajukan permohonan melalui formulir ini.
         </p>
       </div>
 

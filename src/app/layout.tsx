@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { Geist, Geist_Mono } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
 import { SiteChrome } from "@/components/layout/SiteChrome";
 import { ToastProvider } from "@/components/ui/ToastProvider";
 import { ToastListener } from "@/components/ui/ToastListener";
@@ -50,6 +51,7 @@ export default async function RootLayout({
             {children}
           </SiteChrome>
         </ToastProvider>
+        <Analytics />
       </body>
     </html>
   );

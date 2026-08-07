@@ -3,6 +3,7 @@
 import { redirect } from "next/navigation";
 import { adminDb } from "@/lib/firebase/admin";
 import { requireAdmin } from "@/lib/firebase/session";
+import { logAudit } from "@/lib/firebase/audit-repository";
 import { toastRedirectUrl } from "@/lib/toast-redirect";
 
 const ALLOWED_MAPS_EMBED_PREFIX = "https://www.google.com/maps/embed";
@@ -14,7 +15,7 @@ function extractMapsEmbedUrl(input: string): string {
 }
 
 export async function updateKontakAction(formData: FormData): Promise<void> {
-  await requireAdmin();
+  const session = await requireAdmin();
 
   const address = String(formData.get("address") ?? "").trim();
   const whatsapp = String(formData.get("whatsapp") ?? "").trim();
@@ -39,6 +40,13 @@ export async function updateKontakAction(formData: FormData): Promise<void> {
     },
     { merge: true }
   );
+
+  await logAudit({
+    uid: session.uid,
+    email: session.email ?? "",
+    action: "update",
+    target: "kontak",
+  });
 
   redirect(toastRedirectUrl("/admin/kontak", "Info kontak berhasil diperbarui."));
 }

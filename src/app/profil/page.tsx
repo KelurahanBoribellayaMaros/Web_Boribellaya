@@ -40,7 +40,7 @@ export default async function ProfilPage() {
       <div className="mt-8 space-y-6 sm:mt-10">
         <Reveal>
           <ProfileCard icon={BookOpen} title="Sejarah Singkat">
-            <div className="space-y-3 text-sm leading-relaxed text-gray-600">
+            <div className="space-y-4 text-justify text-sm leading-relaxed text-gray-600 sm:text-base sm:leading-loose">
               {history.map((paragraph) => (
                 <p key={paragraph.slice(0, 24)}>{paragraph}</p>
               ))}

@@ -8,8 +8,13 @@ const quickLinks = [
   { label: "Profil", href: "/profil" },
   { label: "Berita", href: "/berita" },
   { label: "Layanan", href: "/layanan" },
-  { label: "PPID", href: "/ppid" },
+  { label: "Informasi Publik", href: "/informasi-publik" },
   { label: "Kontak", href: "/kontak" },
+];
+
+const legalLinks = [
+  { label: "Kebijakan Privasi", href: "/kebijakan-privasi" },
+  { label: "Syarat & Ketentuan", href: "/syarat-ketentuan" },
 ];
 
 export function Footer({ kontak }: { kontak: KontakInfo }) {
@@ -87,9 +92,23 @@ export function Footer({ kontak }: { kontak: KontakInfo }) {
           </div>
         </div>
 
-        <p className="mt-10 border-t border-white/10 pt-6 text-center text-sm text-blue-200">
-          © {year} Kelurahan Boribellaya. Melayani dengan Sepenuh Hati.
-        </p>
+        <div className="mt-10 flex flex-col items-center gap-4 border-t border-white/10 pt-6 sm:flex-row sm:justify-between">
+          <p className="text-sm text-blue-200">
+            © {year} Kelurahan Boribellaya. Melayani dengan Sepenuh Hati.
+          </p>
+          <ul className="flex flex-wrap items-center justify-center gap-x-5 gap-y-1.5">
+            {legalLinks.map((link) => (
+              <li key={link.href}>
+                <Link
+                  href={link.href}
+                  className="text-sm text-blue-200 transition-colors hover:text-white"
+                >
+                  {link.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
     </footer>
   );

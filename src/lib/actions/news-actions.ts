@@ -3,6 +3,7 @@
 import { redirect } from "next/navigation";
 import { adminDb } from "@/lib/firebase/admin";
 import { requireAdmin } from "@/lib/firebase/session";
+import { logAudit } from "@/lib/firebase/audit-repository";
 import { toastRedirectUrl } from "@/lib/toast-redirect";
 import type { NewsCategory } from "@/types/home";
 
@@ -54,17 +55,26 @@ async function readCoverImage(formData: FormData): Promise<string | undefined> {
 }
 
 export async function createNewsAction(formData: FormData): Promise<void> {
-  await requireAdmin();
+  const session = await requireAdmin();
   const input = readNewsInput(formData);
   const coverImage = await readCoverImage(formData);
   const now = new Date().toISOString();
 
-  await adminDb.collection("news").add({
+  const docRef = await adminDb.collection("news").add({
     ...input,
     ...(coverImage && { coverImage }),
     slug: slugify(input.title),
     createdAt: now,
     updatedAt: now,
+  });
+
+  await logAudit({
+    uid: session.uid,
+    email: session.email ?? "",
+    action: "create",
+    target: "berita",
+    targetId: docRef.id,
+    details: input.title,
   });
 
   redirect(toastRedirectUrl("/admin/berita", "Berita berhasil ditambahkan."));
@@ -74,7 +84,7 @@ export async function updateNewsAction(
   id: string,
   formData: FormData
 ): Promise<void> {
-  await requireAdmin();
+  const session = await requireAdmin();
   const input = readNewsInput(formData);
   const coverImage = await readCoverImage(formData);
 
@@ -91,11 +101,29 @@ export async function updateNewsAction(
       { merge: true }
     );
 
+  await logAudit({
+    uid: session.uid,
+    email: session.email ?? "",
+    action: "update",
+    target: "berita",
+    targetId: id,
+    details: input.title,
+  });
+
   redirect(toastRedirectUrl("/admin/berita", "Berita berhasil diperbarui."));
 }
 
 export async function deleteNewsAction(id: string): Promise<void> {
-  await requireAdmin();
+  const session = await requireAdmin();
   await adminDb.collection("news").doc(id).delete();
+
+  await logAudit({
+    uid: session.uid,
+    email: session.email ?? "",
+    action: "delete",
+    target: "berita",
+    targetId: id,
+  });
+
   redirect(toastRedirectUrl("/admin/berita", "Berita berhasil dihapus."));
 }

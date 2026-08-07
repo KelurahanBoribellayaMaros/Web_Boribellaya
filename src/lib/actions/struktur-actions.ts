@@ -3,13 +3,14 @@
 import { redirect } from "next/navigation";
 import { adminDb } from "@/lib/firebase/admin";
 import { requireAdmin } from "@/lib/firebase/session";
+import { logAudit } from "@/lib/firebase/audit-repository";
 import { toastRedirectUrl } from "@/lib/toast-redirect";
 
 const ALLOWED_PHOTO_TYPES = new Set(["image/jpeg", "image/png", "image/webp"]);
 const MAX_PHOTO_SIZE = 600 * 1024; // 600KB, stays well under Firestore's 1MiB doc limit once base64-encoded
 
 export async function updateLeaderAction(formData: FormData): Promise<void> {
-  await requireAdmin();
+  const session = await requireAdmin();
 
   const name = String(formData.get("name") ?? "").trim();
   const position = String(formData.get("position") ?? "").trim();
@@ -42,6 +43,14 @@ export async function updateLeaderAction(formData: FormData): Promise<void> {
 
   await adminDb.collection("settings").doc("leader").set(data, { merge: true });
 
+  await logAudit({
+    uid: session.uid,
+    email: session.email ?? "",
+    action: "update",
+    target: "leader",
+    details: name,
+  });
+
   redirect(
     toastRedirectUrl(
       "/admin/struktur-organisasi",
@@ -59,10 +68,19 @@ function readPositionInput(formData: FormData) {
 }
 
 export async function createOrgPositionAction(formData: FormData): Promise<void> {
-  await requireAdmin();
+  const session = await requireAdmin();
   const input = readPositionInput(formData);
 
-  await adminDb.collection("org_positions").add(input);
+  const docRef = await adminDb.collection("org_positions").add(input);
+
+  await logAudit({
+    uid: session.uid,
+    email: session.email ?? "",
+    action: "create",
+    target: "org_position",
+    targetId: docRef.id,
+    details: input.name,
+  });
 
   redirect(
     toastRedirectUrl("/admin/struktur-organisasi", "Posisi berhasil ditambahkan.")
@@ -73,10 +91,19 @@ export async function updateOrgPositionAction(
   id: string,
   formData: FormData
 ): Promise<void> {
-  await requireAdmin();
+  const session = await requireAdmin();
   const input = readPositionInput(formData);
 
   await adminDb.collection("org_positions").doc(id).set(input, { merge: true });
+
+  await logAudit({
+    uid: session.uid,
+    email: session.email ?? "",
+    action: "update",
+    target: "org_position",
+    targetId: id,
+    details: input.name,
+  });
 
   redirect(
     toastRedirectUrl("/admin/struktur-organisasi", "Posisi berhasil diubah.")
@@ -84,25 +111,18 @@ export async function updateOrgPositionAction(
 }
 
 export async function deleteOrgPositionAction(id: string): Promise<void> {
-  await requireAdmin();
+  const session = await requireAdmin();
   await adminDb.collection("org_positions").doc(id).delete();
+
+  await logAudit({
+    uid: session.uid,
+    email: session.email ?? "",
+    action: "delete",
+    target: "org_position",
+    targetId: id,
+  });
+
   redirect(
     toastRedirectUrl("/admin/struktur-organisasi", "Posisi berhasil dihapus.")
-  );
-}
-
-export async function updatePpidPelaksanaAction(formData: FormData): Promise<void> {
-  await requireAdmin();
-
-  const name = String(formData.get("name") ?? "").trim();
-  const position = String(formData.get("position") ?? "").trim();
-
-  await adminDb.collection("settings").doc("ppid_pelaksana").set(
-    { name, position, updatedAt: new Date().toISOString() },
-    { merge: true }
-  );
-
-  redirect(
-    toastRedirectUrl("/admin/struktur-organisasi", "Struktur PPID berhasil diperbarui.")
   );
 }

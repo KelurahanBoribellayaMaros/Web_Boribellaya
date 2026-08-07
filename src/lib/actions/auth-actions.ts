@@ -4,6 +4,7 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { adminAuth, adminDb } from "@/lib/firebase/admin";
 import { SESSION_COOKIE_NAME } from "@/lib/firebase/session";
+import { logAudit } from "@/lib/firebase/audit-repository";
 
 const REMEMBERED_EXPIRES_IN_MS = 14 * 24 * 60 * 60 * 1000; // 14 days (platform max)
 const NOT_REMEMBERED_EXPIRES_IN_MS = 24 * 60 * 60 * 1000; // 1 day
@@ -42,6 +43,17 @@ export async function createSessionAction(
     },
     { merge: true }
   );
+
+  // Only admin sign-ins are audit-worthy — warga logins aren't a
+  // security-sensitive event in the same way.
+  if (role === "admin") {
+    await logAudit({
+      uid: decoded.uid,
+      email: decoded.email ?? "",
+      action: "login",
+      target: "admin",
+    });
+  }
 
   return { role };
 }

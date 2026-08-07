@@ -21,7 +21,7 @@ export async function proxy(request: NextRequest) {
   const isSessionRequiredRoute =
     pathname === "/akun" ||
     pathname.startsWith("/akun/") ||
-    pathname === "/ppid/ajukan" ||
+    pathname === "/informasi-publik/ajukan" ||
     /^\/layanan\/[^/]+\/ajukan$/.test(pathname);
 
   if (!isAdminRoute && !isSessionRequiredRoute) {
@@ -43,5 +43,5 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/admin/:path*", "/akun/:path*", "/ppid/ajukan", "/layanan/:slug/ajukan"],
+  matcher: ["/admin/:path*", "/akun/:path*", "/informasi-publik/ajukan", "/layanan/:slug/ajukan"],
 };

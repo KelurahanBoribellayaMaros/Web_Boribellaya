@@ -4,8 +4,9 @@ import { randomUUID } from "node:crypto";
 import { redirect } from "next/navigation";
 import { adminDb } from "@/lib/firebase/admin";
 import { requireAdmin, requireVerifiedSession } from "@/lib/firebase/session";
-import { getPermohonanById } from "@/lib/firebase/permohonan-repository";
+import { getPermohonanByEmail, getPermohonanById } from "@/lib/firebase/permohonan-repository";
 import { getAdminEmails } from "@/lib/firebase/users-repository";
+import { logAudit } from "@/lib/firebase/audit-repository";
 import { getSiteUrl, sendEmail } from "@/lib/email";
 import { toastRedirectUrl } from "@/lib/toast-redirect";
 import { supabaseAdmin, PERMOHONAN_BUCKET } from "@/lib/supabase/client";
@@ -19,6 +20,12 @@ const ALLOWED_BERKAS_MIME_TYPES: Record<string, string> = {
 };
 
 const MAX_BERKAS_SIZE = 5 * 1024 * 1024; // 5MB
+
+// Beyond the honeypot (which only stops naive bots), this stops a logged-in
+// account from flooding the admin inbox/Firestore by scripting repeated
+// submissions — a real submission never needs this many in 10 minutes.
+const RATE_LIMIT_WINDOW_MS = 10 * 60 * 1000;
+const RATE_LIMIT_MAX_SUBMISSIONS = 5;
 
 export async function createPermohonanUploadUrlAction(input: {
   fileType: string;
@@ -114,6 +121,15 @@ export async function submitPermohonanAction(
     redirect("/permohonan/terkirim");
   }
 
+  const recentSubmissions = (await getPermohonanByEmail(session.email)).filter(
+    (p) => Date.now() - new Date(p.createdAt).getTime() < RATE_LIMIT_WINDOW_MS
+  );
+  if (recentSubmissions.length >= RATE_LIMIT_MAX_SUBMISSIONS) {
+    throw new Error(
+      "Anda telah mengirim terlalu banyak permohonan dalam waktu singkat. Silakan coba lagi dalam beberapa menit."
+    );
+  }
+
   const name = String(formData.get("name") ?? "").trim();
   const email = session.email;
   const phone = String(formData.get("phone") ?? "").trim();
@@ -180,7 +196,7 @@ export async function updatePermohonanStatusAction(
   id: string,
   formData: FormData
 ): Promise<void> {
-  await requireAdmin();
+  const session = await requireAdmin();
 
   const status = formData.get("status") as PermohonanStatus;
   const item = await getPermohonanById(id);
@@ -192,6 +208,15 @@ export async function updatePermohonanStatusAction(
     },
     { merge: true }
   );
+
+  await logAudit({
+    uid: session.uid,
+    email: session.email ?? "",
+    action: "status_change",
+    target: "permohonan",
+    targetId: id,
+    details: `${item?.categoryLabel ?? ""} -> ${statusLabels[status]}`,
+  });
 
   // Best-effort: the status is already saved regardless of whether this
   // email succeeds. Only notify when the status actually changed.

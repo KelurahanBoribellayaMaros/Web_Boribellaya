@@ -3,10 +3,11 @@
 import { redirect } from "next/navigation";
 import { adminDb } from "@/lib/firebase/admin";
 import { requireAdmin } from "@/lib/firebase/session";
+import { logAudit } from "@/lib/firebase/audit-repository";
 import { toastRedirectUrl } from "@/lib/toast-redirect";
 
 export async function updatePopulationAction(formData: FormData): Promise<void> {
-  await requireAdmin();
+  const session = await requireAdmin();
 
   const totalPenduduk = Number(formData.get("totalPenduduk"));
   const kepalaKeluarga = Number(formData.get("kepalaKeluarga"));
@@ -23,6 +24,13 @@ export async function updatePopulationAction(formData: FormData): Promise<void> 
     },
     { merge: true }
   );
+
+  await logAudit({
+    uid: session.uid,
+    email: session.email ?? "",
+    action: "update",
+    target: "population",
+  });
 
   redirect(
     toastRedirectUrl("/admin/data-penduduk", "Data penduduk berhasil diperbarui.")

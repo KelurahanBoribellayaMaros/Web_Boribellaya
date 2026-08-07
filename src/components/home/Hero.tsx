@@ -2,7 +2,7 @@
 
 import { useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
 import Image from "next/image";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, Search } from "lucide-react";
 import { heroImages } from "@/lib/home-data";
 
 const SWIPE_THRESHOLD_RATIO = 0.15;
@@ -97,6 +97,26 @@ export function Hero() {
                 informasi terkini, dan administrasi kependudukan dengan lebih
                 cepat, mudah, dan transparan.
               </p>
+
+              <form
+                action="/cari"
+                method="get"
+                className="pointer-events-auto mt-6 flex max-w-md items-center gap-2 rounded-2xl bg-white p-2 shadow-lg"
+              >
+                <Search className="ml-2.5 size-5 shrink-0 text-gray-400" />
+                <input
+                  type="search"
+                  name="q"
+                  placeholder="Cari berita, layanan, atau dokumen..."
+                  className="w-full bg-transparent py-2.5 text-sm text-gray-900 outline-none placeholder:text-gray-400"
+                />
+                <button
+                  type="submit"
+                  className="shrink-0 rounded-xl bg-[#003459] px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:opacity-90"
+                >
+                  Cari
+                </button>
+              </form>
             </div>
           </div>
         </div>

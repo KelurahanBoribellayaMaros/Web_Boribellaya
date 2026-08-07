@@ -11,10 +11,10 @@ export default async function NewPpidDocumentPage() {
       <AdminPageHeader
         icon={FileCheck2}
         iconClass="bg-purple-100 text-purple-700"
-        title="Unggah Dokumen PPID"
+        title="Unggah Dokumen Informasi Publik"
         description="Format PDF atau DOCX, maksimal 3MB."
         backHref="/admin/ppid"
-        backLabel="Kelola PPID"
+        backLabel="Kelola Informasi Publik"
       />
       <div className="mt-6">
         <PpidUploadForm />

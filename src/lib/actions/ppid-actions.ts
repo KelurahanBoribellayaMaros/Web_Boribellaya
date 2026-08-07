@@ -4,6 +4,7 @@ import { randomUUID } from "node:crypto";
 import { redirect } from "next/navigation";
 import { adminDb } from "@/lib/firebase/admin";
 import { requireAdmin } from "@/lib/firebase/session";
+import { logAudit } from "@/lib/firebase/audit-repository";
 import { supabaseAdmin, PPID_BUCKET } from "@/lib/supabase/client";
 import { toastRedirectUrl } from "@/lib/toast-redirect";
 import type { PpidCategory } from "@/types/ppid";
@@ -49,7 +50,7 @@ export async function createPpidDocumentAction(input: {
   category: PpidCategory;
   date: string;
 }): Promise<void> {
-  await requireAdmin();
+  const session = await requireAdmin();
 
   if (!input.date) {
     throw new Error("Tanggal wajib diisi.");
@@ -60,7 +61,7 @@ export async function createPpidDocumentAction(input: {
     .getPublicUrl(input.path);
 
   const now = new Date().toISOString();
-  await adminDb.collection("ppid_documents").add({
+  const docRef = await adminDb.collection("ppid_documents").add({
     title: input.title,
     description: input.description,
     category: input.category,
@@ -72,14 +73,24 @@ export async function createPpidDocumentAction(input: {
     updatedAt: now,
   });
 
+  await logAudit({
+    uid: session.uid,
+    email: session.email ?? "",
+    action: "create",
+    target: "ppid_document",
+    targetId: docRef.id,
+    details: input.title,
+  });
+
   redirect(toastRedirectUrl("/admin/ppid", "Dokumen berhasil diunggah."));
 }
 
 export async function deletePpidDocumentAction(id: string): Promise<void> {
-  await requireAdmin();
+  const session = await requireAdmin();
 
   const doc = await adminDb.collection("ppid_documents").doc(id).get();
   const filePath = doc.data()?.filePath as string | undefined;
+  const title = doc.data()?.title as string | undefined;
 
   if (filePath) {
     await supabaseAdmin.storage
@@ -89,5 +100,15 @@ export async function deletePpidDocumentAction(id: string): Promise<void> {
   }
 
   await adminDb.collection("ppid_documents").doc(id).delete();
+
+  await logAudit({
+    uid: session.uid,
+    email: session.email ?? "",
+    action: "delete",
+    target: "ppid_document",
+    targetId: id,
+    details: title,
+  });
+
   redirect(toastRedirectUrl("/admin/ppid", "Dokumen berhasil dihapus."));
 }

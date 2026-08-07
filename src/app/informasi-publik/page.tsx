@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { FileQuestion } from "lucide-react";
+import { FileQuestion, Scale } from "lucide-react";
 import { PpidDocumentList } from "@/components/ppid/PpidDocumentList";
+import { ProfileCard } from "@/components/profil/ProfileCard";
 import { getPpidDocuments } from "@/lib/firebase/ppid-repository";
+import { dasarHukum } from "@/lib/ppid-data";
 import { Reveal } from "@/components/ui/Reveal";
 
 export const dynamic = "force-dynamic";
@@ -13,7 +15,7 @@ export const metadata: Metadata = {
     "Telusuri dokumen resmi yang wajib disediakan dan diumumkan sesuai Undang-Undang Keterbukaan Informasi Publik.",
 };
 
-export default async function PpidInformasiPage() {
+export default async function InformasiPublikPage() {
   const documents = await getPpidDocuments();
 
   return (
@@ -35,7 +37,24 @@ export default async function PpidInformasiPage() {
         </p>
       </div>
 
-      <div className="mt-8 sm:mt-10">
+      <div className="mt-8 space-y-6 sm:mt-10">
+        <Reveal>
+          <ProfileCard icon={Scale} title="Dasar Hukum">
+            <div className="space-y-4">
+              {dasarHukum.map((item) => (
+                <div key={item.title}>
+                  <p className="text-sm font-semibold text-gray-900">
+                    {item.title}
+                  </p>
+                  <p className="mt-1 text-sm leading-relaxed text-gray-600">
+                    {item.content}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </ProfileCard>
+        </Reveal>
+
         <Reveal>
           <div className="flex flex-wrap items-end justify-between gap-3">
             <div>
@@ -47,7 +66,7 @@ export default async function PpidInformasiPage() {
               </p>
             </div>
             <Link
-              href="/ppid/ajukan"
+              href="/informasi-publik/ajukan"
               className="flex shrink-0 items-center gap-1.5 rounded-full border border-[#003459] px-4 py-2 text-sm font-semibold text-[#003459] transition-colors hover:bg-blue-50"
             >
               <FileQuestion className="size-4" />
