@@ -3,12 +3,32 @@
 import { useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { signInWithEmailAndPassword } from "firebase/auth";
+import { signInWithEmailAndPassword, type AuthError } from "firebase/auth";
 import { Eye, EyeOff, Lock, LogIn, Mail } from "lucide-react";
 import { auth } from "@/lib/firebase/client";
 import { createSessionAction } from "@/lib/actions/auth-actions";
 
 type LoginTab = "warga" | "admin";
+
+function authErrorMessage(error: unknown): string {
+  const code = (error as AuthError)?.code;
+  switch (code) {
+    case "auth/invalid-credential":
+    case "auth/wrong-password":
+    case "auth/user-not-found":
+      return "Email atau kata sandi salah.";
+    case "auth/invalid-email":
+      return "Format email tidak valid.";
+    case "auth/user-disabled":
+      return "Akun ini telah dinonaktifkan. Hubungi admin kelurahan.";
+    case "auth/too-many-requests":
+      return "Terlalu banyak percobaan gagal. Silakan coba lagi nanti.";
+    case "auth/network-request-failed":
+      return "Gagal terhubung ke server. Periksa koneksi internet Anda.";
+    default:
+      return "Gagal masuk. Silakan coba lagi.";
+  }
+}
 
 export function LoginForm() {
   const router = useRouter();
@@ -33,12 +53,7 @@ export function LoginForm() {
       router.push(role === "admin" ? `/admin?${toast}` : `/?${toast}`);
     } catch (err) {
       console.error(err);
-      const code =
-        err && typeof err === "object" && "code" in err
-          ? String((err as { code: unknown }).code)
-          : null;
-      const message = err instanceof Error ? err.message : null;
-      setError(code || message || "Email atau kata sandi salah.");
+      setError(authErrorMessage(err));
       setIsSubmitting(false);
     }
   }

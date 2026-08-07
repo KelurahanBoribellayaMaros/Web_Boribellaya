@@ -1,9 +1,10 @@
 import Link from "next/link";
-import { Building2, Plus, User, UserCog, Users } from "lucide-react";
+import { Building2, Plus, UserCog, Users } from "lucide-react";
 import { requireAdmin } from "@/lib/firebase/session";
 import { getLeader, getOrgPositions } from "@/lib/firebase/struktur-repository";
-import { updateLeaderAction, deleteOrgPositionAction } from "@/lib/actions/struktur-actions";
+import { deleteOrgPositionAction } from "@/lib/actions/struktur-actions";
 import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
+import { LeaderForm } from "@/components/admin/LeaderForm";
 
 export const dynamic = "force-dynamic";
 
@@ -25,136 +26,7 @@ export default async function AdminStrukturOrganisasiPage() {
           <UserCog className="size-4 text-indigo-600" />
           Profil Pimpinan
         </h2>
-        <form
-          action={updateLeaderAction}
-          className="mt-3 space-y-4 rounded-2xl border border-gray-200 bg-white p-6 shadow-sm"
-        >
-          <div>
-            <label className="mb-1.5 block text-sm font-medium text-gray-700">
-              Foto Lurah
-            </label>
-            <div className="flex items-center gap-4">
-              <div className="size-16 shrink-0 overflow-hidden rounded-full bg-gray-100 ring-1 ring-gray-200">
-                {leader.photo ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    src={leader.photo}
-                    alt={leader.name}
-                    className="size-full object-cover"
-                  />
-                ) : (
-                  <div className="flex size-full items-center justify-center text-gray-300">
-                    <User className="size-7" />
-                  </div>
-                )}
-              </div>
-              <input
-                id="photo"
-                name="photo"
-                type="file"
-                accept="image/jpeg,image/png,image/webp"
-                className="w-full text-sm text-gray-700 file:mr-4 file:rounded-full file:border-0 file:bg-blue-100 file:px-4 file:py-1.5 file:text-sm file:font-semibold file:text-[#003459]"
-              />
-            </div>
-            <p className="mt-1.5 text-xs text-gray-400">
-              Format JPG, PNG, atau WEBP, maksimal 600KB. Biarkan kosong jika
-              tidak ingin mengubah foto.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            <div>
-              <label htmlFor="name" className="mb-1.5 block text-sm font-medium text-gray-700">
-                Nama Lengkap
-              </label>
-              <input
-                id="name"
-                name="name"
-                type="text"
-                required
-                defaultValue={leader.name}
-                className="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm text-gray-900 outline-none focus:border-green-600 focus:ring-2 focus:ring-green-600/20"
-              />
-            </div>
-            <div>
-              <label
-                htmlFor="position"
-                className="mb-1.5 block text-sm font-medium text-gray-700"
-              >
-                Jabatan
-              </label>
-              <input
-                id="position"
-                name="position"
-                type="text"
-                required
-                defaultValue={leader.position}
-                className="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm text-gray-900 outline-none focus:border-green-600 focus:ring-2 focus:ring-green-600/20"
-              />
-            </div>
-            <div>
-              <label htmlFor="nip" className="mb-1.5 block text-sm font-medium text-gray-700">
-                NIP
-              </label>
-              <input
-                id="nip"
-                name="nip"
-                type="text"
-                required
-                defaultValue={leader.nip}
-                className="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm text-gray-900 outline-none focus:border-green-600 focus:ring-2 focus:ring-green-600/20"
-              />
-            </div>
-            <div>
-              <label htmlFor="email" className="mb-1.5 block text-sm font-medium text-gray-700">
-                Email
-              </label>
-              <input
-                id="email"
-                name="email"
-                type="email"
-                required
-                defaultValue={leader.email}
-                className="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm text-gray-900 outline-none focus:border-green-600 focus:ring-2 focus:ring-green-600/20"
-              />
-            </div>
-            <div className="sm:col-span-2">
-              <label htmlFor="term" className="mb-1.5 block text-sm font-medium text-gray-700">
-                Masa Jabatan
-              </label>
-              <input
-                id="term"
-                name="term"
-                type="text"
-                required
-                defaultValue={leader.term}
-                placeholder="Masa Jabatan: 2021 - Sekarang"
-                className="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm text-gray-900 outline-none focus:border-green-600 focus:ring-2 focus:ring-green-600/20"
-              />
-            </div>
-          </div>
-
-          <div>
-            <label htmlFor="bio" className="mb-1.5 block text-sm font-medium text-gray-700">
-              Bio Singkat
-            </label>
-            <textarea
-              id="bio"
-              name="bio"
-              required
-              rows={3}
-              defaultValue={leader.bio}
-              className="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm text-gray-900 outline-none focus:border-green-600 focus:ring-2 focus:ring-green-600/20"
-            />
-          </div>
-
-          <button
-            type="submit"
-            className="w-full rounded-xl bg-[#003459] py-3 text-sm font-semibold text-white transition-colors hover:opacity-90 sm:w-auto sm:px-8"
-          >
-            Simpan Profil Pimpinan
-          </button>
-        </form>
+        <LeaderForm leader={leader} />
       </section>
 
       <section className="mt-8">

@@ -18,8 +18,17 @@ function toNewsItem(id: string, data: FirebaseFirestore.DocumentData): NewsItem 
   };
 }
 
+// Pure safety net (not real pagination) so a collection that grows for years
+// can never balloon a single page load — mirrors the same cap on
+// getPermohonanList in permohonan-repository.ts.
+const FETCH_CAP = 2000;
+
 export async function getNews(): Promise<NewsItem[]> {
-  const snapshot = await adminDb.collection("news").orderBy("date", "desc").get();
+  const snapshot = await adminDb
+    .collection("news")
+    .orderBy("date", "desc")
+    .limit(FETCH_CAP)
+    .get();
   return snapshot.docs.map((doc) => toNewsItem(doc.id, doc.data()));
 }
 

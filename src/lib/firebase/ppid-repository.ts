@@ -16,10 +16,16 @@ function toPpidDocument(id: string, data: FirebaseFirestore.DocumentData): PpidD
   };
 }
 
+// Pure safety net (not real pagination) so a collection that grows for years
+// can never balloon a single page load — mirrors the same cap on
+// getPermohonanList in permohonan-repository.ts.
+const FETCH_CAP = 2000;
+
 export async function getPpidDocuments(): Promise<PpidDocument[]> {
   const snapshot = await adminDb
     .collection("ppid_documents")
     .orderBy("date", "desc")
+    .limit(FETCH_CAP)
     .get();
   return snapshot.docs.map((doc) => toPpidDocument(doc.id, doc.data()));
 }

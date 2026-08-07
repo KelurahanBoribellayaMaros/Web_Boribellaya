@@ -1,6 +1,12 @@
+"use client";
+
+import { useState, type FormEvent } from "react";
 import { ImageIcon } from "lucide-react";
 import { DatePicker } from "@/components/ui/DatePicker";
 import type { NewsItem } from "@/types/home";
+
+const ALLOWED_PHOTO_TYPES = new Set(["image/jpeg", "image/png", "image/webp"]);
+const MAX_PHOTO_SIZE = 600 * 1024; // 600KB
 
 type NewsFormProps = {
   action: (formData: FormData) => void | Promise<void>;
@@ -12,9 +18,40 @@ type NewsFormProps = {
 };
 
 export function NewsForm({ action, defaultValues, submitLabel }: NewsFormProps) {
+  const [error, setError] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setError(null);
+
+    const formData = new FormData(event.currentTarget);
+    const photo = formData.get("coverImage");
+
+    if (photo instanceof File && photo.size > 0) {
+      if (!ALLOWED_PHOTO_TYPES.has(photo.type)) {
+        setError("Foto sampul harus berformat JPG, PNG, atau WEBP.");
+        return;
+      }
+      if (photo.size > MAX_PHOTO_SIZE) {
+        setError("Ukuran foto sampul maksimal 600KB.");
+        return;
+      }
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      await action(formData);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Terjadi kesalahan. Silakan coba lagi.");
+      setIsSubmitting(false);
+    }
+  }
+
   return (
     <form
-      action={action}
+      onSubmit={handleSubmit}
       className="space-y-4 rounded-2xl border border-gray-200 bg-white p-6 shadow-sm"
     >
       <div>
@@ -162,11 +199,14 @@ export function NewsForm({ action, defaultValues, submitLabel }: NewsFormProps) 
         </div>
       </div>
 
+      {error && <p className="text-sm text-red-600">{error}</p>}
+
       <button
         type="submit"
-        className="w-full rounded-xl bg-[#003459] py-3 text-sm font-semibold text-white transition-colors hover:opacity-90"
+        disabled={isSubmitting}
+        className="w-full rounded-xl bg-[#003459] py-3 text-sm font-semibold text-white transition-colors hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
       >
-        {submitLabel}
+        {isSubmitting ? "Menyimpan..." : submitLabel}
       </button>
     </form>
   );
