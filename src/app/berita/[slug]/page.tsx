@@ -2,10 +2,15 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, Calendar, ImageIcon } from "lucide-react";
-import { getNewsBySlug } from "@/lib/firebase/news-repository";
+import { getNews, getNewsBySlug } from "@/lib/firebase/news-repository";
 import { formatDate } from "@/lib/home-data";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 60;
+
+export async function generateStaticParams() {
+  const news = await getNews();
+  return news.map((item) => ({ slug: item.slug }));
+}
 
 export async function generateMetadata({
   params,

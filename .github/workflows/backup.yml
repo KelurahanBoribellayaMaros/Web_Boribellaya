@@ -1,0 +1,40 @@
+name: Firestore Backup
+
+on:
+  schedule:
+    # Every Monday at 02:00 UTC (~09:00-10:00 WITA).
+    - cron: "0 2 * * 1"
+  workflow_dispatch: {}
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run Firestore backup
+        run: node scripts/backup-firestore.mjs
+        env:
+          FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
+          FIREBASE_CLIENT_EMAIL: ${{ secrets.FIREBASE_CLIENT_EMAIL }}
+          FIREBASE_PRIVATE_KEY: ${{ secrets.FIREBASE_PRIVATE_KEY }}
+
+      # Backups contain citizen PII, so they're kept as a private workflow
+      # artifact (visible only to repo collaborators) rather than committed
+      # to the repository — git history is effectively permanent, artifacts
+      # expire and are easy to prune.
+      - name: Upload backup as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: firestore-backup-${{ github.run_id }}
+          path: backups/
+          retention-days: 90

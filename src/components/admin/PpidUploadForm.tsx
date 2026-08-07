@@ -15,7 +15,7 @@ const ALLOWED_MIME_TYPES = new Set([
   "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
 ]);
 
-const MAX_FILE_SIZE = 3 * 1024 * 1024; // 3MB
+const MAX_FILE_SIZE = 2 * 1024 * 1024; // 2MB
 
 export function PpidUploadForm() {
   const [title, setTitle] = useState("");
@@ -43,7 +43,7 @@ export function PpidUploadForm() {
       return;
     }
     if (file.size > MAX_FILE_SIZE) {
-      setError("Ukuran file maksimal 3MB.");
+      setError("Ukuran file maksimal 2MB.");
       return;
     }
 
@@ -136,7 +136,7 @@ export function PpidUploadForm() {
 
       <div>
         <label htmlFor="file" className="mb-1.5 block text-sm font-medium text-gray-700">
-          File (PDF atau DOCX, maksimal 3MB)
+          File (PDF atau DOCX, maksimal 2MB)
         </label>
         <input
           id="file"

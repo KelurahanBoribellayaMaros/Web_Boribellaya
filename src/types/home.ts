@@ -6,6 +6,7 @@ export type ServiceItem = {
   title: string;
   description: string;
   href: string;
+  enabled?: boolean;
 };
 
 export type PopulationStat = {

@@ -1,4 +1,5 @@
 import "server-only";
+import { cache } from "react";
 import { adminDb } from "@/lib/firebase/admin";
 import type { KontakInfo } from "@/types/kontak";
 
@@ -13,7 +14,11 @@ const EMPTY_KONTAK: KontakInfo = {
   mapsEmbedUrl: undefined,
 };
 
-export async function getKontakInfo(): Promise<KontakInfo> {
+// Called from both the root layout (footer, on every page) and specific
+// pages (/kontak, /layanan) — wrapping in React's cache() means those calls
+// within the same request dedupe to a single Firestore read instead of one
+// per call site.
+export const getKontakInfo = cache(async (): Promise<KontakInfo> => {
   const doc = await adminDb.collection("settings").doc("kontak").get();
   if (!doc.exists) return EMPTY_KONTAK;
 
@@ -25,4 +30,4 @@ export async function getKontakInfo(): Promise<KontakInfo> {
     hours: data.hours || EMPTY_KONTAK.hours,
     mapsEmbedUrl: data.mapsEmbedUrl || undefined,
   };
-}
+});

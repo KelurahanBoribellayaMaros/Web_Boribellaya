@@ -11,7 +11,7 @@ import type { BerkasRequirement } from "@/types/layanan";
 import type { PermohonanType } from "@/types/permohonan";
 
 const ALLOWED_BERKAS_TYPES = new Set(["application/pdf", "image/jpeg", "image/png"]);
-const MAX_BERKAS_SIZE = 5 * 1024 * 1024; // 5MB
+const MAX_BERKAS_SIZE = 2 * 1024 * 1024; // 2MB
 
 type PermohonanFormProps = {
   type: PermohonanType;
@@ -55,7 +55,7 @@ export function PermohonanForm({
         return;
       }
       if (file.size > MAX_BERKAS_SIZE) {
-        setError(`Ukuran dokumen "${req.label}" maksimal 5MB.`);
+        setError(`Ukuran dokumen "${req.label}" maksimal 2MB.`);
         return;
       }
     }
@@ -196,7 +196,7 @@ export function PermohonanForm({
             </div>
           ))}
           <p className="text-xs text-gray-500">
-            Format PDF, JPG, atau PNG, maksimal 5MB per dokumen.
+            Format PDF, JPG, atau PNG, maksimal 2MB per dokumen.
           </p>
         </div>
       )}

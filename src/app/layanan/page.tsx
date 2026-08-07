@@ -6,8 +6,9 @@ import { SopPelayananSection } from "@/components/layanan/SopPelayananSection";
 import { HelpSection } from "@/components/layanan/HelpSection";
 import { sopSteps, layananItems } from "@/lib/layanan-data";
 import { getKontakInfo } from "@/lib/firebase/kontak-repository";
+import { getLayananStatus, isLayananEnabled } from "@/lib/firebase/layanan-repository";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: "Layanan | Kelurahan Boribellaya",
@@ -16,13 +17,17 @@ export const metadata: Metadata = {
 };
 
 export default async function LayananPage() {
-  const kontak = await getKontakInfo();
+  const [kontak, status] = await Promise.all([getKontakInfo(), getLayananStatus()]);
+  const items = layananItems.map((item) => ({
+    ...item,
+    enabled: isLayananEnabled(status, item.slug),
+  }));
 
   return (
     <>
       <ServicesHero />
       <SopSteps steps={sopSteps} />
-      <LayananListSection items={layananItems} />
+      <LayananListSection items={items} />
       <SopPelayananSection />
       <HelpSection whatsapp={kontak.whatsapp} />
     </>

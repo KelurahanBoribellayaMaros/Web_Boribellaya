@@ -12,6 +12,10 @@
 
 # testing
 /coverage
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
 
 # next.js
 /.next/
@@ -40,6 +44,11 @@ yarn-error.log*
 
 # vercel
 .vercel
+
+# local Firestore backups — contain citizen PII (KTP/KK-adjacent data), never
+# commit these to git history. The scheduled workflow uploads them as a
+# private GitHub Actions artifact instead.
+/backups/
 
 # typescript
 *.tsbuildinfo

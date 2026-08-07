@@ -7,7 +7,7 @@ import { getPpidDocuments } from "@/lib/firebase/ppid-repository";
 import { dasarHukum } from "@/lib/ppid-data";
 import { Reveal } from "@/components/ui/Reveal";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: "Daftar Informasi Publik | Kelurahan Boribellaya",

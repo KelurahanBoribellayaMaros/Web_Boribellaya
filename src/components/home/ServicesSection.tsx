@@ -1,9 +1,12 @@
 import { ChevronRight } from "lucide-react";
 import { layananItems } from "@/lib/layanan-data";
+import { getLayananStatus, isLayananEnabled } from "@/lib/firebase/layanan-repository";
 import { ServiceCard } from "@/components/ui/ServiceCard";
 import { Reveal } from "@/components/ui/Reveal";
 
-export function ServicesSection() {
+export async function ServicesSection() {
+  const status = await getLayananStatus();
+
   return (
     <section
       id="layanan"
@@ -36,6 +39,7 @@ export function ServicesSection() {
               title={item.title}
               description={item.description}
               href={item.href}
+              enabled={isLayananEnabled(status, item.slug)}
             />
           </Reveal>
         ))}

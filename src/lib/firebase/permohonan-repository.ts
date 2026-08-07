@@ -25,17 +25,21 @@ function toPermohonan(id: string, data: FirebaseFirestore.DocumentData): Permoho
   };
 }
 
+// Filtered in-memory (not via Firestore .where()) so we never need a
+// composite index for the status+type+orderBy combination — fine for a
+// single kelurahan's realistic data volume. FETCH_CAP is a pure safety net
+// (not real pagination) so a runaway/spammed collection can never balloon a
+// single page load into reading tens of thousands of documents.
+const FETCH_CAP = 2000;
+
 export async function getPermohonanList(filters?: {
   status?: PermohonanStatus;
   type?: PermohonanType;
 }): Promise<Permohonan[]> {
-  // Filtered in-memory (not via Firestore .where()) so we never need a
-  // composite index for the status+type+orderBy combination — this
-  // collection stays small for a single kelurahan, so the extra reads
-  // are negligible.
   const snapshot = await adminDb
     .collection("permohonan")
     .orderBy("createdAt", "desc")
+    .limit(FETCH_CAP)
     .get();
 
   return snapshot.docs
@@ -48,16 +52,18 @@ export async function getPermohonanList(filters?: {
 }
 
 export async function getPermohonanByEmail(email: string): Promise<Permohonan[]> {
-  // Filtered in-memory for the same reason as getPermohonanList — avoids
-  // needing a composite index for email+orderBy on this small collection.
-  const snapshot = await adminDb
-    .collection("permohonan")
-    .orderBy("updatedAt", "desc")
-    .get();
+  // A real .where() filter here (unlike getPermohonanList's in-memory
+  // approach) — this runs on every page load for every logged-in citizen
+  // (root layout -> notification bell), so fetching the whole collection
+  // just to find one person's own requests would multiply reads by however
+  // many documents exist, on every single navigation. A single equality
+  // filter needs no composite index; sorting the (small, per-person) result
+  // in memory is effectively free.
+  const snapshot = await adminDb.collection("permohonan").where("email", "==", email).get();
 
   return snapshot.docs
     .map((doc) => toPermohonan(doc.id, doc.data()))
-    .filter((item) => item.email === email);
+    .sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime());
 }
 
 export async function getPermohonanById(id: string): Promise<Permohonan | null> {

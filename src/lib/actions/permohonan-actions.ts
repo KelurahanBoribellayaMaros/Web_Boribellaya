@@ -19,7 +19,7 @@ const ALLOWED_BERKAS_MIME_TYPES: Record<string, string> = {
   "image/png": "png",
 };
 
-const MAX_BERKAS_SIZE = 5 * 1024 * 1024; // 5MB
+const MAX_BERKAS_SIZE = 2 * 1024 * 1024; // 2MB
 
 // Beyond the honeypot (which only stops naive bots), this stops a logged-in
 // account from flooding the admin inbox/Firestore by scripting repeated
@@ -38,7 +38,7 @@ export async function createPermohonanUploadUrlAction(input: {
     throw new Error("Hanya file PDF, JPG, atau PNG yang diperbolehkan.");
   }
   if (input.fileSize > MAX_BERKAS_SIZE) {
-    throw new Error("Ukuran file maksimal 5MB.");
+    throw new Error("Ukuran file maksimal 2MB.");
   }
 
   const path = `${randomUUID()}.${extension}`;
@@ -142,6 +142,12 @@ export async function submitPermohonanAction(
   // PPID-specific fields — only sent by the informasi request form, so
   // these are simply absent (and skipped below) for layanan submissions.
   const nik = String(formData.get("nik") ?? "").trim();
+  // The form enforces 16 digits via minLength/maxLength, but that's a
+  // client-side HTML constraint only — trivially bypassed by anyone
+  // submitting the request directly, so it must be re-checked here too.
+  if (nik && !/^\d{16}$/.test(nik)) {
+    throw new Error("NIK harus terdiri dari 16 digit angka.");
+  }
   const identityCategory = String(formData.get("identityCategory") ?? "").trim();
   const address = String(formData.get("address") ?? "").trim();
   const occupation = String(formData.get("occupation") ?? "").trim();
@@ -239,4 +245,30 @@ export async function updatePermohonanStatusAction(
   redirect(
     toastRedirectUrl("/admin/permohonan", "Status permohonan berhasil diperbarui.")
   );
+}
+
+export async function deletePermohonanAction(id: string): Promise<void> {
+  const session = await requireAdmin();
+
+  const item = await getPermohonanById(id);
+
+  if (item?.berkas && item.berkas.length > 0) {
+    await supabaseAdmin.storage
+      .from(PERMOHONAN_BUCKET)
+      .remove(item.berkas.map((b) => b.path))
+      .catch(() => {});
+  }
+
+  await adminDb.collection("permohonan").doc(id).delete();
+
+  await logAudit({
+    uid: session.uid,
+    email: session.email ?? "",
+    action: "delete",
+    target: "permohonan",
+    targetId: id,
+    details: item?.categoryLabel,
+  });
+
+  redirect(toastRedirectUrl("/admin/permohonan", "Permohonan berhasil dihapus."));
 }

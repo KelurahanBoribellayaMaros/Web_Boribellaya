@@ -5,8 +5,6 @@ import { Analytics } from "@vercel/analytics/next";
 import { SiteChrome } from "@/components/layout/SiteChrome";
 import { ToastProvider } from "@/components/ui/ToastProvider";
 import { ToastListener } from "@/components/ui/ToastListener";
-import { getSession } from "@/lib/firebase/session";
-import { getNotificationsForUser } from "@/lib/firebase/notifications-repository";
 import { getKontakInfo } from "@/lib/firebase/kontak-repository";
 import "./globals.css";
 
@@ -31,10 +29,6 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const session = await getSession();
-  const notifications = session?.email
-    ? await getNotificationsForUser(session.uid, session.email)
-    : null;
   const kontak = await getKontakInfo();
 
   return (
@@ -47,9 +41,7 @@ export default async function RootLayout({
           <Suspense fallback={null}>
             <ToastListener />
           </Suspense>
-          <SiteChrome session={session} notifications={notifications} kontak={kontak}>
-            {children}
-          </SiteChrome>
+          <SiteChrome kontak={kontak}>{children}</SiteChrome>
         </ToastProvider>
         <Analytics />
       </body>

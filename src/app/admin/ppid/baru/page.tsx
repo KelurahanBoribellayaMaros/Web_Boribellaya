@@ -12,7 +12,7 @@ export default async function NewPpidDocumentPage() {
         icon={FileCheck2}
         iconClass="bg-purple-100 text-purple-700"
         title="Unggah Dokumen Informasi Publik"
-        description="Format PDF atau DOCX, maksimal 3MB."
+        description="Format PDF atau DOCX, maksimal 2MB."
         backHref="/admin/ppid"
         backLabel="Kelola Informasi Publik"
       />

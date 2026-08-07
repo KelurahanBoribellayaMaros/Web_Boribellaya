@@ -5,7 +5,7 @@ import { getKontakInfo } from "@/lib/firebase/kontak-repository";
 import { toWhatsAppHref } from "@/lib/whatsapp";
 import { Reveal } from "@/components/ui/Reveal";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: "Kontak & Lokasi | Kelurahan Boribellaya",

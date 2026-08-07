@@ -23,6 +23,10 @@ export type LayananItem = {
   // Document-type upload fields shown on the ajukan form, derived from the
   // SOP's persyaratan list (only the items that are actual files to upload).
   berkasRequirements?: BerkasRequirement[];
+  // Admin-toggled visibility (settings/layanan_status in Firestore) — not
+  // part of the static catalog itself, merged in at render time. Absent
+  // means "not yet toggled by admin", which should behave as enabled.
+  enabled?: boolean;
 };
 
 export type SyaratLayanan = {

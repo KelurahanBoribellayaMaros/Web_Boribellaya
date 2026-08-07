@@ -7,7 +7,7 @@ import { history, vision, missions } from "@/lib/profile-data";
 import { getLeader, getOrgChart } from "@/lib/firebase/struktur-repository";
 import { Reveal } from "@/components/ui/Reveal";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: "Profil Kelurahan | Kelurahan Boribellaya",

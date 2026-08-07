@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { getNews } from "@/lib/firebase/news-repository";
 import { BeritaListClient } from "@/components/berita/BeritaListClient";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: "Berita & Pengumuman | Kelurahan Boribellaya",

@@ -2,10 +2,14 @@ import { notFound } from "next/navigation";
 import { FileText, Inbox } from "lucide-react";
 import { requireAdmin } from "@/lib/firebase/session";
 import { getPermohonanById } from "@/lib/firebase/permohonan-repository";
-import { updatePermohonanStatusAction } from "@/lib/actions/permohonan-actions";
+import {
+  deletePermohonanAction,
+  updatePermohonanStatusAction,
+} from "@/lib/actions/permohonan-actions";
 import { copyFormatLabels, identityCategoryLabels, statusLabels } from "@/types/permohonan";
 import { formatDate } from "@/lib/home-data";
 import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
+import { ConfirmSubmitButton } from "@/components/admin/ConfirmSubmitButton";
 import { supabaseAdmin, PERMOHONAN_BUCKET } from "@/lib/supabase/client";
 
 export default async function AdminPermohonanDetailPage({
@@ -171,6 +175,18 @@ export default async function AdminPermohonanDetailPage({
           >
             Simpan Status
           </button>
+        </form>
+
+        <form
+          action={deletePermohonanAction.bind(null, item.id)}
+          className="mt-4 flex justify-end border-t border-gray-100 pt-4"
+        >
+          <ConfirmSubmitButton
+            confirmMessage={`Hapus permohonan "${item.categoryLabel}" dari ${item.name}? Berkas yang diunggah (termasuk KTP/KK) juga akan ikut terhapus permanen dan tidak bisa dikembalikan.`}
+            className="rounded-xl border border-red-200 px-6 py-2.5 text-sm font-semibold text-red-600 transition-colors hover:bg-red-50"
+          >
+            Hapus Permohonan
+          </ConfirmSubmitButton>
         </form>
       </div>
     </div>

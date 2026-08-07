@@ -22,7 +22,10 @@ import {
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { logoutAction } from "@/lib/actions/auth-actions";
-import { markNotificationsSeenAction } from "@/lib/actions/notification-actions";
+import {
+  getHeaderDataAction,
+  markNotificationsSeenAction,
+} from "@/lib/actions/notification-actions";
 import type { Session } from "@/lib/firebase/session";
 import { statusLabels } from "@/types/permohonan";
 import type { PermohonanStatus } from "@/types/permohonan";
@@ -60,13 +63,7 @@ function notificationMessage(item: NotificationItem): string {
   return `Status ${kind} "${item.categoryLabel}" berubah menjadi ${statusLabels[item.status]}.`;
 }
 
-export function Header({
-  session,
-  notifications,
-}: {
-  session: Session | null;
-  notifications: NotificationData | null;
-}) {
+export function Header() {
   const pathname = usePathname();
   const isHome = pathname === "/";
 
@@ -74,10 +71,38 @@ export function Header({
   const [activeId, setActiveId] = useState("beranda");
   const [isAccountMenuOpen, setIsAccountMenuOpen] = useState(false);
   const [isNotifOpen, setIsNotifOpen] = useState(false);
-  const [unreadCount, setUnreadCount] = useState(notifications?.unreadCount ?? 0);
   const [isScrolled, setIsScrolled] = useState(false);
   const accountMenuRef = useRef<HTMLDivElement>(null);
   const notifMenuRef = useRef<HTMLDivElement>(null);
+
+  // Fetched client-side (not passed down from the root layout) so public
+  // pages can be cached — see getHeaderDataAction for why.
+  const [session, setSession] = useState<Session | null>(null);
+  const [notifications, setNotifications] = useState<NotificationData | null>(null);
+  const [isAuthLoaded, setIsAuthLoaded] = useState(false);
+  const [unreadCount, setUnreadCount] = useState(0);
+
+  useEffect(() => {
+    // Header lives in the root layout, which persists across client-side
+    // navigations (it never remounts when you go from /login to / after
+    // signing in) — so this must re-run on every pathname change, not just
+    // once on first mount, or the header would keep showing whatever auth
+    // state was true the very first time the app loaded. isAuthLoaded is
+    // intentionally never reset back to false here so this re-sync happens
+    // silently in the background instead of re-flashing the skeleton on
+    // every navigation.
+    let cancelled = false;
+    getHeaderDataAction().then((data) => {
+      if (cancelled) return;
+      setSession(data.session);
+      setNotifications(data.notifications);
+      setUnreadCount(data.notifications?.unreadCount ?? 0);
+      setIsAuthLoaded(true);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [pathname]);
 
   useEffect(() => {
     if (!isAccountMenuOpen && !isNotifOpen) return;
@@ -280,7 +305,12 @@ export function Header({
               </div>
             )}
           </div>
-          {session ? (
+          {!isAuthLoaded ? (
+            <div className="flex items-center" aria-hidden="true">
+              <span className="size-10 shrink-0 animate-pulse rounded-full bg-white/10 sm:hidden" />
+              <span className="hidden h-8 w-24 animate-pulse rounded-full bg-white/10 sm:block" />
+            </div>
+          ) : session ? (
             <div className="relative" ref={accountMenuRef}>
               <button
                 type="button"

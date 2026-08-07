@@ -1,9 +1,9 @@
 import {
   CheckCircle2,
-  CreditCard,
   FileBarChart,
   FileText,
   IdCard,
+  MessageSquareWarning,
   Send,
   ShieldCheck,
 } from "lucide-react";
@@ -76,20 +76,14 @@ export const layananItems: LayananItem[] = [
     ],
   },
   {
-    slug: "pengurusan-ktp",
-    icon: CreditCard,
-    title: "Layanan Pengurusan KTP",
+    slug: "lapor-keluhan",
+    icon: MessageSquareWarning,
+    title: "Lapor Keluhan",
     description:
-      "Ajukan pembuatan, perubahan data, atau penggantian KTP hilang/rusak.",
-    cta: "Ajukan Sekarang",
-    href: "/layanan/pengurusan-ktp/ajukan",
+      "Sampaikan keluhan fasilitas umum atau lingkungan Anda di sini.",
+    cta: "Kirim Laporan",
+    href: "/layanan/lapor-keluhan/ajukan",
     variant: "solid",
-    // Tidak ada padanan resmi di SK Lurah (urusan KTP diteruskan ke
-    // Dukcapil) — daftar berkas ini set minimal, bukan dari dokumen resmi.
-    berkasRequirements: [
-      { key: "surat-pengantar-rt-rw", label: "Surat Pengantar RT/RW" },
-      { key: "kk", label: "Foto Copy Kartu Keluarga (KK)" },
-    ],
   },
   {
     slug: "informasi-publik",

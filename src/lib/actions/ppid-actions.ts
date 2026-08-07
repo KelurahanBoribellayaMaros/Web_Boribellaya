@@ -15,7 +15,7 @@ const ALLOWED_MIME_TYPES: Record<string, string> = {
     "docx",
 };
 
-const MAX_FILE_SIZE = 3 * 1024 * 1024; // 3MB
+const MAX_FILE_SIZE = 2 * 1024 * 1024; // 2MB
 
 export async function createPpidUploadUrlAction(input: {
   fileType: string;
@@ -28,7 +28,7 @@ export async function createPpidUploadUrlAction(input: {
     throw new Error("Hanya file PDF atau DOCX yang diperbolehkan.");
   }
   if (input.fileSize > MAX_FILE_SIZE) {
-    throw new Error("Ukuran file maksimal 3MB.");
+    throw new Error("Ukuran file maksimal 2MB.");
   }
 
   const path = `${randomUUID()}.${extension}`;

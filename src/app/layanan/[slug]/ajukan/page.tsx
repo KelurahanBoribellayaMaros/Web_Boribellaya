@@ -1,7 +1,9 @@
 import Link from "next/link";
+import { Lock } from "lucide-react";
 import { notFound } from "next/navigation";
 import { layananItems } from "@/lib/layanan-data";
 import { requireVerifiedSession } from "@/lib/firebase/session";
+import { getLayananStatus, isLayananEnabled } from "@/lib/firebase/layanan-repository";
 import { PermohonanForm } from "@/components/permohonan/PermohonanForm";
 
 export default async function AjukanLayananPage({
@@ -14,6 +16,31 @@ export default async function AjukanLayananPage({
 
   if (!item || item.slug === "informasi-publik") {
     notFound();
+  }
+
+  const status = await getLayananStatus();
+  if (!isLayananEnabled(status, item.slug)) {
+    return (
+      <div className="mx-auto max-w-md px-3 py-16 text-center sm:px-4">
+        <span className="mx-auto flex size-14 items-center justify-center rounded-full bg-gray-100 text-gray-400">
+          <Lock className="size-6" />
+        </span>
+        <h1 className="mt-4 text-lg font-bold text-gray-900">
+          Layanan Sementara Tidak Tersedia
+        </h1>
+        <p className="mt-1.5 text-sm text-gray-500">
+          {item.title} sedang tidak menerima pengajuan online untuk saat
+          ini. Silakan hubungi kantor kelurahan langsung, atau coba lagi
+          nanti.
+        </p>
+        <Link
+          href="/layanan"
+          className="mt-6 inline-block rounded-full bg-[#003459] px-6 py-2.5 text-sm font-semibold text-white transition-colors hover:opacity-90"
+        >
+          Kembali ke Layanan
+        </Link>
+      </div>
+    );
   }
 
   const session = await requireVerifiedSession();

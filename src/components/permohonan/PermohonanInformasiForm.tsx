@@ -1,3 +1,6 @@
+"use client";
+
+import { useState, type FormEvent } from "react";
 import {
   Briefcase,
   FileText,
@@ -21,15 +24,31 @@ export function PermohonanInformasiForm({
   accountEmail,
   prefillName,
 }: PermohonanInformasiFormProps) {
-  const action = submitPermohonanAction.bind(
-    null,
-    "informasi",
-    "informasi-publik",
-    "Permohonan Informasi Publik"
-  );
+  const [error, setError] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setError(null);
+    setIsSubmitting(true);
+
+    const formData = new FormData(event.currentTarget);
+
+    try {
+      await submitPermohonanAction(
+        "informasi",
+        "informasi-publik",
+        "Permohonan Informasi Publik",
+        formData
+      );
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Terjadi kesalahan. Silakan coba lagi.");
+      setIsSubmitting(false);
+    }
+  }
 
   return (
-    <form action={action} className="space-y-6">
+    <form onSubmit={handleSubmit} className="space-y-6">
       {/* Honeypot: hidden from real users, bots that auto-fill every field will trip it. */}
       <div className="hidden" aria-hidden="true">
         <label htmlFor="website">Website</label>
@@ -242,11 +261,14 @@ export function PermohonanInformasiForm({
         </div>
       </div>
 
+      {error && <p className="text-sm text-red-600">{error}</p>}
+
       <button
         type="submit"
-        className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#003459] py-3.5 text-sm font-semibold text-white transition-colors hover:opacity-90 lg:w-auto lg:px-10"
+        disabled={isSubmitting}
+        className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#003459] py-3.5 text-sm font-semibold text-white transition-colors hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60 lg:w-auto lg:px-10"
       >
-        Kirim Permohonan
+        {isSubmitting ? "Mengirim..." : "Kirim Permohonan"}
         <Send className="size-4" />
       </button>
     </form>

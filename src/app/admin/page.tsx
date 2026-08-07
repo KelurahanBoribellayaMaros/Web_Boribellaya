@@ -102,8 +102,8 @@ export default async function AdminDashboardPage() {
       icon: Wrench,
       iconClass: "bg-teal-100 text-teal-700",
       title: "Kelola Layanan",
-      description: "Atur daftar layanan publik yang tersedia.",
-      href: "/layanan",
+      description: "Aktifkan atau nonaktifkan layanan digital yang tersedia.",
+      href: "/admin/layanan",
     },
     {
       icon: Users,
