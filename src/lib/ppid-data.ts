@@ -6,6 +6,15 @@ export const categoryLabels: Record<PpidCategory, string> = {
   "serta-merta": "Serta Merta",
 };
 
+export const categoryDescriptions: Record<PpidCategory, string> = {
+  berkala:
+    "Wajib diumumkan secara rutin sekurang-kurangnya sekali dalam 6 bulan — misalnya laporan kinerja, anggaran, dan program kerja kelurahan.",
+  "setiap-saat":
+    "Tersedia setiap saat dan wajib diberikan kepada warga yang memintanya, di luar informasi berkala dan serta-merta.",
+  "serta-merta":
+    "Wajib diumumkan tanpa penundaan karena menyangkut hal yang dapat mengancam hak hidup dan ketertiban umum, misalnya informasi darurat atau bencana.",
+};
+
 export type DasarHukum = {
   title: string;
   content: string;
@@ -28,3 +37,14 @@ export const dasarHukum: DasarHukum[] = [
       "Pejabat pengelola informasi tersebut dibantu oleh pejabat fungsional. Atas dasar inilah pelayanan informasi di Kelurahan Boribellaya dijalankan oleh petugas/pejabat fungsional yang ditunjuk.",
   },
 ];
+
+export const informasiDikecualikan: string[] = [
+  "Data pribadi warga (NIK, KK, data kesehatan, dan keuangan pribadi), sesuai UU Pelindungan Data Pribadi.",
+  "Dokumen yang berkaitan dengan proses penegakan hukum yang masih berjalan.",
+  "Surat-menyurat internal antarinstansi yang menurut sifatnya dirahasiakan.",
+  "Isi akta otentik yang bersifat pribadi dan wasiat/kemauan terakhir seseorang.",
+  "Informasi lain yang dikecualikan berdasarkan peraturan perundang-undangan.",
+];
+
+export const informasiDikecualikanNote =
+  "Informasi yang dikecualikan bersifat rahasia dalam jangka waktu tertentu dan dapat dibuka apabila terdapat kepentingan publik yang lebih besar, melalui mekanisme keberatan dan sengketa informasi sesuai Pasal 17 UU No. 14 Tahun 2008.";

@@ -27,7 +27,9 @@ test.describe("Halaman publik utama", () => {
 
   test("Informasi Publik menampilkan Dasar Hukum dan daftar dokumen", async ({ page }) => {
     await page.goto("/informasi-publik");
-    await expect(page.getByRole("heading", { name: "Daftar Informasi Publik" })).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: "Daftar Informasi Publik", exact: true })
+    ).toBeVisible();
     await expect(page.getByText("Dasar Hukum")).toBeVisible();
   });
 

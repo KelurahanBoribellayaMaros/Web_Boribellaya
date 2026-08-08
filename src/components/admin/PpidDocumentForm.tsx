@@ -2,14 +2,16 @@
 
 import { useState, type FormEvent } from "react";
 import { unstable_rethrow } from "next/navigation";
-import { UploadCloud } from "lucide-react";
+import { Save, UploadCloud } from "lucide-react";
 import { DatePicker } from "@/components/ui/DatePicker";
+import { categoryDescriptions } from "@/lib/ppid-data";
 import { supabaseBrowser, PPID_BUCKET } from "@/lib/supabase/browser-client";
 import {
   createPpidUploadUrlAction,
   createPpidDocumentAction,
+  updatePpidDocumentAction,
 } from "@/lib/actions/ppid-actions";
-import type { PpidCategory } from "@/types/ppid";
+import type { PpidCategory, PpidDocument } from "@/types/ppid";
 
 const ALLOWED_MIME_TYPES = new Set([
   "application/pdf",
@@ -18,11 +20,17 @@ const ALLOWED_MIME_TYPES = new Set([
 
 const MAX_FILE_SIZE = 2 * 1024 * 1024; // 2MB
 
-export function PpidUploadForm() {
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [category, setCategory] = useState<PpidCategory>("berkala");
-  const [date, setDate] = useState("");
+type PpidDocumentFormProps = {
+  mode: "create" | "edit";
+  documentId?: string;
+  defaultValues?: Pick<PpidDocument, "title" | "description" | "category" | "date" | "fileUrl">;
+};
+
+export function PpidDocumentForm({ mode, documentId, defaultValues }: PpidDocumentFormProps) {
+  const [title, setTitle] = useState(defaultValues?.title ?? "");
+  const [description, setDescription] = useState(defaultValues?.description ?? "");
+  const [category, setCategory] = useState<PpidCategory>(defaultValues?.category ?? "berkala");
+  const [date, setDate] = useState(defaultValues?.date ?? "");
   const [file, setFile] = useState<File | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -35,36 +43,47 @@ export function PpidUploadForm() {
       setError("Tanggal wajib diisi.");
       return;
     }
-    if (!file) {
+    if (mode === "create" && !file) {
       setError("Pilih file PDF atau DOCX terlebih dahulu.");
       return;
     }
-    if (!ALLOWED_MIME_TYPES.has(file.type)) {
-      setError("Hanya file PDF atau DOCX yang diperbolehkan.");
-      return;
-    }
-    if (file.size > MAX_FILE_SIZE) {
-      setError("Ukuran file maksimal 2MB.");
-      return;
+    if (file) {
+      if (!ALLOWED_MIME_TYPES.has(file.type)) {
+        setError("Hanya file PDF atau DOCX yang diperbolehkan.");
+        return;
+      }
+      if (file.size > MAX_FILE_SIZE) {
+        setError("Ukuran file maksimal 2MB.");
+        return;
+      }
     }
 
     setIsSubmitting(true);
 
     try {
-      const { path, token } = await createPpidUploadUrlAction({
-        fileType: file.type,
-        fileSize: file.size,
-      });
+      let path: string | undefined;
 
-      const { error: uploadError } = await supabaseBrowser.storage
-        .from(PPID_BUCKET)
-        .uploadToSignedUrl(path, token, file);
+      if (file) {
+        const { path: signedPath, token } = await createPpidUploadUrlAction({
+          fileType: file.type,
+          fileSize: file.size,
+        });
 
-      if (uploadError) {
-        throw new Error("Gagal mengunggah file. Silakan coba lagi.");
+        const { error: uploadError } = await supabaseBrowser.storage
+          .from(PPID_BUCKET)
+          .uploadToSignedUrl(signedPath, token, file);
+
+        if (uploadError) {
+          throw new Error("Gagal mengunggah file. Silakan coba lagi.");
+        }
+        path = signedPath;
       }
 
-      await createPpidDocumentAction({ path, title, description, category, date });
+      if (mode === "create") {
+        await createPpidDocumentAction({ path: path!, title, description, category, date });
+      } else {
+        await updatePpidDocumentAction(documentId!, { path, title, description, category, date });
+      }
     } catch (err) {
       unstable_rethrow(err);
       setError(err instanceof Error ? err.message : "Terjadi kesalahan. Silakan coba lagi.");
@@ -126,6 +145,7 @@ export function PpidUploadForm() {
             <option value="setiap-saat">Setiap Saat</option>
             <option value="serta-merta">Serta Merta</option>
           </select>
+          <p className="mt-1.5 text-xs text-gray-400">{categoryDescriptions[category]}</p>
         </div>
 
         <div>
@@ -143,11 +163,18 @@ export function PpidUploadForm() {
         <input
           id="file"
           type="file"
-          required
+          required={mode === "create"}
           accept=".pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
           onChange={(event) => setFile(event.target.files?.[0] ?? null)}
           className="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm text-gray-900 outline-none file:mr-4 file:rounded-full file:border-0 file:bg-blue-100 file:px-4 file:py-1.5 file:text-sm file:font-semibold file:text-[#003459] focus:border-green-600 focus:ring-2 focus:ring-green-600/20"
         />
+        {mode === "edit" && (
+          <p className="mt-1.5 text-xs text-gray-400">
+            {defaultValues?.fileUrl
+              ? "Kosongkan jika tidak ingin mengganti file yang sudah ada."
+              : "Dokumen ini belum punya file. Pilih file di sini untuk melampirkannya."}
+          </p>
+        )}
       </div>
 
       {error && <p className="text-sm text-red-600">{error}</p>}
@@ -157,8 +184,17 @@ export function PpidUploadForm() {
         disabled={isSubmitting}
         className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#003459] py-3 text-sm font-semibold text-white transition-colors hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
       >
-        {isSubmitting ? "Mengunggah..." : "Unggah Dokumen"}
-        <UploadCloud className="size-4" />
+        {mode === "create" ? (
+          <>
+            {isSubmitting ? "Mengunggah..." : "Unggah Dokumen"}
+            <UploadCloud className="size-4" />
+          </>
+        ) : (
+          <>
+            {isSubmitting ? "Menyimpan..." : "Simpan Perubahan"}
+            <Save className="size-4" />
+          </>
+        )}
       </button>
     </form>
   );

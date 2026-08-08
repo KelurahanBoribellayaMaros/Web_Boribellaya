@@ -18,7 +18,7 @@ export function PpidDocumentCard({
         </span>
         <div>
           <div className="flex flex-wrap items-center gap-2">
-            <span className="rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-semibold text-[#2b9348]">
+            <span className="rounded-full bg-blue-100 px-2.5 py-0.5 text-xs font-semibold text-[#003459]">
               {categoryLabels[category]}
             </span>
             <span className="text-xs text-gray-400">{formatDate(date)}</span>

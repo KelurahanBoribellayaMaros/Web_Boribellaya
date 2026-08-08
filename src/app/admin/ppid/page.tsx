@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { FileCheck2, Plus } from "lucide-react";
 import { getPpidDocuments } from "@/lib/firebase/ppid-repository";
 import { deletePpidDocumentAction } from "@/lib/actions/ppid-actions";
@@ -39,13 +40,18 @@ export default async function AdminPpidPage() {
             className="flex flex-col gap-3 rounded-2xl border border-gray-200 bg-white p-4 sm:flex-row sm:items-center sm:justify-between"
           >
             <div>
-              <div className="flex items-center gap-2">
-                <span className="rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-semibold text-green-700">
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="rounded-full bg-blue-100 px-2.5 py-0.5 text-xs font-semibold text-[#003459]">
                   {categoryLabels[doc.category]}
                 </span>
                 <span className="text-xs text-gray-400">
                   {formatDate(doc.date)}
                 </span>
+                {!doc.fileUrl && (
+                  <span className="rounded-full bg-amber-100 px-2.5 py-0.5 text-xs font-semibold text-amber-700">
+                    Tanpa lampiran
+                  </span>
+                )}
               </div>
               <h3 className="mt-1 font-semibold text-gray-900">{doc.title}</h3>
             </div>
@@ -61,6 +67,12 @@ export default async function AdminPpidPage() {
                   Lihat
                 </a>
               )}
+              <Link
+                href={`/admin/ppid/${doc.id}/edit`}
+                className="rounded-full border border-gray-200 px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50"
+              >
+                Ubah
+              </Link>
               <form action={deletePpidDocumentAction.bind(null, doc.id)}>
                 <button
                   type="submit"

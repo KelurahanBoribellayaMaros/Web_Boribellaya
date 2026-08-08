@@ -1,52 +1,27 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Search } from "lucide-react";
+import { FileStack, Search } from "lucide-react";
 import type { PpidCategory, PpidDocument } from "@/types/ppid";
+import { categoryLabels } from "@/lib/ppid-data";
 import { PpidDocumentCard } from "@/components/ppid/PpidDocumentCard";
-import { Pagination } from "@/components/ui/Pagination";
 
-const filters: { label: string; value: PpidCategory | "semua" }[] = [
-  { label: "Semua", value: "semua" },
-  { label: "Berkala", value: "berkala" },
-  { label: "Setiap Saat", value: "setiap-saat" },
-  { label: "Serta Merta", value: "serta-merta" },
-];
-
-const ITEMS_PER_PAGE = 8;
+const categories: PpidCategory[] = ["berkala", "setiap-saat", "serta-merta"];
 
 export function PpidDocumentList({ documents }: { documents: PpidDocument[] }) {
   const [query, setQuery] = useState("");
-  const [category, setCategory] = useState<PpidCategory | "semua">("semua");
-  const [page, setPage] = useState(1);
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
-    return documents.filter((doc) => {
-      const matchesCategory = category === "semua" || doc.category === category;
-      const matchesQuery =
-        q === "" ||
-        doc.title.toLowerCase().includes(q) ||
-        doc.description.toLowerCase().includes(q);
-      return matchesCategory && matchesQuery;
-    });
-  }, [documents, query, category]);
+    if (!q) return documents;
+    return documents.filter(
+      (doc) =>
+        doc.title.toLowerCase().includes(q) || doc.description.toLowerCase().includes(q)
+    );
+  }, [documents, query]);
 
-  const totalPages = Math.max(1, Math.ceil(filtered.length / ITEMS_PER_PAGE));
-  const paginated = filtered.slice(
-    (page - 1) * ITEMS_PER_PAGE,
-    page * ITEMS_PER_PAGE
-  );
-
-  function updateQuery(value: string) {
-    setQuery(value);
-    setPage(1);
-  }
-
-  function updateCategory(value: PpidCategory | "semua") {
-    setCategory(value);
-    setPage(1);
-  }
+  const isSearching = query.trim() !== "";
+  const hasAnyResult = filtered.length > 0;
 
   return (
     <div>
@@ -59,54 +34,54 @@ export function PpidDocumentList({ documents }: { documents: PpidDocument[] }) {
           <input
             type="search"
             value={query}
-            onChange={(event) => updateQuery(event.target.value)}
+            onChange={(event) => setQuery(event.target.value)}
             placeholder="Cari dokumen..."
             className="w-full bg-transparent py-3 text-base text-gray-900 outline-none placeholder:text-gray-400"
           />
-          <button
-            type="submit"
-            className="shrink-0 rounded-xl bg-[#003459] px-6 py-3 text-sm font-semibold text-white transition-colors hover:opacity-90"
-          >
-            Cari
-          </button>
         </form>
-
-        <div className="mt-4 flex flex-wrap justify-center gap-2">
-          {filters.map((f) => (
-            <button
-              key={f.value}
-              type="button"
-              onClick={() => updateCategory(f.value)}
-              aria-pressed={category === f.value}
-              className={`rounded-full px-4 py-2 text-sm font-semibold transition-colors ${
-                category === f.value
-                  ? "bg-[#003459] text-white"
-                  : "bg-white text-gray-600 border border-gray-200 hover:bg-gray-50"
-              }`}
-            >
-              {f.label}
-            </button>
-          ))}
-        </div>
       </div>
 
-      <p className="mt-6 text-center text-sm text-gray-500">
-        Menampilkan {filtered.length} dari {documents.length} dokumen
-      </p>
-
-      {filtered.length > 0 ? (
-        <>
-          <div className="mt-4 space-y-3">
-            {paginated.map((doc) => (
-              <PpidDocumentCard key={doc.id} {...doc} />
-            ))}
-          </div>
-          <Pagination page={page} totalPages={totalPages} onChange={setPage} />
-        </>
-      ) : (
+      {isSearching && !hasAnyResult ? (
         <div className="mt-10 flex flex-col items-center gap-2 py-10 text-center text-gray-400">
           <Search className="size-8" />
           <p className="text-sm">Tidak ada dokumen yang cocok dengan pencarian Anda.</p>
+        </div>
+      ) : (
+        <div className="mt-8 space-y-8">
+          {categories.map((category) => {
+            const categoryDocs = filtered.filter((doc) => doc.category === category);
+
+            // A category the search matched nothing in stays out of the way
+            // entirely; an empty, unsearched category still shows so it's
+            // clear the section exists and simply has nothing published yet.
+            if (isSearching && categoryDocs.length === 0) return null;
+
+            return (
+              <section key={category}>
+                <div className="flex items-center gap-2">
+                  <h3 className="text-base font-bold text-gray-900">
+                    Informasi {categoryLabels[category]}
+                  </h3>
+                  <span className="rounded-full bg-gray-100 px-2 py-0.5 text-xs font-semibold text-gray-500">
+                    {categoryDocs.length}
+                  </span>
+                </div>
+
+                {categoryDocs.length > 0 ? (
+                  <div className="mt-4 space-y-3">
+                    {categoryDocs.map((doc) => (
+                      <PpidDocumentCard key={doc.id} {...doc} />
+                    ))}
+                  </div>
+                ) : (
+                  <div className="mt-4 flex items-center gap-3 rounded-2xl border border-dashed border-gray-200 p-5 text-sm text-gray-400">
+                    <FileStack className="size-5 shrink-0" />
+                    Belum ada dokumen di kategori ini.
+                  </div>
+                )}
+              </section>
+            );
+          })}
         </div>
       )}
     </div>

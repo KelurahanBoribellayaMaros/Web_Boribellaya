@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { FileQuestion, Scale } from "lucide-react";
+import { FileQuestion, Lock, Scale } from "lucide-react";
 import { PpidDocumentList } from "@/components/ppid/PpidDocumentList";
 import { ProfileCard } from "@/components/profil/ProfileCard";
 import { getPpidDocuments } from "@/lib/firebase/ppid-repository";
-import { dasarHukum } from "@/lib/ppid-data";
+import { dasarHukum, informasiDikecualikan, informasiDikecualikanNote } from "@/lib/ppid-data";
 import { Reveal } from "@/components/ui/Reveal";
 
 export const revalidate = 60;
@@ -76,6 +76,25 @@ export default async function InformasiPublikPage() {
           <div className="mt-4">
             <PpidDocumentList documents={documents} />
           </div>
+        </Reveal>
+
+        <Reveal>
+          <ProfileCard icon={Lock} title="Informasi Dikecualikan">
+            <p className="text-sm leading-relaxed text-gray-600">
+              Beberapa jenis informasi tidak dapat diakses publik karena
+              sifatnya rahasia, meliputi:
+            </p>
+            <ul className="mt-3 list-disc space-y-2 pl-5">
+              {informasiDikecualikan.map((item) => (
+                <li key={item} className="text-sm leading-relaxed text-gray-600">
+                  {item}
+                </li>
+              ))}
+            </ul>
+            <p className="mt-4 text-xs leading-relaxed text-gray-400">
+              {informasiDikecualikanNote}
+            </p>
+          </ProfileCard>
         </Reveal>
       </div>
     </div>

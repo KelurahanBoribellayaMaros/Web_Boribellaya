@@ -85,6 +85,59 @@ export async function createPpidDocumentAction(input: {
   redirect(toastRedirectUrl("/admin/ppid", "Dokumen berhasil diunggah."));
 }
 
+export async function updatePpidDocumentAction(
+  id: string,
+  input: {
+    path?: string;
+    title: string;
+    description: string;
+    category: PpidCategory;
+    date: string;
+  }
+): Promise<void> {
+  const session = await requireAdmin();
+
+  if (!input.date) {
+    throw new Error("Tanggal wajib diisi.");
+  }
+
+  const data: Record<string, unknown> = {
+    title: input.title,
+    description: input.description,
+    category: input.category,
+    year: new Date(input.date).getFullYear(),
+    date: input.date,
+    updatedAt: new Date().toISOString(),
+  };
+
+  if (input.path) {
+    const existing = await adminDb.collection("ppid_documents").doc(id).get();
+    const oldPath = existing.data()?.filePath as string | undefined;
+    if (oldPath) {
+      await supabaseAdmin.storage.from(PPID_BUCKET).remove([oldPath]).catch(() => {});
+    }
+
+    const { data: publicUrlData } = supabaseAdmin.storage
+      .from(PPID_BUCKET)
+      .getPublicUrl(input.path);
+    data.fileUrl = publicUrlData.publicUrl;
+    data.filePath = input.path;
+  }
+
+  await adminDb.collection("ppid_documents").doc(id).set(data, { merge: true });
+
+  await logAudit({
+    uid: session.uid,
+    email: session.email ?? "",
+    action: "update",
+    target: "ppid_document",
+    targetId: id,
+    details: input.title,
+  });
+
+  redirect(toastRedirectUrl("/admin/ppid", "Dokumen berhasil diperbarui."));
+}
+
 export async function deletePpidDocumentAction(id: string): Promise<void> {
   const session = await requireAdmin();
 
