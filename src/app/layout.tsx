@@ -5,6 +5,7 @@ import { Analytics } from "@vercel/analytics/next";
 import { SiteChrome } from "@/components/layout/SiteChrome";
 import { ToastProvider } from "@/components/ui/ToastProvider";
 import { ToastListener } from "@/components/ui/ToastListener";
+import { HashScroll } from "@/components/ui/HashScroll";
 import { getKontakInfo } from "@/lib/firebase/kontak-repository";
 import "./globals.css";
 
@@ -41,6 +42,7 @@ export default async function RootLayout({
           <Suspense fallback={null}>
             <ToastListener />
           </Suspense>
+          <HashScroll />
           <SiteChrome kontak={kontak}>{children}</SiteChrome>
         </ToastProvider>
         <Analytics />

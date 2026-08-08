@@ -18,7 +18,6 @@ export async function updateKontakAction(formData: FormData): Promise<void> {
   const session = await requireAdmin();
 
   const address = String(formData.get("address") ?? "").trim();
-  const whatsapp = String(formData.get("whatsapp") ?? "").trim();
   const email = String(formData.get("email") ?? "").trim();
   const hours = String(formData.get("hours") ?? "").trim();
   const mapsEmbedUrl = extractMapsEmbedUrl(String(formData.get("mapsEmbedUrl") ?? ""));
@@ -29,10 +28,23 @@ export async function updateKontakAction(formData: FormData): Promise<void> {
     );
   }
 
+  let contacts: { jabatan: string; whatsapp: string }[];
+  try {
+    contacts = JSON.parse(String(formData.get("contactsJson") ?? "[]"));
+  } catch {
+    throw new Error("Data kontak tidak valid.");
+  }
+  contacts = contacts
+    .map((c) => ({
+      jabatan: String(c.jabatan ?? "").trim(),
+      whatsapp: String(c.whatsapp ?? "").trim(),
+    }))
+    .filter((c) => c.jabatan && c.whatsapp);
+
   await adminDb.collection("settings").doc("kontak").set(
     {
       address,
-      whatsapp,
+      contacts,
       email,
       hours,
       mapsEmbedUrl: mapsEmbedUrl || null,

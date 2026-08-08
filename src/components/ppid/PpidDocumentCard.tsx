@@ -1,4 +1,5 @@
-import { Download, FileText } from "lucide-react";
+import Link from "next/link";
+import { ArrowRight, Download, FileText } from "lucide-react";
 import type { PpidDocument } from "@/types/ppid";
 import { categoryLabels } from "@/lib/ppid-data";
 import { formatDate } from "@/lib/home-data";
@@ -9,6 +10,7 @@ export function PpidDocumentCard({
   category,
   date,
   fileUrl,
+  websiteUrl,
 }: PpidDocument) {
   return (
     <div className="flex flex-col gap-4 rounded-2xl border border-gray-100 bg-white p-5 shadow-sm sm:flex-row sm:items-center sm:justify-between">
@@ -36,6 +38,14 @@ export function PpidDocumentCard({
           <Download className="size-4" />
           Unduh
         </a>
+      ) : websiteUrl ? (
+        <Link
+          href={websiteUrl}
+          className="flex shrink-0 items-center justify-center gap-1.5 rounded-full bg-[#003459] px-4 py-2 text-sm font-semibold text-white transition-colors hover:opacity-90 sm:self-center"
+        >
+          Lihat di Website
+          <ArrowRight className="size-4" />
+        </Link>
       ) : (
         <span className="shrink-0 text-sm text-gray-400 italic sm:self-center">
           Tanpa lampiran

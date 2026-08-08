@@ -15,7 +15,6 @@ export const metadata: Metadata = {
 
 export default async function KontakPage() {
   const kontak = await getKontakInfo();
-  const whatsappHref = toWhatsAppHref(kontak.whatsapp);
 
   return (
     <div className="mx-auto max-w-6xl px-2 py-10 sm:px-3 sm:py-12 lg:px-4">
@@ -57,17 +56,22 @@ export default async function KontakPage() {
             <div className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm sm:p-6">
               <h2 className="text-lg font-bold text-gray-900">Hubungi Kami</h2>
               <div className="mt-4 flex flex-col gap-3">
-                {whatsappHref && (
-                  <a
-                    href={whatsappHref}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 rounded-full bg-green-600 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-green-700"
-                  >
-                    <MessageCircle className="size-4" />
-                    {kontak.whatsapp}
-                  </a>
-                )}
+                {kontak.contacts.map((contact) => {
+                  const href = toWhatsAppHref(contact.whatsapp);
+                  if (!href) return null;
+                  return (
+                    <a
+                      key={contact.jabatan}
+                      href={href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 rounded-full bg-green-600 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-green-700"
+                    >
+                      <MessageCircle className="size-4" />
+                      {contact.jabatan} — {contact.whatsapp}
+                    </a>
+                  );
+                })}
                 {kontak.email && (
                   <a
                     href={`mailto:${kontak.email}`}
@@ -77,7 +81,7 @@ export default async function KontakPage() {
                     {kontak.email}
                   </a>
                 )}
-                {!whatsappHref && !kontak.email && (
+                {kontak.contacts.length === 0 && !kontak.email && (
                   <p className="text-sm text-gray-400">
                     Kontak belum tersedia.
                   </p>

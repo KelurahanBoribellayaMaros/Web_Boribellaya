@@ -19,7 +19,6 @@ const legalLinks = [
 
 export function Footer({ kontak }: { kontak: KontakInfo }) {
   const year = new Date().getFullYear();
-  const whatsappHref = toWhatsAppHref(kontak.whatsapp);
 
   return (
     <footer className="bg-[#293241] px-2 pt-12 pb-6 sm:px-3 lg:px-4">
@@ -60,19 +59,23 @@ export function Footer({ kontak }: { kontak: KontakInfo }) {
                 <MapPin className="mt-0.5 size-4 shrink-0" />
                 <span>{kontak.address}</span>
               </li>
-              {whatsappHref && (
-                <li className="flex gap-2.5">
-                  <Phone className="size-4 shrink-0" />
-                  <a
-                    href={whatsappHref}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="transition-colors hover:text-white"
-                  >
-                    {kontak.whatsapp}
-                  </a>
-                </li>
-              )}
+              {kontak.contacts.map((contact) => {
+                const href = toWhatsAppHref(contact.whatsapp);
+                if (!href) return null;
+                return (
+                  <li key={contact.jabatan} className="flex gap-2.5">
+                    <Phone className="size-4 shrink-0" />
+                    <a
+                      href={href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="transition-colors hover:text-white"
+                    >
+                      {contact.jabatan}: {contact.whatsapp}
+                    </a>
+                  </li>
+                );
+              })}
               {kontak.email && (
                 <li className="flex gap-2.5">
                   <Mail className="size-4 shrink-0" />

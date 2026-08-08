@@ -80,7 +80,7 @@ export function LeaderForm({ leader }: { leader: Leader }) {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
         <div>
           <label htmlFor="name" className="mb-1.5 block text-sm font-medium text-gray-700">
             Nama Lengkap
@@ -123,47 +123,6 @@ export function LeaderForm({ leader }: { leader: Leader }) {
             className="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm text-gray-900 outline-none focus:border-green-600 focus:ring-2 focus:ring-green-600/20"
           />
         </div>
-        <div>
-          <label htmlFor="email" className="mb-1.5 block text-sm font-medium text-gray-700">
-            Email
-          </label>
-          <input
-            id="email"
-            name="email"
-            type="email"
-            required
-            defaultValue={leader.email}
-            className="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm text-gray-900 outline-none focus:border-green-600 focus:ring-2 focus:ring-green-600/20"
-          />
-        </div>
-        <div className="sm:col-span-2">
-          <label htmlFor="term" className="mb-1.5 block text-sm font-medium text-gray-700">
-            Masa Jabatan
-          </label>
-          <input
-            id="term"
-            name="term"
-            type="text"
-            required
-            defaultValue={leader.term}
-            placeholder="Masa Jabatan: 2021 - Sekarang"
-            className="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm text-gray-900 outline-none focus:border-green-600 focus:ring-2 focus:ring-green-600/20"
-          />
-        </div>
-      </div>
-
-      <div>
-        <label htmlFor="bio" className="mb-1.5 block text-sm font-medium text-gray-700">
-          Bio Singkat
-        </label>
-        <textarea
-          id="bio"
-          name="bio"
-          required
-          rows={3}
-          defaultValue={leader.bio}
-          className="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm text-gray-900 outline-none focus:border-green-600 focus:ring-2 focus:ring-green-600/20"
-        />
       </div>
 
       {error && <p className="text-sm text-red-600">{error}</p>}

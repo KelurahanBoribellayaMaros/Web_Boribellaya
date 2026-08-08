@@ -47,7 +47,12 @@ export default async function AdminPpidPage() {
                 <span className="text-xs text-gray-400">
                   {formatDate(doc.date)}
                 </span>
-                {!doc.fileUrl && (
+                {!doc.fileUrl && doc.websiteUrl && (
+                  <span className="rounded-full bg-blue-100 px-2.5 py-0.5 text-xs font-semibold text-[#003459]">
+                    Tersedia di Website
+                  </span>
+                )}
+                {!doc.fileUrl && !doc.websiteUrl && (
                   <span className="rounded-full bg-amber-100 px-2.5 py-0.5 text-xs font-semibold text-amber-700">
                     Tanpa lampiran
                   </span>
@@ -66,6 +71,14 @@ export default async function AdminPpidPage() {
                 >
                   Lihat
                 </a>
+              )}
+              {!doc.fileUrl && doc.websiteUrl && (
+                <Link
+                  href={doc.websiteUrl}
+                  className="rounded-full border border-gray-200 px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50"
+                >
+                  Lihat
+                </Link>
               )}
               <Link
                 href={`/admin/ppid/${doc.id}/edit`}

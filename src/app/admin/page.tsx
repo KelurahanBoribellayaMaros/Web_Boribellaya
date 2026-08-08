@@ -110,7 +110,7 @@ export default async function AdminDashboardPage() {
       icon: Users,
       iconClass: "bg-blue-100 text-[#003459]",
       title: "Data Penduduk",
-      description: "Perbarui statistik kependudukan di beranda.",
+      description: "Perbarui statistik dan tabel rincian RW/RT di halaman Profil.",
       href: "/admin/data-penduduk",
     },
     {

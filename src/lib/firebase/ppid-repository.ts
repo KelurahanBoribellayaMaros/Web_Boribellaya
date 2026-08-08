@@ -12,6 +12,7 @@ function toPpidDocument(id: string, data: FirebaseFirestore.DocumentData): PpidD
     date: data.date,
     fileUrl: data.fileUrl ?? undefined,
     filePath: data.filePath ?? undefined,
+    websiteUrl: data.websiteUrl ?? undefined,
     createdAt: data.createdAt,
   };
 }

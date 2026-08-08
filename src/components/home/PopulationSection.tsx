@@ -1,4 +1,5 @@
-import { Mars, Users, UsersRound, Venus } from "lucide-react";
+import Link from "next/link";
+import { ChevronRight, Mars, Users, UsersRound, Venus } from "lucide-react";
 import { getPopulationStats } from "@/lib/firebase/population-repository";
 import { StatCard } from "@/components/ui/StatCard";
 import { Reveal } from "@/components/ui/Reveal";
@@ -18,13 +19,22 @@ export async function PopulationSection() {
       id="data-penduduk"
       className="mx-auto max-w-6xl scroll-mt-20 px-2 py-10 sm:px-3 sm:py-12 lg:px-4"
     >
-      <div>
-        <h2 className="text-xl font-bold text-gray-900 sm:text-2xl">
-          Data Penduduk
-        </h2>
-        <p className="mt-1 text-sm text-gray-500">
-          Statistik terkini demografi Kelurahan Boribellaya.
-        </p>
+      <div className="flex items-end justify-between gap-4">
+        <div>
+          <h2 className="text-xl font-bold text-gray-900 sm:text-2xl">
+            Data Penduduk
+          </h2>
+          <p className="mt-1 text-sm text-gray-500">
+            Statistik terkini demografi Kelurahan Boribellaya.
+          </p>
+        </div>
+        <Link
+          href="/profil#data-penduduk"
+          className="hidden shrink-0 items-center gap-0.5 text-sm font-medium text-[#003459] hover:opacity-80 sm:inline-flex"
+        >
+          Lihat Selengkapnya
+          <ChevronRight className="size-4" />
+        </Link>
       </div>
 
       <div className="mt-6 grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-4">
@@ -34,6 +44,14 @@ export async function PopulationSection() {
           </Reveal>
         ))}
       </div>
+
+      <Link
+        href="/profil#data-penduduk"
+        className="mt-6 flex items-center justify-center gap-0.5 text-sm font-medium text-[#003459] hover:opacity-80 sm:hidden"
+      >
+        Lihat Selengkapnya
+        <ChevronRight className="size-4" />
+      </Link>
     </section>
   );
 }

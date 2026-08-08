@@ -17,10 +17,6 @@ service cloud.firestore {
       allow read: if true;
       allow write: if false;
     }
-    match /org_positions/{docId} {
-      allow read: if true;
-      allow write: if false;
-    }
     match /permohonan/{docId} {
       allow read: if false;
       allow write: if false;

@@ -1,6 +1,11 @@
+export type KontakPerson = {
+  jabatan: string;
+  whatsapp: string;
+};
+
 export type KontakInfo = {
   address: string;
-  whatsapp: string;
+  contacts: KontakPerson[];
   email: string;
   hours: string;
   mapsEmbedUrl?: string;

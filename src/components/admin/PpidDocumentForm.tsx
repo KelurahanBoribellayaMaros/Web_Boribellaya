@@ -23,7 +23,10 @@ const MAX_FILE_SIZE = 2 * 1024 * 1024; // 2MB
 type PpidDocumentFormProps = {
   mode: "create" | "edit";
   documentId?: string;
-  defaultValues?: Pick<PpidDocument, "title" | "description" | "category" | "date" | "fileUrl">;
+  defaultValues?: Pick<
+    PpidDocument,
+    "title" | "description" | "category" | "date" | "fileUrl" | "websiteUrl"
+  >;
 };
 
 export function PpidDocumentForm({ mode, documentId, defaultValues }: PpidDocumentFormProps) {
@@ -32,6 +35,7 @@ export function PpidDocumentForm({ mode, documentId, defaultValues }: PpidDocume
   const [category, setCategory] = useState<PpidCategory>(defaultValues?.category ?? "berkala");
   const [date, setDate] = useState(defaultValues?.date ?? "");
   const [file, setFile] = useState<File | null>(null);
+  const [websiteUrl, setWebsiteUrl] = useState(defaultValues?.websiteUrl ?? "");
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -43,8 +47,15 @@ export function PpidDocumentForm({ mode, documentId, defaultValues }: PpidDocume
       setError("Tanggal wajib diisi.");
       return;
     }
-    if (mode === "create" && !file) {
-      setError("Pilih file PDF atau DOCX terlebih dahulu.");
+    const trimmedWebsiteUrl = websiteUrl.trim();
+    if (trimmedWebsiteUrl && !trimmedWebsiteUrl.startsWith("/")) {
+      setError("Link halaman website harus dimulai dengan / (mis. /profil).");
+      return;
+    }
+    if (mode === "create" && !file && !trimmedWebsiteUrl) {
+      setError(
+        "Pilih file PDF/DOCX, atau isi Link Halaman Website jika informasinya sudah ada di situs."
+      );
       return;
     }
     if (file) {
@@ -80,9 +91,23 @@ export function PpidDocumentForm({ mode, documentId, defaultValues }: PpidDocume
       }
 
       if (mode === "create") {
-        await createPpidDocumentAction({ path: path!, title, description, category, date });
+        await createPpidDocumentAction({
+          path,
+          title,
+          description,
+          category,
+          date,
+          websiteUrl: trimmedWebsiteUrl || undefined,
+        });
       } else {
-        await updatePpidDocumentAction(documentId!, { path, title, description, category, date });
+        await updatePpidDocumentAction(documentId!, {
+          path,
+          title,
+          description,
+          category,
+          date,
+          websiteUrl: trimmedWebsiteUrl || undefined,
+        });
       }
     } catch (err) {
       unstable_rethrow(err);
@@ -163,7 +188,6 @@ export function PpidDocumentForm({ mode, documentId, defaultValues }: PpidDocume
         <input
           id="file"
           type="file"
-          required={mode === "create"}
           accept=".pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
           onChange={(event) => setFile(event.target.files?.[0] ?? null)}
           className="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm text-gray-900 outline-none file:mr-4 file:rounded-full file:border-0 file:bg-blue-100 file:px-4 file:py-1.5 file:text-sm file:font-semibold file:text-[#003459] focus:border-green-600 focus:ring-2 focus:ring-green-600/20"
@@ -177,6 +201,26 @@ export function PpidDocumentForm({ mode, documentId, defaultValues }: PpidDocume
         )}
       </div>
 
+      <div>
+        <label htmlFor="websiteUrl" className="mb-1.5 block text-sm font-medium text-gray-700">
+          Link Halaman Website (opsional)
+        </label>
+        <input
+          id="websiteUrl"
+          type="text"
+          value={websiteUrl}
+          onChange={(event) => setWebsiteUrl(event.target.value)}
+          placeholder="/profil atau /layanan#sop-pelayanan"
+          className="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm text-gray-900 outline-none focus:border-green-600 focus:ring-2 focus:ring-green-600/20"
+        />
+        <p className="mt-1.5 text-xs text-gray-400">
+          Isi ini kalau informasinya sudah tersedia langsung di situs (mis.
+          Data Penduduk, SOP Pelayanan, Profil Kelurahan) — publik akan
+          diarahkan ke halaman itu, tidak perlu unggah file. Kosongkan kalau
+          memakai file di atas.
+        </p>
+      </div>
+
       {error && <p className="text-sm text-red-600">{error}</p>}
 
       <button
@@ -186,7 +230,7 @@ export function PpidDocumentForm({ mode, documentId, defaultValues }: PpidDocume
       >
         {mode === "create" ? (
           <>
-            {isSubmitting ? "Mengunggah..." : "Unggah Dokumen"}
+            {isSubmitting ? "Menyimpan..." : "Simpan Dokumen"}
             <UploadCloud className="size-4" />
           </>
         ) : (

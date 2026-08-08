@@ -44,34 +44,45 @@ export async function createPpidUploadUrlAction(input: {
 }
 
 export async function createPpidDocumentAction(input: {
-  path: string;
+  path?: string;
   title: string;
   description: string;
   category: PpidCategory;
   date: string;
+  websiteUrl?: string;
 }): Promise<void> {
   const session = await requireAdmin();
 
   if (!input.date) {
     throw new Error("Tanggal wajib diisi.");
   }
-
-  const { data: publicUrlData } = supabaseAdmin.storage
-    .from(PPID_BUCKET)
-    .getPublicUrl(input.path);
+  if (input.websiteUrl && !input.websiteUrl.startsWith("/")) {
+    throw new Error("Link halaman website harus dimulai dengan / (mis. /profil).");
+  }
 
   const now = new Date().toISOString();
-  const docRef = await adminDb.collection("ppid_documents").add({
+  const data: Record<string, unknown> = {
     title: input.title,
     description: input.description,
     category: input.category,
     year: new Date(input.date).getFullYear(),
     date: input.date,
-    fileUrl: publicUrlData.publicUrl,
-    filePath: input.path,
     createdAt: now,
     updatedAt: now,
-  });
+  };
+
+  if (input.path) {
+    const { data: publicUrlData } = supabaseAdmin.storage
+      .from(PPID_BUCKET)
+      .getPublicUrl(input.path);
+    data.fileUrl = publicUrlData.publicUrl;
+    data.filePath = input.path;
+  }
+  if (input.websiteUrl) {
+    data.websiteUrl = input.websiteUrl;
+  }
+
+  const docRef = await adminDb.collection("ppid_documents").add(data);
 
   await logAudit({
     uid: session.uid,
@@ -93,12 +104,16 @@ export async function updatePpidDocumentAction(
     description: string;
     category: PpidCategory;
     date: string;
+    websiteUrl?: string;
   }
 ): Promise<void> {
   const session = await requireAdmin();
 
   if (!input.date) {
     throw new Error("Tanggal wajib diisi.");
+  }
+  if (input.websiteUrl && !input.websiteUrl.startsWith("/")) {
+    throw new Error("Link halaman website harus dimulai dengan / (mis. /profil).");
   }
 
   const data: Record<string, unknown> = {
@@ -107,6 +122,7 @@ export async function updatePpidDocumentAction(
     category: input.category,
     year: new Date(input.date).getFullYear(),
     date: input.date,
+    websiteUrl: input.websiteUrl || null,
     updatedAt: new Date().toISOString(),
   };
 

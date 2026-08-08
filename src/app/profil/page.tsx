@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
-import { BookOpen, Eye, Target, CheckCircle2 } from "lucide-react";
+import { BookOpen, Eye, Target, CheckCircle2, Mars, Users, UsersRound, Venus } from "lucide-react";
 import { ProfileCard } from "@/components/profil/ProfileCard";
-import { LeadershipCard } from "@/components/profil/LeadershipCard";
 import { OrgChart } from "@/components/profil/OrgChart";
+import { PopulationTable } from "@/components/profil/PopulationTable";
+import { StatCard } from "@/components/ui/StatCard";
 import { history, vision, missions } from "@/lib/profile-data";
-import { getLeader, getOrgChart } from "@/lib/firebase/struktur-repository";
+import { getOrgChart } from "@/lib/firebase/struktur-repository";
+import { computePopulationStats, getPopulationDetail } from "@/lib/firebase/population-repository";
 import { Reveal } from "@/components/ui/Reveal";
 
 export const revalidate = 60;
@@ -16,7 +18,18 @@ export const metadata: Metadata = {
 };
 
 export default async function ProfilPage() {
-  const [leader, orgChart] = await Promise.all([getLeader(), getOrgChart()]);
+  const [orgChart, populationRws] = await Promise.all([
+    getOrgChart(),
+    getPopulationDetail(),
+  ]);
+  const populationStats = computePopulationStats(populationRws);
+
+  const statItems = [
+    { icon: Users, label: "Total Penduduk", value: populationStats.totalPenduduk },
+    { icon: UsersRound, label: "Kepala Keluarga", value: populationStats.kepalaKeluarga },
+    { icon: Mars, label: "Laki-laki", value: populationStats.lakiLaki },
+    { icon: Venus, label: "Perempuan", value: populationStats.perempuan },
+  ];
 
   return (
     <div className="mx-auto max-w-6xl px-2 py-10 sm:px-3 sm:py-12 lg:px-4">
@@ -74,12 +87,21 @@ export default async function ProfilPage() {
         </div>
 
         <Reveal>
-          <section>
+          <section id="data-penduduk" className="scroll-mt-20">
             <h2 className="text-lg font-bold text-gray-900 sm:text-xl">
-              Profil Pimpinan
+              Data Penduduk
             </h2>
-            <div className="mt-4">
-              <LeadershipCard {...leader} />
+            <p className="mt-1 text-sm text-gray-500">
+              Rincian jumlah penduduk per RW/RT Kelurahan Boribellaya.
+            </p>
+            <div className="mt-6 grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-4">
+              {statItems.map((stat) => (
+                <StatCard key={stat.label} {...stat} />
+              ))}
+            </div>
+
+            <div className="mt-6">
+              <PopulationTable rws={populationRws} />
             </div>
           </section>
         </Reveal>
@@ -93,7 +115,7 @@ export default async function ProfilPage() {
               Susunan aparatur pemerintahan Kelurahan Boribellaya.
             </p>
             <div className="mt-6 rounded-2xl border border-gray-100 bg-white p-5 shadow-sm sm:p-8">
-              <OrgChart root={orgChart} variant="blue" />
+              <OrgChart root={orgChart} />
             </div>
           </section>
         </Reveal>

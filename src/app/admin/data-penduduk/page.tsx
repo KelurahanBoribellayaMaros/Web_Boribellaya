@@ -1,109 +1,74 @@
 import { Users } from "lucide-react";
 import { requireAdmin } from "@/lib/firebase/session";
-import { getPopulationStats } from "@/lib/firebase/population-repository";
-import { updatePopulationAction } from "@/lib/actions/population-actions";
+import {
+  computePopulationStats,
+  getPopulationDetail,
+} from "@/lib/firebase/population-repository";
 import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
+import { PopulationDetailForm } from "@/components/admin/PopulationDetailForm";
+import { formatNumber } from "@/lib/home-data";
 
 export const dynamic = "force-dynamic";
 
 export default async function AdminDataPendudukPage() {
   await requireAdmin();
-  const stats = await getPopulationStats();
+  const rws = await getPopulationDetail();
+  const stats = computePopulationStats(rws);
 
   return (
-    <div className="mx-auto max-w-2xl px-3 py-10 sm:px-4 lg:px-6">
+    <div className="mx-auto max-w-5xl px-3 py-10 sm:px-4 lg:px-6">
       <AdminPageHeader
         icon={Users}
         iconClass="bg-blue-100 text-[#003459]"
         title="Perbarui Data Penduduk"
-        description="Angka ini tampil di beranda pada bagian statistik demografi."
+        description="Kelola tabel rincian per RW/RT di halaman Profil."
       />
 
-      <form
-        action={updatePopulationAction}
-        className="mt-6 space-y-4 rounded-2xl border border-gray-200 bg-white p-6 shadow-sm"
-      >
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+      <section className="mt-6">
+        <h2 className="font-semibold text-gray-900">Statistik Ringkas</h2>
+        <p className="mt-1 text-sm text-gray-500">
+          Dihitung otomatis dari tabel rincian di bawah — tidak perlu diisi
+          manual. Ditampilkan sebagai kartu ringkasan di beranda dan halaman
+          Profil.
+        </p>
+        <div className="mt-3 grid grid-cols-2 gap-3 rounded-2xl border border-gray-200 bg-white p-6 shadow-sm sm:grid-cols-4">
           <div>
-            <label
-              htmlFor="totalPenduduk"
-              className="mb-1.5 block text-sm font-medium text-gray-700"
-            >
-              Total Penduduk
-            </label>
-            <input
-              id="totalPenduduk"
-              name="totalPenduduk"
-              type="number"
-              min={0}
-              required
-              defaultValue={stats.totalPenduduk}
-              className="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm text-gray-900 outline-none focus:border-green-600 focus:ring-2 focus:ring-green-600/20"
-            />
+            <p className="text-xs text-gray-500">Total Penduduk</p>
+            <p className="text-xl font-bold text-gray-900">
+              {formatNumber(stats.totalPenduduk)}
+            </p>
           </div>
-
           <div>
-            <label
-              htmlFor="kepalaKeluarga"
-              className="mb-1.5 block text-sm font-medium text-gray-700"
-            >
-              Kepala Keluarga
-            </label>
-            <input
-              id="kepalaKeluarga"
-              name="kepalaKeluarga"
-              type="number"
-              min={0}
-              required
-              defaultValue={stats.kepalaKeluarga}
-              className="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm text-gray-900 outline-none focus:border-green-600 focus:ring-2 focus:ring-green-600/20"
-            />
+            <p className="text-xs text-gray-500">Kepala Keluarga</p>
+            <p className="text-xl font-bold text-gray-900">
+              {formatNumber(stats.kepalaKeluarga)}
+            </p>
           </div>
-
           <div>
-            <label
-              htmlFor="lakiLaki"
-              className="mb-1.5 block text-sm font-medium text-gray-700"
-            >
-              Laki-laki
-            </label>
-            <input
-              id="lakiLaki"
-              name="lakiLaki"
-              type="number"
-              min={0}
-              required
-              defaultValue={stats.lakiLaki}
-              className="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm text-gray-900 outline-none focus:border-green-600 focus:ring-2 focus:ring-green-600/20"
-            />
+            <p className="text-xs text-gray-500">Laki-laki</p>
+            <p className="text-xl font-bold text-gray-900">
+              {formatNumber(stats.lakiLaki)}
+            </p>
           </div>
-
           <div>
-            <label
-              htmlFor="perempuan"
-              className="mb-1.5 block text-sm font-medium text-gray-700"
-            >
-              Perempuan
-            </label>
-            <input
-              id="perempuan"
-              name="perempuan"
-              type="number"
-              min={0}
-              required
-              defaultValue={stats.perempuan}
-              className="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm text-gray-900 outline-none focus:border-green-600 focus:ring-2 focus:ring-green-600/20"
-            />
+            <p className="text-xs text-gray-500">Perempuan</p>
+            <p className="text-xl font-bold text-gray-900">
+              {formatNumber(stats.perempuan)}
+            </p>
           </div>
         </div>
+      </section>
 
-        <button
-          type="submit"
-          className="w-full rounded-xl bg-[#003459] py-3 text-sm font-semibold text-white transition-colors hover:opacity-90"
-        >
-          Simpan Perubahan
-        </button>
-      </form>
+      <section className="mt-8">
+        <h2 className="font-semibold text-gray-900">Rincian per RW/RT</h2>
+        <p className="mt-1 text-sm text-gray-500">
+          Ditampilkan sebagai tabel lengkap di halaman Profil. Statistik
+          ringkas di atas otomatis mengikuti perubahan di sini.
+        </p>
+        <div className="mt-3">
+          <PopulationDetailForm rws={rws} />
+        </div>
+      </section>
     </div>
   );
 }

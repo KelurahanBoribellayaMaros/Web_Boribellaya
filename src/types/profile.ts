@@ -3,13 +3,13 @@ export type Leader = {
   position: string;
   nip: string;
   photo?: string;
-  bio: string;
-  email: string;
-  term: string;
 };
 
 export type OrgNode = {
+  id: string;
   name: string;
   position: string;
-  children?: OrgNode[];
+  nip?: string;
+  photo?: string;
+  children: OrgNode[];
 };

@@ -29,7 +29,7 @@ export default async function LayananPage() {
       <SopSteps steps={sopSteps} />
       <LayananListSection items={items} />
       <SopPelayananSection />
-      <HelpSection whatsapp={kontak.whatsapp} />
+      <HelpSection contacts={kontak.contacts} />
     </>
   );
 }

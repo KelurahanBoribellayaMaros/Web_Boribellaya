@@ -1,9 +1,12 @@
 import { MapPin, MessageCircle, UserRound } from "lucide-react";
 import { Reveal } from "@/components/ui/Reveal";
 import { toWhatsAppHref } from "@/lib/whatsapp";
+import type { KontakPerson } from "@/types/kontak";
 
-export function HelpSection({ whatsapp }: { whatsapp: string }) {
-  const whatsappHref = toWhatsAppHref(whatsapp) ?? "/kontak";
+export function HelpSection({ contacts }: { contacts: KontakPerson[] }) {
+  // The primary (first-listed) contact is used for this quick-CTA button —
+  // admin controls which one that is via the order of the list in Kelola Kontak.
+  const whatsappHref = (contacts[0] && toWhatsAppHref(contacts[0].whatsapp)) ?? "/kontak";
 
   return (
     <section className="mx-auto max-w-6xl px-2 pb-12 sm:px-3 lg:px-4">
