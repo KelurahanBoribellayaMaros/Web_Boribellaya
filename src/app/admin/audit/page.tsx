@@ -23,6 +23,7 @@ const targetLabels: Record<string, string> = {
   population: "Data Penduduk",
   permohonan: "Permohonan",
   admin: "sebagai admin",
+  admin_role: "status admin",
 };
 
 const actionDotClass: Record<AuditAction, string> = {

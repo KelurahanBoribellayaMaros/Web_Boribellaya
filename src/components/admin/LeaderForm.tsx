@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
+import { unstable_rethrow } from "next/navigation";
 import { User } from "lucide-react";
 import { updateLeaderAction } from "@/lib/actions/struktur-actions";
 import type { Leader } from "@/types/profile";
@@ -35,6 +36,7 @@ export function LeaderForm({ leader }: { leader: Leader }) {
     try {
       await updateLeaderAction(formData);
     } catch (err) {
+      unstable_rethrow(err);
       setError(err instanceof Error ? err.message : "Terjadi kesalahan. Silakan coba lagi.");
       setIsSubmitting(false);
     }

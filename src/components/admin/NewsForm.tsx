@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
+import { unstable_rethrow } from "next/navigation";
 import { ImageIcon } from "lucide-react";
 import { DatePicker } from "@/components/ui/DatePicker";
 import type { NewsItem } from "@/types/home";
@@ -44,6 +45,7 @@ export function NewsForm({ action, defaultValues, submitLabel }: NewsFormProps) 
     try {
       await action(formData);
     } catch (err) {
+      unstable_rethrow(err);
       setError(err instanceof Error ? err.message : "Terjadi kesalahan. Silakan coba lagi.");
       setIsSubmitting(false);
     }

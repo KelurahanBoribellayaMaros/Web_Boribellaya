@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
+import { unstable_rethrow } from "next/navigation";
 import { Mail, MessageSquare, Phone, Send, UploadCloud, User } from "lucide-react";
 import {
   createPermohonanUploadUrlAction,
@@ -88,6 +89,7 @@ export function PermohonanForm({
       }
       await submitPermohonanAction(type, category, categoryLabel, formData);
     } catch (err) {
+      unstable_rethrow(err);
       setError(err instanceof Error ? err.message : "Terjadi kesalahan. Silakan coba lagi.");
       setIsSubmitting(false);
     }

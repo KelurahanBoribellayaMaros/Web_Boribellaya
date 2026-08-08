@@ -29,8 +29,6 @@ service cloud.firestore {
       allow read: if false;
       allow write: if false;
     }
-
-    // Anything not explicitly listed above stays closed by default.
     match /{document=**} {
       allow read, write: if false;
     }

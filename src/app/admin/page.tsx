@@ -8,6 +8,7 @@ import {
   Inbox,
   MapPin,
   Newspaper,
+  ShieldUser,
   Users,
   Wrench,
 } from "lucide-react";
@@ -132,6 +133,13 @@ export default async function AdminDashboardPage() {
       title: "Log Aktivitas",
       description: "Riwayat perubahan data yang dilakukan akun admin.",
       href: "/admin/audit",
+    },
+    {
+      icon: ShieldUser,
+      iconClass: "bg-red-100 text-red-700",
+      title: "Kelola Admin",
+      description: "Berikan atau cabut akses admin untuk staf lain.",
+      href: "/admin/kelola-admin",
     },
   ];
 

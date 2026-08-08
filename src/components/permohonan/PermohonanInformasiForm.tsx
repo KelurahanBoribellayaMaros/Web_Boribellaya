@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
+import { unstable_rethrow } from "next/navigation";
 import {
   Briefcase,
   FileText,
@@ -42,6 +43,7 @@ export function PermohonanInformasiForm({
         formData
       );
     } catch (err) {
+      unstable_rethrow(err);
       setError(err instanceof Error ? err.message : "Terjadi kesalahan. Silakan coba lagi.");
       setIsSubmitting(false);
     }

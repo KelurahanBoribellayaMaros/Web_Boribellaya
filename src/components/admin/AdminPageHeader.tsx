@@ -27,23 +27,13 @@ export function AdminPageHeader({
 }: AdminPageHeaderProps) {
   return (
     <div>
-      <div className="mb-3 flex items-center gap-1.5 text-sm font-medium text-gray-500">
+      <Link
+        href={backHref ?? "/admin"}
+        className="mb-4 inline-flex items-center gap-2 rounded-full border border-gray-200 bg-white px-4 py-2.5 text-sm font-semibold text-gray-700 shadow-sm transition-colors hover:bg-gray-50"
+      >
         <ArrowLeft className="size-4" />
-        <Link href="/admin" className="transition-colors hover:text-gray-700">
-          Dashboard Admin
-        </Link>
-        {backHref && (
-          <>
-            <span className="text-gray-300">/</span>
-            <Link
-              href={backHref}
-              className="transition-colors hover:text-gray-700"
-            >
-              {backLabel}
-            </Link>
-          </>
-        )}
-      </div>
+        Kembali ke {backLabel ?? "Dashboard Admin"}
+      </Link>
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div className="flex items-center gap-3">
           <span

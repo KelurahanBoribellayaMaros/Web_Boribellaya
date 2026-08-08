@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
+import { unstable_rethrow } from "next/navigation";
 import { UploadCloud } from "lucide-react";
 import { DatePicker } from "@/components/ui/DatePicker";
 import { supabaseBrowser, PPID_BUCKET } from "@/lib/supabase/browser-client";
@@ -65,6 +66,7 @@ export function PpidUploadForm() {
 
       await createPpidDocumentAction({ path, title, description, category, date });
     } catch (err) {
+      unstable_rethrow(err);
       setError(err instanceof Error ? err.message : "Terjadi kesalahan. Silakan coba lagi.");
       setIsSubmitting(false);
     }
