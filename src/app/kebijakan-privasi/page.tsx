@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 
 export default function KebijakanPrivasiPage() {
   return (
-    <div className="mx-auto max-w-3xl px-2 py-10 sm:px-3 sm:py-12 lg:px-4">
+    <div className="mx-auto max-w-6xl px-2 py-10 sm:px-3 sm:py-12 lg:px-4">
       <div className="rounded-2xl bg-[#003459] px-6 py-10 text-center sm:px-10 sm:py-12">
         <div className="flex items-center justify-center gap-2">
           <span className="h-px w-8 bg-[#fdd85d]" />
@@ -29,7 +29,7 @@ export default function KebijakanPrivasiPage() {
         </p>
       </div>
 
-      <div className="mt-8 sm:mt-10">
+      <div className="mx-auto mt-8 max-w-3xl sm:mt-10">
         <Reveal>
           <ProfileCard icon={ShieldCheck} title="Kebijakan Privasi">
             <div className="space-y-5 text-sm leading-relaxed text-gray-600">

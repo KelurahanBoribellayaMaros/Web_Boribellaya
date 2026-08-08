@@ -19,7 +19,7 @@ export default async function InformasiPublikPage() {
   const documents = await getPpidDocuments();
 
   return (
-    <div className="mx-auto max-w-5xl px-2 py-10 sm:px-3 sm:py-12 lg:px-4">
+    <div className="mx-auto max-w-6xl px-2 py-10 sm:px-3 sm:py-12 lg:px-4">
       <div className="rounded-2xl bg-[#003459] px-6 py-10 text-center sm:px-10 sm:py-12">
         <div className="flex items-center justify-center gap-2">
           <span className="h-px w-8 bg-[#fdd85d]" />

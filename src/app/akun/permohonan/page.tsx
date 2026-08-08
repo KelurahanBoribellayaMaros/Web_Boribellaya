@@ -28,8 +28,8 @@ export default async function RiwayatPermohonanPage() {
   const items = session.email ? await getPermohonanByEmail(session.email) : [];
 
   return (
-    <div className="mx-auto max-w-3xl px-2 py-10 sm:px-3 sm:py-12 lg:px-4">
-      <div className="rounded-2xl bg-[#003459] px-6 py-10 text-center sm:px-8 sm:py-12">
+    <div className="mx-auto max-w-6xl px-2 py-10 sm:px-3 sm:py-12 lg:px-4">
+      <div className="rounded-2xl bg-[#003459] px-6 py-10 text-center sm:px-10 sm:py-12">
         <div className="flex items-center justify-center gap-2">
           <span className="h-px w-8 bg-[#fdd85d]" />
           <span className="text-xs font-semibold tracking-widest text-[#fdd85d] uppercase">
