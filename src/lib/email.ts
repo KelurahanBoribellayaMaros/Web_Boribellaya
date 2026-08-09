@@ -48,7 +48,10 @@ export async function sendEmail({
 }): Promise<void> {
   await getTransporter().sendMail({
     from: `"Kelurahan Boribellaya" <${process.env.GMAIL_USER}>`,
-    replyTo: process.env.GMAIL_USER,
+    // Lets the sending account be a dedicated "robot" address (never read
+    // by staff) while citizen replies still land in an inbox someone
+    // actually checks. Falls back to the sender itself if unset.
+    replyTo: process.env.EMAIL_REPLY_TO || process.env.GMAIL_USER,
     to,
     subject,
     html,

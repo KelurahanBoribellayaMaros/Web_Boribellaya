@@ -12,6 +12,9 @@ import { toastRedirectUrl } from "@/lib/toast-redirect";
 import { supabaseAdmin, PERMOHONAN_BUCKET } from "@/lib/supabase/client";
 import { statusLabels } from "@/types/permohonan";
 import type { PermohonanStatus, PermohonanType } from "@/types/permohonan";
+import { permohonanSchema } from "@/lib/validations";
+import { checkRateLimit } from "@/lib/rate-limiter";
+import { verifyTurnstileToken } from "@/lib/turnstile";
 
 const ALLOWED_BERKAS_MIME_TYPES: Record<string, string> = {
   "application/pdf": "pdf",
@@ -20,12 +23,6 @@ const ALLOWED_BERKAS_MIME_TYPES: Record<string, string> = {
 };
 
 const MAX_BERKAS_SIZE = 2 * 1024 * 1024; // 2MB
-
-// Beyond the honeypot (which only stops naive bots), this stops a logged-in
-// account from flooding the admin inbox/Firestore by scripting repeated
-// submissions — a real submission never needs this many in 10 minutes.
-const RATE_LIMIT_WINDOW_MS = 10 * 60 * 1000;
-const RATE_LIMIT_MAX_SUBMISSIONS = 5;
 
 export async function createPermohonanUploadUrlAction(input: {
   fileType: string;
@@ -132,42 +129,58 @@ export async function submitPermohonanAction(
     redirect("/permohonan/terkirim");
   }
 
-  const recentSubmissions = (await getPermohonanByEmail(session.email)).filter(
-    (p) => Date.now() - new Date(p.createdAt).getTime() < RATE_LIMIT_WINDOW_MS
-  );
-  if (recentSubmissions.length >= RATE_LIMIT_MAX_SUBMISSIONS) {
+  const allowed = await checkRateLimit(`submit_permohonan:${session.email}`, 5, 10 * 60 * 1000);
+  if (!allowed) {
     throw new Error(
       "Anda telah mengirim terlalu banyak permohonan dalam waktu singkat. Silakan coba lagi dalam beberapa menit."
     );
   }
 
-  const name = String(formData.get("name") ?? "").trim();
+  const turnstileToken = String(formData.get("cf-turnstile-response") ?? "");
+  if (process.env.TURNSTILE_SECRET_KEY) {
+    if (!turnstileToken) {
+      throw new Error("Sistem mendeteksi aktivitas yang mencurigakan. Silakan muat ulang halaman dan coba lagi.");
+    }
+    const isTurnstileValid = await verifyTurnstileToken(turnstileToken);
+    if (!isTurnstileValid) {
+      throw new Error("Verifikasi keamanan gagal. Silakan coba lagi.");
+    }
+  }
+
+  const parseResult = permohonanSchema.safeParse({
+    name: formData.get("name"),
+    phone: formData.get("phone"),
+    description: formData.get("description"),
+    nik: formData.get("nik"),
+    identityCategory: formData.get("identityCategory"),
+    address: formData.get("address"),
+    occupation: formData.get("occupation"),
+    usagePurpose: formData.get("usagePurpose"),
+    copyFormat: formData.get("copyFormat"),
+    berkasJson: formData.get("berkasJson"),
+  });
+
+  if (!parseResult.success) {
+    throw new Error(parseResult.error.issues[0].message);
+  }
+
+  const {
+    name,
+    phone,
+    description,
+    nik,
+    identityCategory,
+    address,
+    occupation,
+    usagePurpose,
+    copyFormat,
+    berkasJson,
+  } = parseResult.data;
+
   const email = session.email;
-  const phone = String(formData.get("phone") ?? "").trim();
-  const description = String(formData.get("description") ?? "").trim();
-
-  if (!name || !description) {
-    throw new Error("Nama dan keperluan wajib diisi.");
-  }
-
-  // PPID-specific fields — only sent by the informasi request form, so
-  // these are simply absent (and skipped below) for layanan submissions.
-  const nik = String(formData.get("nik") ?? "").trim();
-  // The form enforces 16 digits via minLength/maxLength, but that's a
-  // client-side HTML constraint only — trivially bypassed by anyone
-  // submitting the request directly, so it must be re-checked here too.
-  if (nik && !/^\d{16}$/.test(nik)) {
-    throw new Error("NIK harus terdiri dari 16 digit angka.");
-  }
-  const identityCategory = String(formData.get("identityCategory") ?? "").trim();
-  const address = String(formData.get("address") ?? "").trim();
-  const occupation = String(formData.get("occupation") ?? "").trim();
-  const usagePurpose = String(formData.get("usagePurpose") ?? "").trim();
-  const copyFormat = String(formData.get("copyFormat") ?? "").trim();
-
+  
   // Only sent by layanan forms that require document uploads — absent
   // (and skipped) for the informasi form.
-  const berkasJson = String(formData.get("berkasJson") ?? "").trim();
   const berkas = berkasJson ? JSON.parse(berkasJson) : undefined;
 
   const now = new Date().toISOString();

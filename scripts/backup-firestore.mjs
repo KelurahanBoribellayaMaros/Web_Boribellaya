@@ -2,7 +2,10 @@
 // to a single timestamped JSON file. Firestore's Spark (free) plan has no
 // built-in automatic backups, and scheduled server-side exports require the
 // paid Blaze plan, so this script (runnable locally or via a scheduled
-// GitHub Actions workflow) is the zero-cost alternative.
+// GitHub Actions workflow) is the zero-cost alternative. The admin dashboard
+// "Backup Data" button (src/app/api/admin/backup/route.ts) produces the same
+// JSON shape for a one-off manual download. To restore a backup produced by
+// either, see scripts/restore-firestore.mjs.
 //
 // Usage: node --env-file=.env.local scripts/backup-firestore.mjs
 import { mkdirSync, writeFileSync } from "fs";

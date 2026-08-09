@@ -1,9 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { sendEmailVerification } from "firebase/auth";
+import { unstable_rethrow } from "next/navigation";
 import { Send } from "lucide-react";
-import { auth } from "@/lib/firebase/client";
+import { sendVerificationEmailAction } from "@/lib/actions/email-verification-actions";
 
 export function ResendVerificationButton() {
   const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
@@ -13,27 +13,14 @@ export function ResendVerificationButton() {
     setStatus("sending");
     setErrorMessage(null);
 
-    // On a fresh page load, Firebase's client SDK rehydrates the signed-in
-    // user from storage asynchronously — auth.currentUser can still be null
-    // for a moment even though the browser session cookie is already valid.
-    await auth.authStateReady();
-
-    if (!auth.currentUser) {
-      setStatus("error");
-      setErrorMessage("Sesi Anda di perangkat ini tidak ditemukan. Silakan masuk kembali.");
-      return;
-    }
-
     try {
-      await sendEmailVerification(auth.currentUser);
+      await sendVerificationEmailAction();
       setStatus("sent");
     } catch (error) {
+      unstable_rethrow(error);
       setStatus("error");
-      const code = (error as { code?: string })?.code;
       setErrorMessage(
-        code === "auth/too-many-requests"
-          ? "Terlalu banyak percobaan. Silakan coba lagi beberapa saat lagi."
-          : "Gagal mengirim email verifikasi. Silakan coba lagi."
+        error instanceof Error ? error.message : "Gagal mengirim email verifikasi. Silakan coba lagi."
       );
     }
   }

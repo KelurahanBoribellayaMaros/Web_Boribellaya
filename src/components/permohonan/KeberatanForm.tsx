@@ -5,6 +5,7 @@ import { unstable_rethrow } from "next/navigation";
 import { Send } from "lucide-react";
 import { submitKeberatanAction } from "@/lib/actions/keberatan-actions";
 import { keberatanReasonLabels } from "@/types/keberatan";
+import { TurnstileWidget } from "@/components/turnstile-widget";
 import type { KeberatanReason } from "@/types/keberatan";
 
 const reasonEntries = Object.entries(keberatanReasonLabels) as [KeberatanReason, string][];
@@ -125,6 +126,8 @@ export function KeberatanForm({ permohonanId }: { permohonanId: string }) {
       </div>
 
       {error && <p className="text-sm text-red-600">{error}</p>}
+
+      <TurnstileWidget />
 
       <button
         type="submit"

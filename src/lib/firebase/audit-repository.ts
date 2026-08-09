@@ -1,7 +1,13 @@
 import "server-only";
 import { adminDb } from "@/lib/firebase/admin";
 
-export type AuditAction = "create" | "update" | "delete" | "status_change" | "login";
+export type AuditAction =
+  | "create"
+  | "update"
+  | "delete"
+  | "status_change"
+  | "login"
+  | "export";
 
 export type AuditLogEntry = {
   id: string;

@@ -8,6 +8,7 @@ import {
   submitPermohonanAction,
 } from "@/lib/actions/permohonan-actions";
 import { supabaseBrowser, PERMOHONAN_BUCKET } from "@/lib/supabase/browser-client";
+import { TurnstileWidget } from "@/components/turnstile-widget";
 import type { BerkasRequirement } from "@/types/layanan";
 import type { PermohonanType } from "@/types/permohonan";
 
@@ -204,6 +205,8 @@ export function PermohonanForm({
       )}
 
       {error && <p className="text-sm text-red-600">{error}</p>}
+
+      <TurnstileWidget />
 
       <button
         type="submit"

@@ -1,16 +1,16 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
-import { useRouter } from "next/navigation";
+import { unstable_rethrow, useRouter } from "next/navigation";
 import {
   createUserWithEmailAndPassword,
-  sendEmailVerification,
   updateProfile,
   type AuthError,
 } from "firebase/auth";
 import { Eye, EyeOff, Lock, Mail, User, UserPlus } from "lucide-react";
 import { auth } from "@/lib/firebase/client";
 import { createSessionAction } from "@/lib/actions/auth-actions";
+import { sendVerificationEmailAction } from "@/lib/actions/email-verification-actions";
 
 function authErrorMessage(error: unknown): string {
   const code = (error as AuthError)?.code;
@@ -21,9 +21,14 @@ function authErrorMessage(error: unknown): string {
       return "Kata sandi terlalu lemah. Gunakan minimal 6 karakter.";
     case "auth/invalid-email":
       return "Format email tidak valid.";
-    default:
-      return "Terjadi kesalahan. Silakan coba lagi.";
   }
+  // Errors thrown from our own server actions (e.g. the verification email
+  // rate limit) aren't Firebase AuthErrors and carry no `code`, but their
+  // message is already a user-facing Indonesian string.
+  if (!code && error instanceof Error && error.message) {
+    return error.message;
+  }
+  return "Terjadi kesalahan. Silakan coba lagi.";
 }
 
 export function RegisterForm() {
@@ -50,14 +55,18 @@ export function RegisterForm() {
     try {
       const credential = await createUserWithEmailAndPassword(auth, email, password);
       await updateProfile(credential.user, { displayName: name });
-      await sendEmailVerification(credential.user);
       const idToken = await credential.user.getIdToken(true);
       const { role } = await createSessionAction(idToken);
+      // Needs the session cookie createSessionAction just set, so it must
+      // run after — the action sends via our own Gmail sender, not
+      // Firebase's default "noreply@" address.
+      await sendVerificationEmailAction();
       const toast = `toast=${encodeURIComponent(
         "Akun berhasil dibuat. Kami telah mengirim email verifikasi ke alamat Anda."
       )}`;
       router.push(role === "admin" ? `/admin?${toast}` : `/verifikasi-email?${toast}`);
     } catch (err) {
+      unstable_rethrow(err);
       setError(authErrorMessage(err));
       setIsSubmitting(false);
     }

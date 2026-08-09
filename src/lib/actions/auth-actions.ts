@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import { adminAuth, adminDb } from "@/lib/firebase/admin";
 import { SESSION_COOKIE_NAME } from "@/lib/firebase/session";
 import { logAudit } from "@/lib/firebase/audit-repository";
+import { checkRateLimit, getClientIp } from "@/lib/rate-limiter";
 
 const REMEMBERED_EXPIRES_IN_MS = 14 * 24 * 60 * 60 * 1000; // 14 days (platform max)
 const NOT_REMEMBERED_EXPIRES_IN_MS = 24 * 60 * 60 * 1000; // 1 day
@@ -13,6 +14,13 @@ export async function createSessionAction(
   idToken: string,
   rememberMe: boolean = true
 ): Promise<{ role: "admin" | "warga" }> {
+  const ip = await getClientIp();
+  // Maksimal 10 percobaan login dari IP yang sama dalam 15 menit
+  const allowed = await checkRateLimit(`login_ip:${ip}`, 10, 15 * 60 * 1000);
+  if (!allowed) {
+    throw new Error("Terlalu banyak percobaan login. Silakan coba lagi dalam 15 menit.");
+  }
+
   const decoded = await adminAuth.verifyIdToken(idToken);
   const expiresInMs = rememberMe
     ? REMEMBERED_EXPIRES_IN_MS

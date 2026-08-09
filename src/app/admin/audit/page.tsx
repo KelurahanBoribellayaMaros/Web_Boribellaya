@@ -12,6 +12,7 @@ const actionLabels: Record<AuditAction, string> = {
   delete: "Menghapus",
   status_change: "Mengubah status",
   login: "Masuk",
+  export: "Mengekspor",
 };
 
 const targetLabels: Record<string, string> = {
@@ -22,8 +23,10 @@ const targetLabels: Record<string, string> = {
   kontak: "Info Kontak & Lokasi",
   population: "Data Penduduk",
   permohonan: "Permohonan",
+  keberatan: "Keberatan",
   admin: "sebagai admin",
   admin_role: "status admin",
+  firestore_backup: "Backup Database",
 };
 
 const actionDotClass: Record<AuditAction, string> = {
@@ -32,6 +35,7 @@ const actionDotClass: Record<AuditAction, string> = {
   delete: "bg-red-500",
   status_change: "bg-amber-500",
   login: "bg-gray-400",
+  export: "bg-purple-500",
 };
 
 function formatTimestamp(iso: string): string {

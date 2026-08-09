@@ -3,6 +3,7 @@ import Link from "next/link";
 import {
   AlertTriangle,
   Building2,
+  Download,
   FileCheck2,
   History,
   Inbox,
@@ -153,6 +154,18 @@ export default async function AdminDashboardPage() {
       description: "Berikan atau cabut akses admin untuk staf lain.",
       href: "/admin/kelola-admin",
     },
+    {
+      icon: Download,
+      iconClass: "bg-gray-100 text-gray-700",
+      title: "Backup Data",
+      description: "Unduh salinan seluruh data (JSON) dari database.",
+      href: "/api/admin/backup",
+      // Plain <a>, not <Link> — Link prefetches visible hrefs in production,
+      // which would silently trigger a full Firestore export on every
+      // dashboard view. A real download also needs a full navigation
+      // anyway for the browser to honor Content-Disposition.
+      isDownload: true,
+    },
   ];
 
   const activities: Activity[] = [
@@ -243,28 +256,38 @@ export default async function AdminDashboardPage() {
 
       <h2 className="mt-10 text-lg font-bold text-gray-900">Aksi Cepat</h2>
       <div className="mt-4 space-y-3">
-        {quickLinks.map((item) => (
-          <Link
-            key={item.title}
-            href={item.href}
-            className="flex items-center gap-4 rounded-2xl border border-gray-200 bg-white p-4 transition-shadow hover:shadow-md"
-          >
-            <span
-              className={`flex size-11 shrink-0 items-center justify-center rounded-xl ${item.iconClass}`}
-            >
-              <item.icon className="size-5" />
-            </span>
-            <div className="min-w-0 flex-1">
-              <h3 className="font-semibold text-gray-900">{item.title}</h3>
-              <p className="text-sm text-gray-500">{item.description}</p>
-            </div>
-            {item.badge !== undefined && (
-              <span className="flex size-6 shrink-0 items-center justify-center rounded-full bg-red-600 text-xs font-bold text-white">
-                {item.badge}
+        {quickLinks.map((item) => {
+          const content = (
+            <>
+              <span
+                className={`flex size-11 shrink-0 items-center justify-center rounded-xl ${item.iconClass}`}
+              >
+                <item.icon className="size-5" />
               </span>
-            )}
-          </Link>
-        ))}
+              <div className="min-w-0 flex-1">
+                <h3 className="font-semibold text-gray-900">{item.title}</h3>
+                <p className="text-sm text-gray-500">{item.description}</p>
+              </div>
+              {item.badge !== undefined && (
+                <span className="flex size-6 shrink-0 items-center justify-center rounded-full bg-red-600 text-xs font-bold text-white">
+                  {item.badge}
+                </span>
+              )}
+            </>
+          );
+          const className =
+            "flex items-center gap-4 rounded-2xl border border-gray-200 bg-white p-4 transition-shadow hover:shadow-md";
+
+          return item.isDownload ? (
+            <a key={item.title} href={item.href} className={className}>
+              {content}
+            </a>
+          ) : (
+            <Link key={item.title} href={item.href} className={className}>
+              {content}
+            </Link>
+          );
+        })}
       </div>
 
       <h2 className="mt-10 text-lg font-bold text-gray-900">

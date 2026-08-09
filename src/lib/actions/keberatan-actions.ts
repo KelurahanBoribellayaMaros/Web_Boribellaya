@@ -12,7 +12,9 @@ import { toastRedirectUrl } from "@/lib/toast-redirect";
 import { statusLabels } from "@/types/permohonan";
 import type { PermohonanStatus } from "@/types/permohonan";
 import { keberatanReasonLabels } from "@/types/keberatan";
-import type { KeberatanReason } from "@/types/keberatan";
+import { keberatanSchema } from "@/lib/validations";
+import { checkRateLimit } from "@/lib/rate-limiter";
+import { verifyTurnstileToken } from "@/lib/turnstile";
 
 const emailFooter = `
   <p style="margin-top:24px;padding-top:12px;border-top:1px solid #e5e7eb;color:#6b7280;font-size:12px;">
@@ -74,6 +76,22 @@ export async function submitKeberatanAction(
     redirect("/permohonan/terkirim");
   }
 
+  const allowed = await checkRateLimit(`submit_keberatan:${session.email}`, 3, 10 * 60 * 1000);
+  if (!allowed) {
+    throw new Error("Terlalu banyak percobaan. Silakan coba lagi dalam 10 menit.");
+  }
+
+  const turnstileToken = String(formData.get("cf-turnstile-response") ?? "");
+  if (process.env.TURNSTILE_SECRET_KEY) {
+    if (!turnstileToken) {
+      throw new Error("Sistem mendeteksi aktivitas yang mencurigakan. Silakan muat ulang halaman dan coba lagi.");
+    }
+    const isTurnstileValid = await verifyTurnstileToken(turnstileToken);
+    if (!isTurnstileValid) {
+      throw new Error("Verifikasi keamanan gagal. Silakan coba lagi.");
+    }
+  }
+
   const item = await getPermohonanById(permohonanId);
   if (!item) {
     throw new Error("Permohonan tidak ditemukan.");
@@ -89,24 +107,18 @@ export async function submitKeberatanAction(
     throw new Error("Keberatan untuk permohonan ini sudah pernah diajukan.");
   }
 
-  const reasons = formData
-    .getAll("reasons")
-    .map(String)
-    .filter((r) => VALID_REASONS.has(r)) as KeberatanReason[];
-  if (reasons.length === 0) {
-    throw new Error("Pilih minimal satu alasan keberatan.");
+  const parseResult = keberatanSchema.safeParse({
+    reasons: formData.getAll("reasons").map(String),
+    kronologi: formData.get("kronologi"),
+    isKuasa: formData.get("isKuasa") === "on",
+    kuasaName: formData.get("kuasaName"),
+  });
+
+  if (!parseResult.success) {
+    throw new Error(parseResult.error.issues[0].message);
   }
 
-  const kronologi = String(formData.get("kronologi") ?? "").trim();
-  if (!kronologi) {
-    throw new Error("Kronologi keberatan wajib diisi.");
-  }
-
-  const isKuasa = formData.get("isKuasa") === "on";
-  const kuasaName = String(formData.get("kuasaName") ?? "").trim();
-  if (isKuasa && !kuasaName) {
-    throw new Error("Nama kuasa wajib diisi jika diajukan atas nama kuasa.");
-  }
+  const { reasons, kronologi, isKuasa, kuasaName } = parseResult.data;
 
   const now = new Date().toISOString();
   const docRef = await adminDb.collection("keberatan").add({

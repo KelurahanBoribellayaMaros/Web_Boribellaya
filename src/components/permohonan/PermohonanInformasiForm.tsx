@@ -15,6 +15,7 @@ import {
   Users,
 } from "lucide-react";
 import { submitPermohonanAction } from "@/lib/actions/permohonan-actions";
+import { TurnstileWidget } from "@/components/turnstile-widget";
 
 type PermohonanInformasiFormProps = {
   accountEmail: string;
@@ -264,6 +265,8 @@ export function PermohonanInformasiForm({
       </div>
 
       {error && <p className="text-sm text-red-600">{error}</p>}
+
+      <TurnstileWidget />
 
       <button
         type="submit"

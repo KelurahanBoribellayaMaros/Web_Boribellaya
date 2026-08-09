@@ -29,6 +29,10 @@ service cloud.firestore {
       allow read: if false;
       allow write: if false;
     }
+    match /email_rate_limits/{key} {
+      allow read: if false;
+      allow write: if false;
+    }
     match /{document=**} {
       allow read, write: if false;
     }

@@ -1,28 +1,14 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
-import { sendPasswordResetEmail, type AuthError } from "firebase/auth";
+import { unstable_rethrow } from "next/navigation";
 import { Mail, Send } from "lucide-react";
-import { auth } from "@/lib/firebase/client";
+import { sendPasswordResetEmailAction } from "@/lib/actions/email-verification-actions";
 import { useToast } from "@/components/ui/ToastProvider";
+import { TurnstileWidget } from "@/components/turnstile-widget";
 
 const SUCCESS_MESSAGE =
   "Jika email tersebut terdaftar, tautan untuk mengatur ulang kata sandi telah dikirim. Silakan cek kotak masuk (dan folder spam) Anda.";
-
-function authErrorMessage(error: unknown): string | null {
-  const code = (error as AuthError)?.code;
-  switch (code) {
-    case "auth/user-not-found":
-      // Don't reveal whether the email is registered — treat as success.
-      return null;
-    case "auth/invalid-email":
-      return "Format email tidak valid.";
-    case "auth/too-many-requests":
-      return "Terlalu banyak percobaan. Silakan coba lagi nanti.";
-    default:
-      return "Terjadi kesalahan. Silakan coba lagi.";
-  }
-}
 
 export function ForgotPasswordForm() {
   const { showToast } = useToast();
@@ -36,18 +22,21 @@ export function ForgotPasswordForm() {
     setError(null);
     setIsSubmitting(true);
 
+    const formData = new FormData(event.currentTarget);
+    const turnstileToken = String(formData.get("cf-turnstile-response") ?? "");
+
     try {
-      await sendPasswordResetEmail(auth, email);
+      const result = await sendPasswordResetEmailAction(email, turnstileToken);
+      if (result?.error) {
+        setError(result.error);
+        return;
+      }
+      
       setSuccess(true);
       showToast("Tautan reset kata sandi telah dikirim.");
     } catch (err) {
-      const message = authErrorMessage(err);
-      if (message === null) {
-        setSuccess(true);
-        showToast("Tautan reset kata sandi telah dikirim.");
-      } else {
-        setError(message);
-      }
+      unstable_rethrow(err);
+      setError("Terjadi kesalahan sistem. Silakan coba lagi nanti.");
     } finally {
       setIsSubmitting(false);
     }
@@ -88,6 +77,8 @@ export function ForgotPasswordForm() {
       </div>
 
       {error && <p className="text-sm text-red-600">{error}</p>}
+
+      <TurnstileWidget />
 
       <button
         type="submit"
