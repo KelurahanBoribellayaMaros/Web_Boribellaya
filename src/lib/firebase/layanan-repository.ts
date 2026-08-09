@@ -14,5 +14,8 @@ export function isLayananEnabled(
   status: Record<string, boolean>,
   slug: string
 ): boolean {
+  // Informasi Publik is a right guaranteed by UU KIP, not an optional
+  // digital service — it can never be switched off by an admin.
+  if (slug === "informasi-publik") return true;
   return status[slug] !== false;
 }

@@ -20,10 +20,12 @@ const db = getFirestore(app);
 
 // Every top-level collection the app reads/writes (see grep for
 // `.collection("...")` across src/lib if this list ever needs updating).
+// Note: org structure and other admin-editable settings live as single
+// documents under `settings/*`, not their own top-level collections.
 const COLLECTIONS = [
   "news",
-  "org_positions",
   "permohonan",
+  "keberatan",
   "ppid_documents",
   "settings",
   "users",

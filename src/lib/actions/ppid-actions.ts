@@ -7,7 +7,11 @@ import { requireAdmin } from "@/lib/firebase/session";
 import { logAudit } from "@/lib/firebase/audit-repository";
 import { supabaseAdmin, PPID_BUCKET } from "@/lib/supabase/client";
 import { toastRedirectUrl } from "@/lib/toast-redirect";
-import type { PpidCategory } from "@/types/ppid";
+import {
+  getPpidDocuments,
+  getPpidDocumentsByCategory,
+} from "@/lib/firebase/ppid-repository";
+import type { PpidCategory, PpidDocument } from "@/types/ppid";
 
 const ALLOWED_MIME_TYPES: Record<string, string> = {
   "application/pdf": "pdf",
@@ -180,4 +184,26 @@ export async function deletePpidDocumentAction(id: string): Promise<void> {
   });
 
   redirect(toastRedirectUrl("/admin/ppid", "Dokumen berhasil dihapus."));
+}
+
+// Public read actions for the "Informasi Publik" page — no requireAdmin,
+// this data is public by law. Kept as on-demand actions (rather than
+// fetched upfront) so the page's default load only ever pays for the
+// preview it actually shows.
+
+export async function loadMorePpidCategoryAction(
+  category: PpidCategory
+): Promise<PpidDocument[]> {
+  return getPpidDocumentsByCategory(category);
+}
+
+export async function searchPpidDocumentsAction(query: string): Promise<PpidDocument[]> {
+  const q = query.trim().toLowerCase();
+  if (!q) return [];
+
+  const documents = await getPpidDocuments();
+  return documents.filter(
+    (doc) =>
+      doc.title.toLowerCase().includes(q) || doc.description.toLowerCase().includes(q)
+  );
 }

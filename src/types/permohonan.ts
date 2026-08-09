@@ -8,6 +8,10 @@ export type CopyFormat = "softcopy" | "hardcopy";
 
 export type Permohonan = {
   id: string;
+  // Human-readable reference (e.g. "INF-20260809-K3F8") shown to citizens —
+  // the Firestore doc id itself is never displayed. Optional because
+  // documents created before this field existed won't have it.
+  number?: string;
   type: PermohonanType;
   category: string;
   categoryLabel: string;

@@ -1,5 +1,9 @@
 import type { PpidCategory } from "@/types/ppid";
 
+// Shared between the server-side preview query and the client's "is there
+// possibly more" heuristic for showing the "Lihat Selengkapnya" button.
+export const PPID_PREVIEW_LIMIT = 5;
+
 export const categoryLabels: Record<PpidCategory, string> = {
   berkala: "Berkala",
   "setiap-saat": "Setiap Saat",

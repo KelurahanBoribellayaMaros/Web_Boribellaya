@@ -24,31 +24,33 @@ export default async function AdminLayananPage() {
         action={updateLayananStatusAction}
         className="mt-6 space-y-3 rounded-2xl border border-gray-200 bg-white p-6 shadow-sm"
       >
-        {layananItems.map((item) => {
-          const enabled = isLayananEnabled(status, item.slug);
-          return (
-            <label
-              key={item.slug}
-              className="flex cursor-pointer items-center justify-between gap-4 rounded-xl border border-gray-100 px-4 py-3 transition-colors has-[:checked]:border-[#003459]/30 has-[:checked]:bg-blue-50/50"
-            >
-              <div className="flex items-center gap-3">
-                <span className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-blue-100 text-[#003459]">
-                  <item.icon className="size-4" />
-                </span>
-                <div>
-                  <p className="text-sm font-semibold text-gray-900">{item.title}</p>
-                  <p className="text-xs text-gray-500">{item.description}</p>
+        {layananItems
+          .filter((item) => item.slug !== "informasi-publik")
+          .map((item) => {
+            const enabled = isLayananEnabled(status, item.slug);
+            return (
+              <label
+                key={item.slug}
+                className="flex cursor-pointer items-center justify-between gap-4 rounded-xl border border-gray-100 px-4 py-3 transition-colors has-[:checked]:border-[#003459]/30 has-[:checked]:bg-blue-50/50"
+              >
+                <div className="flex items-center gap-3">
+                  <span className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-blue-100 text-[#003459]">
+                    <item.icon className="size-4" />
+                  </span>
+                  <div>
+                    <p className="text-sm font-semibold text-gray-900">{item.title}</p>
+                    <p className="text-xs text-gray-500">{item.description}</p>
+                  </div>
                 </div>
-              </div>
-              <input
-                type="checkbox"
-                name={`enabled-${item.slug}`}
-                defaultChecked={enabled}
-                className="size-5 shrink-0 accent-[#003459]"
-              />
-            </label>
-          );
-        })}
+                <input
+                  type="checkbox"
+                  name={`enabled-${item.slug}`}
+                  defaultChecked={enabled}
+                  className="size-5 shrink-0 accent-[#003459]"
+                />
+              </label>
+            );
+          })}
 
         <p className="text-xs text-gray-400">
           Layanan yang dinonaktifkan tidak akan bisa diajukan warga sampai

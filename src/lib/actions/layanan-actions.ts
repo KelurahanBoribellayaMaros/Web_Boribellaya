@@ -14,14 +14,16 @@ export async function updateLayananStatusAction(formData: FormData): Promise<voi
   // checked explicitly here rather than only writing what's present —
   // otherwise turning a service back OFF-then-ON-then-OFF again could
   // silently no-op on a merge write.
+  const toggleableItems = layananItems.filter((item) => item.slug !== "informasi-publik");
+
   const data: Record<string, boolean> = {};
-  for (const item of layananItems) {
+  for (const item of toggleableItems) {
     data[item.slug] = formData.get(`enabled-${item.slug}`) === "on";
   }
 
   await adminDb.collection("settings").doc("layanan_status").set(data);
 
-  const disabled = layananItems.filter((item) => !data[item.slug]).map((item) => item.title);
+  const disabled = toggleableItems.filter((item) => !data[item.slug]).map((item) => item.title);
 
   await logAudit({
     uid: session.uid,

@@ -60,6 +60,9 @@ export default async function AdminPermohonanDetailPage({
         <h1 className="mt-2 text-xl font-bold text-gray-900">
           {item.categoryLabel}
         </h1>
+        {item.number && (
+          <p className="mt-0.5 font-mono text-xs text-gray-400">{item.number}</p>
+        )}
 
         <dl className="mt-4 space-y-2 text-sm">
           {item.identityCategory && (

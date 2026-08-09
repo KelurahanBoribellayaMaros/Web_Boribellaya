@@ -4,15 +4,25 @@ import { useMemo, useState } from "react";
 import { ChevronDown, Search } from "lucide-react";
 import type { SyaratLayanan } from "@/types/layanan";
 
+const PAGE_SIZE = 5;
+
 export function SyaratLayananList({ items }: { items: SyaratLayanan[] }) {
   const [query, setQuery] = useState("");
   const [openNo, setOpenNo] = useState<number | null>(null);
+  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
     if (!q) return items;
     return items.filter((item) => item.name.toLowerCase().includes(q));
   }, [items, query]);
+
+  const visibleItems = filtered.slice(0, visibleCount);
+
+  function handleQueryChange(value: string) {
+    setQuery(value);
+    setVisibleCount(PAGE_SIZE);
+  }
 
   return (
     <div>
@@ -25,7 +35,7 @@ export function SyaratLayananList({ items }: { items: SyaratLayanan[] }) {
           <input
             type="search"
             value={query}
-            onChange={(event) => setQuery(event.target.value)}
+            onChange={(event) => handleQueryChange(event.target.value)}
             placeholder="Cari jenis surat..."
             className="w-full bg-transparent py-3 text-base text-gray-900 outline-none placeholder:text-gray-400"
           />
@@ -33,12 +43,12 @@ export function SyaratLayananList({ items }: { items: SyaratLayanan[] }) {
       </div>
 
       <p className="mt-6 text-center text-sm text-gray-500">
-        Menampilkan {filtered.length} dari {items.length} jenis surat
+        Menampilkan {visibleItems.length} dari {filtered.length} jenis surat
       </p>
 
       {filtered.length > 0 ? (
         <div className="mt-4 space-y-3">
-          {filtered.map((item) => {
+          {visibleItems.map((item) => {
             const isOpen = openNo === item.no;
             return (
               <div
@@ -82,7 +92,23 @@ export function SyaratLayananList({ items }: { items: SyaratLayanan[] }) {
             );
           })}
         </div>
-      ) : (
+      ) : null}
+
+      {filtered.length > visibleCount && (
+        <div className="mt-4 flex justify-center">
+          <button
+            type="button"
+            onClick={() =>
+              setVisibleCount((v) => Math.min(v + PAGE_SIZE, filtered.length))
+            }
+            className="rounded-full border border-gray-200 bg-white px-5 py-2.5 text-sm font-semibold text-gray-700 transition-colors hover:bg-gray-50"
+          >
+            Lihat Selengkapnya
+          </button>
+        </div>
+      )}
+
+      {filtered.length === 0 && (
         <div className="mt-10 flex flex-col items-center gap-2 py-10 text-center text-gray-400">
           <Search className="size-8" />
           <p className="text-sm">Tidak ada jenis surat yang cocok dengan pencarian Anda.</p>

@@ -7,7 +7,13 @@ export const metadata: Metadata = {
   title: "Permohonan Terkirim | Kelurahan Boribellaya",
 };
 
-export default function PermohonanTerkirimPage() {
+export default async function PermohonanTerkirimPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ nomor?: string }>;
+}) {
+  const { nomor } = await searchParams;
+
   return (
     <div className="mx-auto max-w-md px-3 py-16 text-center sm:px-4">
       <PermohonanSuccessToast />
@@ -22,6 +28,12 @@ export default function PermohonanTerkirimPage() {
         diproses oleh petugas kelurahan. Kami akan menghubungi Anda melalui
         email atau nomor HP yang Anda cantumkan.
       </p>
+      {nomor && (
+        <div className="mt-4 inline-flex flex-col items-center gap-1 rounded-xl bg-gray-50 px-5 py-3">
+          <span className="text-xs text-gray-500">Nomor Permohonan Anda</span>
+          <span className="font-mono text-sm font-semibold text-gray-900">{nomor}</span>
+        </div>
+      )}
       <Link
         href="/"
         className="mt-6 inline-flex items-center justify-center rounded-full bg-[#003459] px-6 py-3 text-sm font-semibold text-white transition-colors hover:opacity-90"

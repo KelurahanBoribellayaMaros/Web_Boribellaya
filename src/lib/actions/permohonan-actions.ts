@@ -53,6 +53,17 @@ export async function createPermohonanUploadUrlAction(input: {
   return { path: data.path, token: data.token };
 }
 
+// A short, human-readable reference shown to citizens (the Firestore doc id
+// itself is never displayed). Purely a display label, not a lookup key, so
+// no transaction/counter is needed to guarantee uniqueness — collision odds
+// are negligible at a single kelurahan's realistic submission volume.
+function generatePermohonanNumber(type: PermohonanType): string {
+  const prefix = type === "informasi" ? "INF" : "LYN";
+  const datePart = new Date().toISOString().slice(0, 10).replace(/-/g, "");
+  const randomPart = randomUUID().replace(/-/g, "").slice(0, 4).toUpperCase();
+  return `${prefix}-${datePart}-${randomPart}`;
+}
+
 const emailFooter = `
   <p style="margin-top:24px;padding-top:12px;border-top:1px solid #e5e7eb;color:#6b7280;font-size:12px;">
     Email ini dikirim oleh sistem Kelurahan Boribellaya. Ada pertanyaan?
@@ -160,7 +171,9 @@ export async function submitPermohonanAction(
   const berkas = berkasJson ? JSON.parse(berkasJson) : undefined;
 
   const now = new Date().toISOString();
+  const number = generatePermohonanNumber(type);
   const docRef = await adminDb.collection("permohonan").add({
+    number,
     type,
     category,
     categoryLabel,
@@ -195,7 +208,7 @@ export async function submitPermohonanAction(
     console.error("Gagal mengirim notifikasi email ke admin:", error);
   }
 
-  redirect("/permohonan/terkirim");
+  redirect(`/permohonan/terkirim?nomor=${encodeURIComponent(number)}`);
 }
 
 export async function updatePermohonanStatusAction(

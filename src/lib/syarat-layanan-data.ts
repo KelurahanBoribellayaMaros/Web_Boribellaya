@@ -248,4 +248,28 @@ export const syaratLayananItems: SyaratLayanan[] = [
       "Telah bayar PBB",
     ],
   },
+  // Diatur UU No. 14 Tahun 2008 tentang Keterbukaan Informasi Publik, bukan
+  // SK Lurah di atas — dimasukkan di sini juga karena keduanya sama-sama
+  // layanan yang bisa diajukan lewat portal ini.
+  {
+    no: 25,
+    name: "Pengajuan Permohonan Informasi Publik",
+    persyaratan: [
+      "Memiliki akun terverifikasi di portal ini",
+      "NIK sesuai KTP",
+      "Nama lengkap dan alamat pemohon",
+      "Rincian informasi yang diminta",
+      "Tujuan penggunaan informasi",
+    ],
+  },
+  {
+    no: 26,
+    name: "Keberatan Informasi Publik",
+    persyaratan: [
+      "Sudah pernah mengajukan Permohonan Informasi Publik melalui portal ini",
+      "Alasan keberatan sesuai Pasal 17 & 35 UU No. 14 Tahun 2008",
+      "Kronologi/penjelasan keberatan",
+      "Surat kuasa (jika keberatan dikuasakan)",
+    ],
+  },
 ];

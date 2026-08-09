@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
-import { Inbox } from "lucide-react";
+import Link from "next/link";
+import { Inbox, Scale } from "lucide-react";
 import { requireSession } from "@/lib/firebase/session";
 import { getPermohonanByEmail } from "@/lib/firebase/permohonan-repository";
+import { getKeberatanByEmail } from "@/lib/firebase/keberatan-repository";
 import {
   copyFormatLabels,
   identityCategoryLabels,
@@ -26,6 +28,10 @@ const statusBadgeClass: Record<PermohonanStatus, string> = {
 export default async function RiwayatPermohonanPage() {
   const session = await requireSession();
   const items = session.email ? await getPermohonanByEmail(session.email) : [];
+  const keberatanList = session.email ? await getKeberatanByEmail(session.email) : [];
+  const keberatanByPermohonanId = new Map(
+    keberatanList.map((k) => [k.permohonanId, k])
+  );
 
   return (
     <div className="mx-auto max-w-6xl px-2 py-10 sm:px-3 sm:py-12 lg:px-4">
@@ -75,6 +81,9 @@ export default async function RiwayatPermohonanPage() {
               <h3 className="mt-2 font-semibold text-gray-900">
                 {item.categoryLabel}
               </h3>
+              {item.number && (
+                <p className="mt-0.5 font-mono text-xs text-gray-400">{item.number}</p>
+              )}
 
               <dl className="mt-3 space-y-1.5 text-sm">
                 {item.identityCategory && (
@@ -109,6 +118,26 @@ export default async function RiwayatPermohonanPage() {
                 <p className="mt-3 text-xs text-gray-400">
                   Terakhir diperbarui {formatDate(item.updatedAt)}
                 </p>
+              )}
+
+              {item.type === "informasi" && (
+                <div className="mt-3 border-t border-gray-100 pt-3">
+                  {keberatanByPermohonanId.has(item.id) ? (
+                    <span className="inline-flex items-center gap-1.5 text-sm font-medium text-gray-500">
+                      <Scale className="size-4" />
+                      Keberatan:{" "}
+                      {statusLabels[keberatanByPermohonanId.get(item.id)!.status]}
+                    </span>
+                  ) : (
+                    <Link
+                      href={`/akun/permohonan/${item.id}/keberatan`}
+                      className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#003459] hover:underline"
+                    >
+                      <Scale className="size-4" />
+                      Ajukan Keberatan
+                    </Link>
+                  )}
+                </div>
               )}
             </div>
           ))

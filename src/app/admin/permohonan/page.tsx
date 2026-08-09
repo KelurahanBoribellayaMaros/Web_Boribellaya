@@ -164,6 +164,9 @@ export default async function AdminPermohonanPage({
               <p className="text-sm text-gray-500">
                 {item.name} &middot; {item.email}
               </p>
+              {item.number && (
+                <p className="mt-0.5 font-mono text-xs text-gray-400">{item.number}</p>
+              )}
             </div>
           </Link>
         ))}

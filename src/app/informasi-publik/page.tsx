@@ -3,7 +3,7 @@ import Link from "next/link";
 import { FileQuestion, Lock, Scale } from "lucide-react";
 import { PpidDocumentList } from "@/components/ppid/PpidDocumentList";
 import { ProfileCard } from "@/components/profil/ProfileCard";
-import { getPpidDocuments } from "@/lib/firebase/ppid-repository";
+import { getPpidDocumentsPreview } from "@/lib/firebase/ppid-repository";
 import { dasarHukum, informasiDikecualikan, informasiDikecualikanNote } from "@/lib/ppid-data";
 import { Reveal } from "@/components/ui/Reveal";
 
@@ -16,7 +16,7 @@ export const metadata: Metadata = {
 };
 
 export default async function InformasiPublikPage() {
-  const documents = await getPpidDocuments();
+  const previewDocuments = await getPpidDocumentsPreview();
 
   return (
     <div className="mx-auto max-w-6xl px-2 py-10 sm:px-3 sm:py-12 lg:px-4">
@@ -65,16 +65,25 @@ export default async function InformasiPublikPage() {
                 Telusuri dokumen berdasarkan kategori keterbukaan informasi.
               </p>
             </div>
-            <Link
-              href="/informasi-publik/ajukan"
-              className="flex shrink-0 items-center gap-1.5 rounded-full border border-[#003459] px-4 py-2 text-sm font-semibold text-[#003459] transition-colors hover:bg-blue-50"
-            >
-              <FileQuestion className="size-4" />
-              Ajukan Permohonan Informasi
-            </Link>
+            <div className="flex flex-wrap items-center gap-2">
+              <Link
+                href="/informasi-publik/ajukan"
+                className="flex shrink-0 items-center gap-1.5 rounded-full border border-[#003459] px-4 py-2 text-sm font-semibold text-[#003459] transition-colors hover:bg-blue-50"
+              >
+                <FileQuestion className="size-4" />
+                Ajukan Permohonan Informasi
+              </Link>
+              <Link
+                href="/informasi-publik/keberatan"
+                className="flex shrink-0 items-center gap-1.5 rounded-full border border-red-600 px-4 py-2 text-sm font-semibold text-red-600 transition-colors hover:bg-red-50"
+              >
+                <Scale className="size-4" />
+                Ajukan Keberatan
+              </Link>
+            </div>
           </div>
           <div className="mt-4">
-            <PpidDocumentList documents={documents} />
+            <PpidDocumentList previewDocuments={previewDocuments} />
           </div>
         </Reveal>
 

@@ -21,6 +21,10 @@ service cloud.firestore {
       allow read: if false;
       allow write: if false;
     }
+    match /keberatan/{docId} {
+      allow read: if false;
+      allow write: if false;
+    }
     match /audit_logs/{logId} {
       allow read: if false;
       allow write: if false;

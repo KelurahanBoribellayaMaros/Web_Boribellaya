@@ -5,6 +5,7 @@ import type { Permohonan, PermohonanStatus, PermohonanType } from "@/types/permo
 function toPermohonan(id: string, data: FirebaseFirestore.DocumentData): Permohonan {
   return {
     id,
+    number: data.number ?? undefined,
     type: data.type,
     category: data.category,
     categoryLabel: data.categoryLabel,

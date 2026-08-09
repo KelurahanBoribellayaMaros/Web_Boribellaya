@@ -8,12 +8,14 @@ import {
   Inbox,
   MapPin,
   Newspaper,
+  Scale,
   ShieldUser,
   Users,
   Wrench,
 } from "lucide-react";
 import { requireAdmin } from "@/lib/firebase/session";
 import { countUrgentBaru, getPermohonanList } from "@/lib/firebase/permohonan-repository";
+import { getKeberatanBaruCount } from "@/lib/firebase/keberatan-repository";
 import { getNews } from "@/lib/firebase/news-repository";
 import { getPpidDocuments } from "@/lib/firebase/ppid-repository";
 import { getPopulationStats } from "@/lib/firebase/population-repository";
@@ -35,12 +37,14 @@ type Activity = {
 export default async function AdminDashboardPage() {
   await requireAdmin();
 
-  const [permohonanList, newsList, ppidDocuments, population] = await Promise.all([
-    getPermohonanList(),
-    getNews(),
-    getPpidDocuments(),
-    getPopulationStats(),
-  ]);
+  const [permohonanList, keberatanBaruCount, newsList, ppidDocuments, population] =
+    await Promise.all([
+      getPermohonanList(),
+      getKeberatanBaruCount(),
+      getNews(),
+      getPpidDocuments(),
+      getPopulationStats(),
+    ]);
 
   const baruCount = permohonanList.filter((p) => p.status === "baru").length;
   const urgentCount = countUrgentBaru(permohonanList);
@@ -84,6 +88,14 @@ export default async function AdminDashboardPage() {
       description: "Verifikasi dan selesaikan permohonan layanan & informasi.",
       href: "/admin/permohonan",
       badge: baruCount > 0 ? baruCount : undefined,
+    },
+    {
+      icon: Scale,
+      iconClass: "bg-orange-100 text-orange-700",
+      title: "Keberatan Masuk",
+      description: "Kelola pengajuan keberatan atas permohonan informasi publik.",
+      href: "/admin/keberatan",
+      badge: keberatanBaruCount > 0 ? keberatanBaruCount : undefined,
     },
     {
       icon: Newspaper,
