@@ -89,3 +89,37 @@ export function countUrgentBaru(list: Permohonan[]): number {
   return list.filter((p) => p.status === "baru" && new Date(p.createdAt).getTime() < cutoff)
     .length;
 }
+
+export type PpidStatistics = {
+  total: number;
+  baru: number;
+  diverifikasi: number;
+  selesai: number;
+  ditolak: number;
+};
+
+export async function getPpidStatistics(): Promise<PpidStatistics> {
+  const snapshot = await adminDb
+    .collection("permohonan")
+    .where("type", "==", "informasi")
+    .get();
+
+  const stats: PpidStatistics = {
+    total: 0,
+    baru: 0,
+    diverifikasi: 0,
+    selesai: 0,
+    ditolak: 0,
+  };
+
+  for (const doc of snapshot.docs) {
+    const status = doc.data().status as PermohonanStatus;
+    stats.total++;
+    if (status === "baru") stats.baru++;
+    else if (status === "diverifikasi") stats.diverifikasi++;
+    else if (status === "selesai") stats.selesai++;
+    else if (status === "ditolak") stats.ditolak++;
+  }
+
+  return stats;
+}

@@ -4,6 +4,8 @@ import { PpidDocumentList } from "@/components/ppid/PpidDocumentList";
 import { ProfileCard } from "@/components/profil/ProfileCard";
 import { LayananCard } from "@/components/layanan/LayananCard";
 import { getPpidDocumentsPreview } from "@/lib/firebase/ppid-repository";
+import { getPpidStatistics } from "@/lib/firebase/permohonan-repository";
+import { PpidStatisticsWidget } from "@/components/ppid/PpidStatistics";
 import {
   dasarHukum,
   informasiDikecualikan,
@@ -22,7 +24,10 @@ export const metadata: Metadata = {
 };
 
 export default async function InformasiPublikPage() {
-  const previewDocuments = await getPpidDocumentsPreview();
+  const [previewDocuments, ppidStats] = await Promise.all([
+    getPpidDocumentsPreview(),
+    getPpidStatistics(),
+  ]);
 
   return (
     <div className="mx-auto max-w-6xl px-2 py-10 sm:px-3 sm:py-12 lg:px-4">
@@ -65,6 +70,20 @@ export default async function InformasiPublikPage() {
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <LayananCard {...pengajuanInformasiCard} />
             <LayananCard {...keberatanInformasiCard} />
+          </div>
+        </Reveal>
+
+        <Reveal>
+          <div id="laporan-statistik" className="scroll-mt-24">
+            <h2 className="text-lg font-bold text-gray-900 sm:text-xl">
+              Laporan Layanan Akses Informasi Publik
+            </h2>
+            <p className="mt-1 text-sm text-gray-500">
+              Rekapitulasi jumlah dan tindak lanjut permohonan informasi publik.
+            </p>
+          </div>
+          <div className="mt-4">
+            <PpidStatisticsWidget stats={ppidStats} />
           </div>
         </Reveal>
 

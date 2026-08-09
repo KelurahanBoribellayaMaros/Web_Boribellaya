@@ -9,6 +9,7 @@ import {
   Inbox,
   MapPin,
   Newspaper,
+  PieChart,
   Scale,
   ShieldUser,
   Users,
@@ -111,6 +112,13 @@ export default async function AdminDashboardPage() {
       title: "Kelola Informasi Publik",
       description: "Unggah atau hapus dokumen keterbukaan informasi.",
       href: "/admin/ppid",
+    },
+    {
+      icon: PieChart,
+      iconClass: "bg-blue-100 text-blue-700",
+      title: "Laporan PPID",
+      description: "Pantau rekapitulasi jumlah layanan informasi publik.",
+      href: "/admin/laporan-ppid",
     },
     {
       icon: Wrench,
