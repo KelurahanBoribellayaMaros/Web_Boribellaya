@@ -44,6 +44,7 @@ function newKeberatanEmailHtml(params: {
 function keberatanStatusChangeEmailHtml(params: {
   categoryLabel: string;
   status: PermohonanStatus;
+  catatan?: string;
 }): string {
   return `
     <p>Status keberatan informasi publik Anda telah diperbarui.</p>
@@ -51,6 +52,7 @@ function keberatanStatusChangeEmailHtml(params: {
       <li><strong>Permohonan asal:</strong> ${params.categoryLabel}</li>
       <li><strong>Status baru:</strong> ${statusLabels[params.status]}</li>
     </ul>
+    ${params.catatan ? `<p><strong>Catatan dari petugas:</strong><br>${params.catatan}</p>` : ""}
     <p>Masuk ke akun Anda di <a href="${getSiteUrl()}">${getSiteUrl()}</a> untuk melihat detailnya.</p>
     ${emailFooter}
   `;
@@ -161,11 +163,13 @@ export async function updateKeberatanStatusAction(
   const session = await requireAdmin();
 
   const status = formData.get("status") as PermohonanStatus;
+  const catatan = String(formData.get("catatan") ?? "").trim();
   const item = await getKeberatanById(id);
 
   await adminDb.collection("keberatan").doc(id).set(
     {
       status,
+      catatan: catatan || null,
       updatedAt: new Date().toISOString(),
     },
     { merge: true }
@@ -189,6 +193,7 @@ export async function updateKeberatanStatusAction(
         html: keberatanStatusChangeEmailHtml({
           categoryLabel: item.permohonanCategoryLabel,
           status,
+          catatan: catatan || undefined,
         }),
       });
     } catch (error) {

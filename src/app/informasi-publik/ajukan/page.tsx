@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { requireVerifiedSession } from "@/lib/firebase/session";
 import { PermohonanInformasiForm } from "@/components/permohonan/PermohonanInformasiForm";
+import { SopRequirementBox } from "@/components/layanan/SopRequirementBox";
+import { sopPengajuanInformasi } from "@/lib/syarat-layanan-data";
 
 export const metadata: Metadata = {
   title: "Ajukan Permohonan Informasi | Kelurahan Boribellaya",
@@ -28,7 +30,8 @@ export default async function AjukanInformasiPage() {
         </p>
       </div>
 
-      <div className="mx-auto mt-8 max-w-2xl sm:mt-10">
+      <div className="mx-auto mt-8 max-w-2xl space-y-4 sm:mt-10">
+        <SopRequirementBox sop={sopPengajuanInformasi} />
         <PermohonanInformasiForm
           accountEmail={session.email ?? ""}
           prefillName={session.name ?? undefined}

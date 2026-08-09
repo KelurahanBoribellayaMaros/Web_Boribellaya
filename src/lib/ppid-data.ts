@@ -1,8 +1,32 @@
+import { FileQuestion, Scale } from "lucide-react";
 import type { PpidCategory } from "@/types/ppid";
+import type { LayananItem } from "@/types/layanan";
 
-// Shared between the server-side preview query and the client's "is there
-// possibly more" heuristic for showing the "Lihat Selengkapnya" button.
 export const PPID_PREVIEW_LIMIT = 5;
+
+export const pengajuanInformasiCard: LayananItem = {
+  slug: "pengajuan-informasi",
+  icon: FileQuestion,
+  title: "Ajukan Permohonan Informasi",
+  description:
+    "Ajukan permohonan informasi publik yang belum tersedia di daftar informasi publik.",
+  cta: "Ajukan Permohonan",
+  href: "/informasi-publik/ajukan",
+  variant: "outline",
+  enabled: true,
+};
+
+export const keberatanInformasiCard: LayananItem = {
+  slug: "keberatan-informasi",
+  icon: Scale,
+  title: "Ajukan Keberatan Informasi",
+  description:
+    "Ajukan keberatan jika permohonan informasi publik Anda ditolak, tidak ditanggapi, atau tidak dipenuhi.",
+  cta: "Ajukan Keberatan",
+  href: "/informasi-publik/keberatan",
+  variant: "outline",
+  enabled: true,
+};
 
 export const categoryLabels: Record<PpidCategory, string> = {
   berkala: "Berkala",

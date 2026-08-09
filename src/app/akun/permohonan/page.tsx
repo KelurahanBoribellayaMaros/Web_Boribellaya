@@ -123,11 +123,14 @@ export default async function RiwayatPermohonanPage() {
               {item.type === "informasi" && (
                 <div className="mt-3 border-t border-gray-100 pt-3">
                   {keberatanByPermohonanId.has(item.id) ? (
-                    <span className="inline-flex items-center gap-1.5 text-sm font-medium text-gray-500">
+                    <Link
+                      href={`/akun/permohonan/${item.id}/keberatan`}
+                      className="inline-flex items-center gap-1.5 text-sm font-medium text-gray-500 hover:text-gray-700 hover:underline"
+                    >
                       <Scale className="size-4" />
                       Keberatan:{" "}
                       {statusLabels[keberatanByPermohonanId.get(item.id)!.status]}
-                    </span>
+                    </Link>
                   ) : (
                     <Link
                       href={`/akun/permohonan/${item.id}/keberatan`}

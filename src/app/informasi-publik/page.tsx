@@ -1,10 +1,16 @@
 import type { Metadata } from "next";
-import Link from "next/link";
-import { FileQuestion, Lock, Scale } from "lucide-react";
+import { Lock, Scale } from "lucide-react";
 import { PpidDocumentList } from "@/components/ppid/PpidDocumentList";
 import { ProfileCard } from "@/components/profil/ProfileCard";
+import { LayananCard } from "@/components/layanan/LayananCard";
 import { getPpidDocumentsPreview } from "@/lib/firebase/ppid-repository";
-import { dasarHukum, informasiDikecualikan, informasiDikecualikanNote } from "@/lib/ppid-data";
+import {
+  dasarHukum,
+  informasiDikecualikan,
+  informasiDikecualikanNote,
+  pengajuanInformasiCard,
+  keberatanInformasiCard,
+} from "@/lib/ppid-data";
 import { Reveal } from "@/components/ui/Reveal";
 
 export const revalidate = 60;
@@ -56,31 +62,20 @@ export default async function InformasiPublikPage() {
         </Reveal>
 
         <Reveal>
-          <div className="flex flex-wrap items-end justify-between gap-3">
-            <div>
-              <h2 className="text-lg font-bold text-gray-900 sm:text-xl">
-                Telusuri Dokumen
-              </h2>
-              <p className="mt-1 text-sm text-gray-500">
-                Telusuri dokumen berdasarkan kategori keterbukaan informasi.
-              </p>
-            </div>
-            <div className="flex flex-wrap items-center gap-2">
-              <Link
-                href="/informasi-publik/ajukan"
-                className="flex shrink-0 items-center gap-1.5 rounded-full border border-[#003459] px-4 py-2 text-sm font-semibold text-[#003459] transition-colors hover:bg-blue-50"
-              >
-                <FileQuestion className="size-4" />
-                Ajukan Permohonan Informasi
-              </Link>
-              <Link
-                href="/informasi-publik/keberatan"
-                className="flex shrink-0 items-center gap-1.5 rounded-full border border-red-600 px-4 py-2 text-sm font-semibold text-red-600 transition-colors hover:bg-red-50"
-              >
-                <Scale className="size-4" />
-                Ajukan Keberatan
-              </Link>
-            </div>
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <LayananCard {...pengajuanInformasiCard} />
+            <LayananCard {...keberatanInformasiCard} />
+          </div>
+        </Reveal>
+
+        <Reveal>
+          <div>
+            <h2 className="text-lg font-bold text-gray-900 sm:text-xl">
+              Telusuri Dokumen
+            </h2>
+            <p className="mt-1 text-sm text-gray-500">
+              Telusuri dokumen berdasarkan kategori keterbukaan informasi.
+            </p>
           </div>
           <div className="mt-4">
             <PpidDocumentList previewDocuments={previewDocuments} />

@@ -27,6 +27,10 @@ export type LayananItem = {
   // part of the static catalog itself, merged in at render time. Absent
   // means "not yet toggled by admin", which should behave as enabled.
   enabled?: boolean;
+  // Visual emphasis for the card's icon/button color — red for actions like
+  // filing an objection, where the warning tone is intentional. Defaults to
+  // blue when omitted.
+  accent?: "blue" | "red";
 };
 
 export type SyaratLayanan = {

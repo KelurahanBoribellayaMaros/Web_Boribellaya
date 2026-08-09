@@ -16,6 +16,7 @@ function toKeberatan(id: string, data: FirebaseFirestore.DocumentData): Keberata
     isKuasa: data.isKuasa ?? false,
     kuasaName: data.kuasaName ?? undefined,
     status: data.status,
+    catatan: data.catatan ?? undefined,
     createdAt: data.createdAt,
     updatedAt: data.updatedAt,
   };

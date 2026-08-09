@@ -103,34 +103,52 @@ export default async function AdminKeberatanDetailPage({
 
         <form
           action={updateKeberatanStatusAction.bind(null, item.id)}
-          className="mt-6 flex flex-col gap-3 border-t border-gray-100 pt-6 sm:flex-row sm:items-end"
+          className="mt-6 space-y-3 border-t border-gray-100 pt-6"
         >
-          <div className="flex-1">
+          <div>
             <label
-              htmlFor="status"
+              htmlFor="catatan"
               className="mb-1.5 block text-sm font-medium text-gray-700"
             >
-              Status
+              Catatan untuk Warga (opsional)
             </label>
-            <select
-              id="status"
-              name="status"
-              defaultValue={item.status}
-              className="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm text-gray-900 outline-none focus:border-green-600 focus:ring-2 focus:ring-green-600/20"
-            >
-              {Object.entries(statusLabels).map(([value, label]) => (
-                <option key={value} value={value}>
-                  {label}
-                </option>
-              ))}
-            </select>
+            <textarea
+              id="catatan"
+              name="catatan"
+              rows={3}
+              defaultValue={item.catatan}
+              placeholder="Jelaskan alasan/hasil penanganan keberatan ini — akan disertakan di email notifikasi ke warga."
+              className="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm text-gray-900 outline-none placeholder:text-gray-400 focus:border-green-600 focus:ring-2 focus:ring-green-600/20"
+            />
           </div>
-          <button
-            type="submit"
-            className="rounded-xl bg-[#003459] px-6 py-2.5 text-sm font-semibold text-white transition-colors hover:opacity-90"
-          >
-            Simpan Status
-          </button>
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-end">
+            <div className="flex-1">
+              <label
+                htmlFor="status"
+                className="mb-1.5 block text-sm font-medium text-gray-700"
+              >
+                Status
+              </label>
+              <select
+                id="status"
+                name="status"
+                defaultValue={item.status}
+                className="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm text-gray-900 outline-none focus:border-green-600 focus:ring-2 focus:ring-green-600/20"
+              >
+                {Object.entries(statusLabels).map(([value, label]) => (
+                  <option key={value} value={value}>
+                    {label}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <button
+              type="submit"
+              className="rounded-xl bg-[#003459] px-6 py-2.5 text-sm font-semibold text-white transition-colors hover:opacity-90"
+            >
+              Simpan Status
+            </button>
+          </div>
         </form>
 
         <form

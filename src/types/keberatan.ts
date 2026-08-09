@@ -38,6 +38,9 @@ export type Keberatan = {
   // Reuses the same status vocabulary as Permohonan — no separate workflow
   // needed for this small a feature.
   status: PermohonanStatus;
+  // Admin's explanation for the resolution, shown to the citizen alongside
+  // the status change (e.g. why it was rejected, or how it was resolved).
+  catatan?: string;
   createdAt: string;
   updatedAt: string;
 };

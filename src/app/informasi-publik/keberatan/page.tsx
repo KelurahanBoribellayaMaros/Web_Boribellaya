@@ -5,6 +5,8 @@ import { requireVerifiedSession } from "@/lib/firebase/session";
 import { getPermohonanByEmail } from "@/lib/firebase/permohonan-repository";
 import { getKeberatanByEmail } from "@/lib/firebase/keberatan-repository";
 import { formatDate } from "@/lib/home-data";
+import { SopRequirementBox } from "@/components/layanan/SopRequirementBox";
+import { sopKeberatanInformasi } from "@/lib/syarat-layanan-data";
 
 export const dynamic = "force-dynamic";
 
@@ -45,7 +47,9 @@ export default async function PilihPermohonanKeberatanPage() {
         </p>
       </div>
 
-      <div className="mx-auto mt-8 max-w-2xl space-y-3 sm:mt-10">
+      <div className="mx-auto mt-8 max-w-2xl space-y-4 sm:mt-10">
+        <SopRequirementBox sop={sopKeberatanInformasi} />
+
         {eligible.length === 0 ? (
           <div className="flex flex-col items-center gap-3 rounded-2xl border border-dashed border-gray-200 p-10 text-center text-gray-400">
             <Scale className="size-8" />
