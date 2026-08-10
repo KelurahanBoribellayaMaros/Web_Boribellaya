@@ -23,6 +23,9 @@ export const metadata: Metadata = {
   title: "Kelurahan Boribellaya",
   description:
     "Portal resmi Kelurahan Boribellaya — layanan publik, informasi terkini, dan administrasi kependudukan.",
+  verification: {
+    google: "8ziizPqoZwgyGJoMVFjVHrkLycM8Jgljrg--wCtf1Bc",
+  },
 };
 
 export default async function RootLayout({
