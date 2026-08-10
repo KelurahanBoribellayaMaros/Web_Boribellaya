@@ -29,7 +29,7 @@ Sistem Informasi dan Portal Layanan Publik Terpadu untuk Kelurahan Boribellaya, 
 - `/public` : Aset statis seperti gambar, logo, ikon.
 
 ## 🤝 Kontribusi
-Jika Anda menemukan kendala (*bug*) atau ingin menambahkan fitur baru, silakan *fork* repository ini dan buat *Pull Request*, atau sampaikan langsung kepada tim IT kelurahan.
+Jika Anda menemukan kendala (*bug*) atau ingin menambahkan fitur baru, silakan *fork* repository ini dan buat *Pull Request*
 
 ## 📜 Lisensi
 Dikembangkan oleh Mahasiswa KKN UNHAS TEMATIK KIP Gel.116 secara khusus untuk **Pemerintah Kelurahan Boribellaya, Kab. Maros**.

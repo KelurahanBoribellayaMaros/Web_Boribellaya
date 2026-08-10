@@ -58,3 +58,5 @@ next-env.d.ts
 # ai config
 agents.md
 claude.md
+.vercel
+.env*
