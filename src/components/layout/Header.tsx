@@ -10,6 +10,7 @@ import {
   FileText,
   Home,
   Inbox,
+  Landmark,
   LayoutDashboard,
   LogOut,
   MapPin,
@@ -35,6 +36,7 @@ import { timeAgo } from "@/lib/home-data";
 type NavLink = (
   | { type: "anchor"; id: string }
   | { type: "page"; href: string }
+  | { type: "external"; href: string }
 ) & { label: string; icon: LucideIcon };
 
 const navLinks: NavLink[] = [
@@ -44,6 +46,7 @@ const navLinks: NavLink[] = [
   { label: "Layanan", type: "page", href: "/layanan", icon: Wrench },
   { label: "Informasi Publik", type: "page", href: "/informasi-publik", icon: FileText },
   { label: "Kontak", type: "page", href: "/kontak", icon: MapPin },
+  { label: "PPID Maros", type: "external", href: "https://ppid.maroskab.go.id/", icon: Landmark },
 ];
 
 function linkHref(link: NavLink): string {
@@ -209,6 +212,7 @@ export function Header() {
 
   function isLinkActive(link: NavLink): boolean {
     if (link.type === "page") return pathname === link.href;
+    if (link.type === "external") return false;
     return isHome && activeId === link.id;
   }
 
@@ -252,11 +256,14 @@ export function Header() {
         <nav className="hidden items-center gap-8 md:flex">
           {navLinks.map((link) => {
             const isActive = isLinkActive(link);
+            const isExternal = link.type === "external";
 
             return (
               <Link
                 key={link.label}
                 href={linkHref(link)}
+                target={isExternal ? "_blank" : undefined}
+                rel={isExternal ? "noopener noreferrer" : undefined}
                 aria-current={isActive ? "page" : undefined}
                 className={`relative py-1 text-sm font-medium text-white transition-colors after:absolute after:inset-x-0 after:-bottom-[13px] after:h-0.5 after:rounded-full after:bg-white after:transition-opacity ${isActive
                   ? "after:opacity-100"
@@ -424,10 +431,13 @@ export function Header() {
           <ul className="flex flex-col gap-1">
             {navLinks.map((link) => {
               const isActive = isLinkActive(link);
+              const isExternal = link.type === "external";
               return (
                 <li key={link.label}>
                   <Link
                     href={linkHref(link)}
+                    target={isExternal ? "_blank" : undefined}
+                    rel={isExternal ? "noopener noreferrer" : undefined}
                     onClick={() => setIsMenuOpen(false)}
                     aria-current={isActive ? "page" : undefined}
                     className={`flex items-center gap-3 rounded-lg px-3 py-3 text-sm font-medium transition-colors ${isActive
