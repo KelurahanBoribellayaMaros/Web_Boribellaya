@@ -284,7 +284,24 @@ export function Header() {
                 )}
               </div>
             ) : null
-          ) : null}
+          ) : (
+            <>
+              <Link
+                href="/login"
+                className="flex size-10 items-center justify-center rounded-full text-white transition-colors hover:bg-white/10 sm:hidden"
+                aria-label="Masuk"
+              >
+                <CircleUserRound className="size-5" />
+              </Link>
+              <Link
+                href="/login"
+                className="hidden items-center gap-1.5 rounded-full border border-white/30 px-3.5 py-1.5 text-sm font-semibold text-white transition-colors hover:bg-white/10 sm:flex"
+              >
+                <CircleUserRound className="size-4" />
+                Masuk
+              </Link>
+            </>
+          )}
         </div>
       </div>
 
