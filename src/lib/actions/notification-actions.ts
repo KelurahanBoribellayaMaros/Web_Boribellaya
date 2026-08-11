@@ -3,7 +3,7 @@
 import { adminDb } from "@/lib/firebase/admin";
 import { getSession } from "@/lib/firebase/session";
 import { requireSession } from "@/lib/firebase/session";
-import { getNotificationsForUser } from "@/lib/firebase/notifications-repository";
+import { getNotificationsForAdmin } from "@/lib/firebase/notifications-repository";
 import type { Session } from "@/lib/firebase/session";
 import type { NotificationData } from "@/types/notification";
 
@@ -19,16 +19,18 @@ export async function getHeaderDataAction(): Promise<{
   notifications: NotificationData | null;
 }> {
   const session = await getSession();
-  const notifications = session?.email
-    ? await getNotificationsForUser(session.uid, session.email)
+  const notifications = session?.role === "admin" && session.email
+    ? await getNotificationsForAdmin(session.uid)
     : null;
   return { session, notifications };
 }
 
 export async function markNotificationsSeenAction(): Promise<void> {
-  const session = await requireSession();
-  await adminDb
-    .collection("users")
-    .doc(session.uid)
-    .set({ notificationsSeenAt: new Date().toISOString() }, { merge: true });
+  const session = await getSession();
+  if (session?.role === "admin") {
+    await adminDb
+      .collection("users")
+      .doc(session.uid)
+      .set({ notificationsSeenAt: new Date().toISOString() }, { merge: true });
+  }
 }

@@ -6,6 +6,7 @@ import {
   MessageSquareWarning,
   Send,
   ShieldCheck,
+  Search,
 } from "lucide-react";
 import type { LayananItem, SopStep } from "@/types/layanan";
 
@@ -93,6 +94,16 @@ export const layananItems: LayananItem[] = [
       "Akses data penduduk, laporan anggaran, dan transparansi kelurahan.",
     cta: "Lihat Data",
     href: "/informasi-publik",
+    variant: "outline",
+  },
+  {
+    slug: "cek-status",
+    icon: Search,
+    title: "Cek Status Permohonan",
+    description:
+      "Pantau progres permohonan atau laporan Anda menggunakan nomor WhatsApp.",
+    cta: "Cek Status",
+    href: "/cek-status",
     variant: "outline",
   },
 ];

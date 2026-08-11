@@ -52,15 +52,8 @@ export async function getPermohonanList(filters?: {
     });
 }
 
-export async function getPermohonanByEmail(email: string): Promise<Permohonan[]> {
-  // A real .where() filter here (unlike getPermohonanList's in-memory
-  // approach) — this runs on every page load for every logged-in citizen
-  // (root layout -> notification bell), so fetching the whole collection
-  // just to find one person's own requests would multiply reads by however
-  // many documents exist, on every single navigation. A single equality
-  // filter needs no composite index; sorting the (small, per-person) result
-  // in memory is effectively free.
-  const snapshot = await adminDb.collection("permohonan").where("email", "==", email).get();
+export async function getPermohonanByPhone(phone: string): Promise<Permohonan[]> {
+  const snapshot = await adminDb.collection("permohonan").where("phone", "==", phone).get();
 
   return snapshot.docs
     .map((doc) => toPermohonan(doc.id, doc.data()))

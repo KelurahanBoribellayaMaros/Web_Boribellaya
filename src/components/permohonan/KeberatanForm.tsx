@@ -2,7 +2,7 @@
 
 import { useState, type FormEvent } from "react";
 import { unstable_rethrow } from "next/navigation";
-import { Send } from "lucide-react";
+import { Send, User, Phone, Mail } from "lucide-react";
 import { submitKeberatanAction } from "@/lib/actions/keberatan-actions";
 import { keberatanReasonLabels } from "@/types/keberatan";
 import { TurnstileWidget } from "@/components/turnstile-widget";
@@ -41,6 +41,65 @@ export function KeberatanForm({ permohonanId }: { permohonanId: string }) {
       <div className="hidden" aria-hidden="true">
         <label htmlFor="website">Website</label>
         <input id="website" name="website" type="text" tabIndex={-1} autoComplete="off" />
+      </div>
+
+      <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm sm:p-8">
+        <h2 className="text-xs font-bold tracking-widest text-[#003459] uppercase">
+          Identitas Pemohon
+        </h2>
+        <div className="mt-4 space-y-4">
+          <div>
+            <label htmlFor="name" className="mb-1.5 block text-sm font-medium text-gray-700">
+              Nama Lengkap
+            </label>
+            <div className="relative">
+              <User className="pointer-events-none absolute top-1/2 left-3.5 size-4 -translate-y-1/2 text-gray-400" />
+              <input
+                id="name"
+                name="name"
+                type="text"
+                required
+                placeholder="Masukkan nama lengkap Anda"
+                className="w-full rounded-xl border border-gray-200 py-3 pr-4 pl-11 text-sm text-gray-900 outline-none placeholder:text-gray-400 focus:border-[#003459] focus:ring-2 focus:ring-[#003459]/20"
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <div>
+              <label htmlFor="phone" className="mb-1.5 block text-sm font-medium text-gray-700">
+                No. WhatsApp Aktif *
+              </label>
+              <div className="relative">
+                <Phone className="pointer-events-none absolute top-1/2 left-3.5 size-4 -translate-y-1/2 text-gray-400" />
+                <input
+                  id="phone"
+                  name="phone"
+                  type="tel"
+                  required
+                  placeholder="Contoh: 081234567890"
+                  className="w-full rounded-xl border border-gray-200 py-3 pr-4 pl-11 text-sm text-gray-900 outline-none placeholder:text-gray-400 focus:border-[#003459] focus:ring-2 focus:ring-[#003459]/20"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label htmlFor="email" className="mb-1.5 block text-sm font-medium text-gray-700">
+                Email (opsional)
+              </label>
+              <div className="relative">
+                <Mail className="pointer-events-none absolute top-1/2 left-3.5 size-4 -translate-y-1/2 text-gray-400" />
+                <input
+                  id="email"
+                  name="email"
+                  type="email"
+                  placeholder="Masukkan email (jika ada)"
+                  className="w-full rounded-xl border border-gray-200 py-3 pr-4 pl-11 text-sm text-gray-900 outline-none placeholder:text-gray-400 focus:border-[#003459] focus:ring-2 focus:ring-[#003459]/20"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
       <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm sm:p-8">

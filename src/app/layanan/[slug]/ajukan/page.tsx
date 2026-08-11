@@ -2,7 +2,6 @@ import Link from "next/link";
 import { Lock } from "lucide-react";
 import { notFound } from "next/navigation";
 import { layananItems } from "@/lib/layanan-data";
-import { requireVerifiedSession } from "@/lib/firebase/session";
 import { getLayananStatus, isLayananEnabled } from "@/lib/firebase/layanan-repository";
 import { PermohonanForm } from "@/components/permohonan/PermohonanForm";
 
@@ -43,7 +42,6 @@ export default async function AjukanLayananPage({
     );
   }
 
-  const session = await requireVerifiedSession();
 
   return (
     <div className="mx-auto max-w-6xl px-2 py-10 sm:px-3 sm:py-12 lg:px-4">
@@ -66,8 +64,6 @@ export default async function AjukanLayananPage({
           type="layanan"
           category={item.slug}
           categoryLabel={item.title}
-          accountEmail={session.email ?? ""}
-          prefillName={session.name ?? undefined}
           berkasRequirements={item.berkasRequirements}
         />
 

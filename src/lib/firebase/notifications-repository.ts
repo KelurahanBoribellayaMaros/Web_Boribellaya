@@ -1,34 +1,36 @@
 import "server-only";
 import { adminDb } from "@/lib/firebase/admin";
-import { getPermohonanByEmail } from "@/lib/firebase/permohonan-repository";
+
 import type { NotificationData } from "@/types/notification";
 
 const MAX_ITEMS = 10;
 
-export async function getNotificationsForUser(
-  uid: string,
-  email: string
+export async function getNotificationsForAdmin(
+  uid: string
 ): Promise<NotificationData> {
-  const [permohonanList, userDoc] = await Promise.all([
-    getPermohonanByEmail(email),
+  const [snapshot, userDoc] = await Promise.all([
+    adminDb
+      .collection("permohonan")
+      .where("status", "==", "baru")
+      .orderBy("createdAt", "desc")
+      .limit(MAX_ITEMS)
+      .get(),
     adminDb.collection("users").doc(uid).get(),
   ]);
 
   const seenAt = (userDoc.data()?.notificationsSeenAt as string | undefined) ?? null;
-  // Only status changes count as notifications — a request's own creation
-  // (status "baru") isn't an "update" of anything yet.
-  const updated = permohonanList.filter((item) => item.status !== "baru");
+  const docs = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() } as any));
 
-  const items = updated.slice(0, MAX_ITEMS).map((item) => ({
+  const items = docs.map((item) => ({
     id: item.id,
     type: item.type,
     categoryLabel: item.categoryLabel,
     status: item.status,
-    updatedAt: item.updatedAt,
-    isUnread: !seenAt || item.updatedAt > seenAt,
+    updatedAt: item.createdAt, // For new items, we care about when it was created
+    isUnread: !seenAt || item.createdAt > seenAt,
   }));
 
-  const unreadCount = updated.filter((item) => !seenAt || item.updatedAt > seenAt).length;
+  const unreadCount = docs.filter((item) => !seenAt || item.createdAt > seenAt).length;
 
   return { items, unreadCount };
 }

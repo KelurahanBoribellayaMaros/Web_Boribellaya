@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { requireVerifiedSession } from "@/lib/firebase/session";
 import { PermohonanInformasiForm } from "@/components/permohonan/PermohonanInformasiForm";
 import { SopRequirementBox } from "@/components/layanan/SopRequirementBox";
 import { sopPengajuanInformasi } from "@/lib/syarat-layanan-data";
@@ -9,7 +8,6 @@ export const metadata: Metadata = {
 };
 
 export default async function AjukanInformasiPage() {
-  const session = await requireVerifiedSession();
 
   return (
     <div className="mx-auto max-w-6xl px-2 py-10 sm:px-3 sm:py-12 lg:px-4">
@@ -32,10 +30,7 @@ export default async function AjukanInformasiPage() {
 
       <div className="mx-auto mt-8 max-w-2xl space-y-4 sm:mt-10">
         <SopRequirementBox sop={sopPengajuanInformasi} />
-        <PermohonanInformasiForm
-          accountEmail={session.email ?? ""}
-          prefillName={session.name ?? undefined}
-        />
+        <PermohonanInformasiForm />
       </div>
     </div>
   );

@@ -30,7 +30,8 @@ export type Keberatan = {
   permohonanNumber?: string;
   permohonanCategoryLabel: string;
   name: string;
-  email: string;
+  email: string | null;
+  phone: string;
   reasons: KeberatanReason[];
   kronologi: string;
   isKuasa: boolean;

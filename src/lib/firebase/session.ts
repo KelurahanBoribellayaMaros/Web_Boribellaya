@@ -30,16 +30,4 @@ export async function requireSession(): Promise<Session> {
   return session;
 }
 
-// Session cookies are long-lived and don't auto-refresh, so a user who
-// verifies their email minutes after registering would still look
-// unverified for the rest of that cookie's lifetime if we only trusted its
-// embedded claim. Checking the live Firebase user record instead avoids
-// that staleness at the cost of one extra Admin SDK call.
-export async function requireVerifiedSession(): Promise<Session> {
-  const session = await requireSession();
-  const user = await adminAuth.getUser(session.uid);
-  if (!user.emailVerified) {
-    redirect("/verifikasi-email");
-  }
-  return session;
-}
+

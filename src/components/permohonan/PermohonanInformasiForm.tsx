@@ -17,15 +17,7 @@ import {
 import { submitPermohonanAction } from "@/lib/actions/permohonan-actions";
 import { TurnstileWidget } from "@/components/turnstile-widget";
 
-type PermohonanInformasiFormProps = {
-  accountEmail: string;
-  prefillName?: string;
-};
-
-export function PermohonanInformasiForm({
-  accountEmail,
-  prefillName,
-}: PermohonanInformasiFormProps) {
+export function PermohonanInformasiForm() {
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -58,13 +50,7 @@ export function PermohonanInformasiForm({
         <input id="website" name="website" type="text" tabIndex={-1} autoComplete="off" />
       </div>
 
-      <div className="flex items-center gap-2.5 rounded-xl bg-green-50 px-4 py-3 text-sm text-green-800">
-        <Mail className="size-4 shrink-0" />
-        <span>
-          Pembaruan permohonan akan dikirim ke{" "}
-          <span className="font-semibold">{accountEmail}</span>
-        </span>
-      </div>
+
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm sm:p-8">
@@ -128,7 +114,6 @@ export function PermohonanInformasiForm({
                   name="name"
                   type="text"
                   required
-                  defaultValue={prefillName}
                   placeholder="Masukkan nama lengkap Anda"
                   className="w-full rounded-xl border border-gray-200 py-3 pr-4 pl-11 text-sm text-gray-900 outline-none placeholder:text-gray-400 focus:border-green-600 focus:ring-2 focus:ring-green-600/20"
                 />
@@ -157,7 +142,7 @@ export function PermohonanInformasiForm({
 
             <div>
               <label htmlFor="phone" className="mb-1.5 block text-sm font-medium text-gray-700">
-                Nomor Telepon
+                No. WhatsApp Aktif *
               </label>
               <div className="relative">
                 <Phone className="pointer-events-none absolute top-1/2 left-3.5 size-4 -translate-y-1/2 text-gray-400" />
@@ -166,7 +151,26 @@ export function PermohonanInformasiForm({
                   name="phone"
                   type="tel"
                   required
-                  placeholder="Masukkan nomor telepon Anda"
+                  placeholder="Contoh: 081234567890"
+                  className="w-full rounded-xl border border-gray-200 py-3 pr-4 pl-11 text-sm text-gray-900 outline-none placeholder:text-gray-400 focus:border-green-600 focus:ring-2 focus:ring-green-600/20"
+                />
+              </div>
+              <p className="mt-1.5 text-xs text-gray-500">
+                Admin akan menghubungi Anda via WhatsApp.
+              </p>
+            </div>
+
+            <div>
+              <label htmlFor="email" className="mb-1.5 block text-sm font-medium text-gray-700">
+                Email (opsional)
+              </label>
+              <div className="relative">
+                <Mail className="pointer-events-none absolute top-1/2 left-3.5 size-4 -translate-y-1/2 text-gray-400" />
+                <input
+                  id="email"
+                  name="email"
+                  type="email"
+                  placeholder="Masukkan email (jika ada)"
                   className="w-full rounded-xl border border-gray-200 py-3 pr-4 pl-11 text-sm text-gray-900 outline-none placeholder:text-gray-400 focus:border-green-600 focus:ring-2 focus:ring-green-600/20"
                 />
               </div>

@@ -16,8 +16,8 @@ export type Permohonan = {
   category: string;
   categoryLabel: string;
   name: string;
-  email: string;
-  phone?: string;
+  email?: string;
+  phone: string;
   description: string;
   status: PermohonanStatus;
   createdAt: string;

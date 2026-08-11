@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Lock, Scale } from "lucide-react";
+import { Lock, Scale, Search } from "lucide-react";
 import { PpidDocumentList } from "@/components/ppid/PpidDocumentList";
 import { ProfileCard } from "@/components/profil/ProfileCard";
 import { LayananCard } from "@/components/layanan/LayananCard";
@@ -67,9 +67,19 @@ export default async function InformasiPublikPage() {
         </Reveal>
 
         <Reveal>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
             <LayananCard {...pengajuanInformasiCard} />
             <LayananCard {...keberatanInformasiCard} />
+            <LayananCard 
+              slug="cek-status"
+              icon={Search} 
+              title="Cek Status Permohonan" 
+              description="Pantau progres permohonan atau keberatan informasi publik Anda menggunakan nomor WhatsApp."
+              cta="Cek Status"
+              href="/cek-status"
+              variant="outline"
+              enabled={true}
+            />
           </div>
         </Reveal>
 

@@ -337,66 +337,50 @@ export function Header() {
               <span className="hidden h-8 w-24 animate-pulse rounded-full bg-white/10 sm:block" />
             </div>
           ) : session ? (
-            <div className="relative" ref={accountMenuRef}>
-              <button
-                type="button"
-                onClick={() => setIsAccountMenuOpen((open) => !open)}
-                aria-label="Menu akun"
-                aria-expanded={isAccountMenuOpen}
-                className="flex size-10 items-center justify-center rounded-full text-white transition-colors hover:bg-white/10 sm:hidden"
-              >
-                <CircleUserRound className="size-5" />
-              </button>
-              <button
-                type="button"
-                onClick={() => setIsAccountMenuOpen((open) => !open)}
-                aria-expanded={isAccountMenuOpen}
-                className="hidden items-center gap-1.5 rounded-full border border-white/30 px-3.5 py-1.5 text-sm font-semibold text-white transition-colors hover:bg-white/10 sm:flex"
-              >
-                <CircleUserRound className="size-4" />
-                {(session.name?.split(" ")[0] ?? session.email) || "Akun"}
-              </button>
+            session.role === "admin" ? (
+              <div className="relative" ref={accountMenuRef}>
+                <button
+                  type="button"
+                  onClick={() => setIsAccountMenuOpen((open) => !open)}
+                  aria-label="Menu akun"
+                  aria-expanded={isAccountMenuOpen}
+                  className="flex size-10 items-center justify-center rounded-full text-white transition-colors hover:bg-white/10 sm:hidden"
+                >
+                  <CircleUserRound className="size-5" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setIsAccountMenuOpen((open) => !open)}
+                  aria-expanded={isAccountMenuOpen}
+                  className="hidden items-center gap-1.5 rounded-full border border-white/30 px-3.5 py-1.5 text-sm font-semibold text-white transition-colors hover:bg-white/10 sm:flex"
+                >
+                  <CircleUserRound className="size-4" />
+                  Admin
+                </button>
 
-              {isAccountMenuOpen && (
-                <div className="absolute right-0 z-40 mt-2 w-52 overflow-hidden rounded-xl border border-gray-100 bg-white py-1 shadow-lg">
-                  {session.role === "admin" && (
+                {isAccountMenuOpen && (
+                  <div className="absolute right-0 z-40 mt-2 w-52 overflow-hidden rounded-xl border border-gray-100 bg-white py-1 shadow-lg">
                     <Link
                       href="/admin"
                       onClick={() => setIsAccountMenuOpen(false)}
                       className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-700 transition-colors hover:bg-gray-50"
                     >
                       <LayoutDashboard className="size-4" />
-                      Dashboard Admin
+                      Dashboard
                     </Link>
-                  )}
-                  <Link
-                    href="/akun/permohonan"
-                    onClick={() => setIsAccountMenuOpen(false)}
-                    className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-700 transition-colors hover:bg-gray-50"
-                  >
-                    <Inbox className="size-4" />
-                    Riwayat Permohonan
-                  </Link>
-                  <Link
-                    href="/akun"
-                    onClick={() => setIsAccountMenuOpen(false)}
-                    className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-700 transition-colors hover:bg-gray-50"
-                  >
-                    <Settings className="size-4" />
-                    Ubah Kredensial
-                  </Link>
-                  <form action={logoutAction}>
-                    <button
-                      type="submit"
-                      className="flex w-full items-center gap-2.5 px-4 py-2.5 text-left text-sm text-red-600 transition-colors hover:bg-red-50"
-                    >
-                      <LogOut className="size-4" />
-                      Keluar
-                    </button>
-                  </form>
-                </div>
-              )}
-            </div>
+                    <form action={logoutAction}>
+                      <button
+                        type="submit"
+                        className="flex w-full items-center gap-2.5 px-4 py-2.5 text-left text-sm text-red-600 transition-colors hover:bg-red-50"
+                      >
+                        <LogOut className="size-4" />
+                        Keluar
+                      </button>
+                    </form>
+                  </div>
+                )}
+              </div>
+            ) : null
           ) : (
             <>
               <Link

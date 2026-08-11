@@ -14,17 +14,12 @@ import { decodeSessionCookie, SESSION_COOKIE_NAME } from "@/lib/firebase/session
 // them too. That defense-in-depth is required (not optional) because Next's
 // Partial Rendering means a layout-only check doesn't re-run on
 // client-side navigation between sibling pages under the same layout.
-export async function proxy(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   const isAdminRoute = pathname === "/admin" || pathname.startsWith("/admin/");
-  const isSessionRequiredRoute =
-    pathname === "/akun" ||
-    pathname.startsWith("/akun/") ||
-    pathname === "/informasi-publik/ajukan" ||
-    /^\/layanan\/[^/]+\/ajukan$/.test(pathname);
 
-  if (!isAdminRoute && !isSessionRequiredRoute) {
+  if (!isAdminRoute) {
     return NextResponse.next();
   }
 
@@ -43,5 +38,5 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/admin/:path*", "/akun/:path*", "/informasi-publik/ajukan", "/layanan/:slug/ajukan"],
+  matcher: ["/admin/:path*"],
 };

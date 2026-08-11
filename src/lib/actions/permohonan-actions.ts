@@ -1,10 +1,11 @@
 "use server";
 
 import { randomUUID } from "node:crypto";
+import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { adminDb } from "@/lib/firebase/admin";
-import { requireAdmin, requireVerifiedSession } from "@/lib/firebase/session";
-import { getPermohonanByEmail, getPermohonanById } from "@/lib/firebase/permohonan-repository";
+import { requireAdmin } from "@/lib/firebase/session";
+import { getPermohonanById } from "@/lib/firebase/permohonan-repository";
 import { getAdminEmails } from "@/lib/firebase/users-repository";
 import { logAudit } from "@/lib/firebase/audit-repository";
 import { getSiteUrl, sendEmail } from "@/lib/email";
@@ -28,8 +29,11 @@ export async function createPermohonanUploadUrlAction(input: {
   fileType: string;
   fileSize: number;
 }): Promise<{ path: string; token: string }> {
-  await requireVerifiedSession();
-
+  const ip = (await headers()).get("x-forwarded-for") || "unknown";
+  const allowed = await checkRateLimit(`upload_permohonan:${ip}`, 30, 60 * 60 * 1000);
+  if (!allowed) {
+    throw new Error("Terlalu banyak permintaan unggah. Silakan coba lagi nanti.");
+  }
   const extension = ALLOWED_BERKAS_MIME_TYPES[input.fileType];
   if (!extension) {
     throw new Error("Hanya file PDF, JPG, atau PNG yang diperbolehkan.");
@@ -115,24 +119,15 @@ export async function submitPermohonanAction(
   categoryLabel: string,
   formData: FormData
 ): Promise<void> {
-  // Requires login (with a verified email) so every request is tied to a
-  // real, reachable account email — never trust a client-submitted email
-  // field for this.
-  const session = await requireVerifiedSession();
-  if (!session.email) {
-    throw new Error("Email akun tidak ditemukan. Silakan masuk kembali.");
+  const phoneRaw = String(formData.get("phone") ?? "").trim();
+  if (!phoneRaw) {
+    throw new Error("Nomor WhatsApp wajib diisi.");
   }
 
-  // Honeypot: real users never fill this hidden field; bots that
-  // auto-fill every input will, so we silently drop the submission.
-  if (String(formData.get("website") ?? "").trim() !== "") {
-    redirect("/permohonan/terkirim");
-  }
-
-  const allowed = await checkRateLimit(`submit_permohonan:${session.email}`, 5, 10 * 60 * 1000);
+  const allowed = await checkRateLimit(`submit_permohonan:${phoneRaw}`, 10, 60 * 60 * 1000);
   if (!allowed) {
     throw new Error(
-      "Anda telah mengirim terlalu banyak permohonan dalam waktu singkat. Silakan coba lagi dalam beberapa menit."
+      "Anda telah mengirim terlalu banyak permohonan. Silakan coba lagi dalam satu jam ke depan."
     );
   }
 
@@ -156,7 +151,7 @@ export async function submitPermohonanAction(
     address: formData.get("address"),
     occupation: formData.get("occupation"),
     usagePurpose: formData.get("usagePurpose"),
-    copyFormat: formData.get("copyFormat"),
+    email: formData.get("email"),
     berkasJson: formData.get("berkasJson"),
   });
 
@@ -167,6 +162,7 @@ export async function submitPermohonanAction(
   const {
     name,
     phone,
+    email,
     description,
     nik,
     identityCategory,
@@ -176,8 +172,6 @@ export async function submitPermohonanAction(
     copyFormat,
     berkasJson,
   } = parseResult.data;
-
-  const email = session.email;
   
   // Only sent by layanan forms that require document uploads — absent
   // (and skipped) for the informasi form.
@@ -191,8 +185,8 @@ export async function submitPermohonanAction(
     category,
     categoryLabel,
     name,
-    email,
-    phone: phone || null,
+    email: email || undefined,
+    phone,
     description,
     status: "baru",
     createdAt: now,
@@ -214,7 +208,7 @@ export async function submitPermohonanAction(
       await sendEmail({
         to: adminEmails,
         subject: `Permohonan baru: ${categoryLabel}`,
-        html: newPermohonanEmailHtml({ id: docRef.id, type, categoryLabel, name, email }),
+        html: newPermohonanEmailHtml({ id: docRef.id, type, categoryLabel, name, email: email || "-" }),
       });
     }
   } catch (error) {
@@ -250,23 +244,7 @@ export async function updatePermohonanStatusAction(
     details: `${item?.categoryLabel ?? ""} -> ${statusLabels[status]}`,
   });
 
-  // Best-effort: the status is already saved regardless of whether this
-  // email succeeds. Only notify when the status actually changed.
-  if (item && item.status !== status) {
-    try {
-      await sendEmail({
-        to: item.email,
-        subject: `Status permohonan Anda: ${statusLabels[status]}`,
-        html: statusChangeEmailHtml({
-          type: item.type,
-          categoryLabel: item.categoryLabel,
-          status,
-        }),
-      });
-    } catch (error) {
-      console.error("Gagal mengirim notifikasi email ke warga:", error);
-    }
-  }
+
 
   redirect(
     toastRedirectUrl("/admin/permohonan", "Status permohonan berhasil diperbarui.")

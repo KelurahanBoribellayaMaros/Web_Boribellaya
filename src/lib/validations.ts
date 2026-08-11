@@ -3,7 +3,12 @@ import { keberatanReasonLabels } from "@/types/keberatan";
 
 export const permohonanSchema = z.object({
   name: z.string().trim().min(1, "Nama wajib diisi."),
-  phone: z.string().trim().optional(),
+  phone: z
+    .string()
+    .trim()
+    .min(10, "Nomor WhatsApp minimal 10 digit.")
+    .regex(/^(08|62)/, "Nomor WhatsApp harus diawali dengan 08 atau 62."),
+  email: z.string().trim().email("Format email tidak valid.").optional().or(z.literal("")),
   description: z.string().trim().min(1, "Keperluan wajib diisi."),
   nik: z
     .string()
@@ -35,6 +40,3 @@ export const keberatanSchema = z
     path: ["kuasaName"],
   });
 
-export const emailSchema = z.object({
-  email: z.string().trim().email("Format email tidak valid."),
-});

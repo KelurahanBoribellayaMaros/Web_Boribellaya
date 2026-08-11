@@ -11,6 +11,7 @@ function toKeberatan(id: string, data: FirebaseFirestore.DocumentData): Keberata
     permohonanCategoryLabel: data.permohonanCategoryLabel,
     name: data.name,
     email: data.email,
+    phone: data.phone,
     reasons: data.reasons ?? [],
     kronologi: data.kronologi,
     isKuasa: data.isKuasa ?? false,
@@ -39,12 +40,11 @@ export async function getKeberatanByPermohonanId(
   return toKeberatan(doc.id, doc.data());
 }
 
-// Used to render objection status on /akun/permohonan without an N+1 query
-// per permohonan card.
-export async function getKeberatanByEmail(email: string): Promise<Keberatan[]> {
-  const snapshot = await adminDb.collection("keberatan").where("email", "==", email).get();
+export async function getKeberatanByPhone(phone: string): Promise<Keberatan[]> {
+  const snapshot = await adminDb.collection("keberatan").where("phone", "==", phone).get();
   return snapshot.docs.map((doc) => toKeberatan(doc.id, doc.data()));
 }
+
 
 // Filtered in-memory (not via Firestore .where()) so listing by status never
 // needs a composite index — same rationale as getPermohonanList.

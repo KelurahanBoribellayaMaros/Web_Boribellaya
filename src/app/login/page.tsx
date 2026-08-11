@@ -22,8 +22,7 @@ export default function LoginPage() {
           Sistem Informasi Kelurahan
         </h1>
         <p className="mx-auto mt-2 max-w-xl text-sm text-white/80 sm:text-base">
-          Silakan masuk untuk mengakses layanan digital dan administrasi
-          kelurahan.
+          Hanya untuk Admin Kelurahan.
         </p>
       </div>
 

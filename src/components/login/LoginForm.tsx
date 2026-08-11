@@ -8,7 +8,6 @@ import { Eye, EyeOff, Lock, LogIn, Mail } from "lucide-react";
 import { auth } from "@/lib/firebase/client";
 import { createSessionAction } from "@/lib/actions/auth-actions";
 
-type LoginTab = "warga" | "admin";
 
 function authErrorMessage(error: unknown): string {
   const code = (error as AuthError)?.code;
@@ -32,7 +31,6 @@ function authErrorMessage(error: unknown): string {
 
 export function LoginForm() {
   const router = useRouter();
-  const [activeTab, setActiveTab] = useState<LoginTab>("warga");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(true);
@@ -60,30 +58,7 @@ export function LoginForm() {
 
   return (
     <div className="rounded-3xl border border-gray-100 bg-white p-6 shadow-sm sm:p-8">
-      <div className="grid grid-cols-2 gap-1 rounded-xl bg-gray-100 p-1">
-        <button
-          type="button"
-          onClick={() => setActiveTab("warga")}
-          className={`rounded-lg py-2 text-sm font-semibold transition-colors ${activeTab === "warga"
-            ? "bg-white text-[#003459] shadow-sm"
-            : "text-gray-500 hover:text-gray-700"
-            }`}
-        >
-          Warga
-        </button>
-        <button
-          type="button"
-          onClick={() => setActiveTab("admin")}
-          className={`rounded-lg py-2 text-sm font-semibold transition-colors ${activeTab === "admin"
-            ? "bg-white text-[#003459] shadow-sm"
-            : "text-gray-500 hover:text-gray-700"
-            }`}
-        >
-          Admin
-        </button>
-      </div>
-
-      <form onSubmit={handleSubmit} className="mt-6 space-y-4">
+      <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <label
             htmlFor="email"
@@ -165,20 +140,6 @@ export function LoginForm() {
         </button>
       </form>
 
-      {activeTab === "warga" && (
-        <>
-          <div className="my-6 border-t border-gray-100" />
-          <p className="text-center text-sm text-gray-500">
-            Belum memiliki akun warga?
-          </p>
-          <Link
-            href="/daftar"
-            className="mt-3 flex w-full items-center justify-center rounded-xl border border-[#003459] py-3 text-sm font-semibold text-[#003459] transition-colors hover:bg-blue-50"
-          >
-            Daftar Akun Baru
-          </Link>
-        </>
-      )}
     </div>
   );
 }

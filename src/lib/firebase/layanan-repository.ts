@@ -16,6 +16,7 @@ export function isLayananEnabled(
 ): boolean {
   // Informasi Publik is a right guaranteed by UU KIP, not an optional
   // digital service — it can never be switched off by an admin.
-  if (slug === "informasi-publik") return true;
+  // Cek Status is a core utility and should never be switched off.
+  if (slug === "informasi-publik" || slug === "cek-status") return true;
   return status[slug] !== false;
 }

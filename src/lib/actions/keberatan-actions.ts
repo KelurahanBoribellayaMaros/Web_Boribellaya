@@ -2,7 +2,7 @@
 
 import { redirect } from "next/navigation";
 import { adminDb } from "@/lib/firebase/admin";
-import { requireAdmin, requireVerifiedSession } from "@/lib/firebase/session";
+import { requireAdmin } from "@/lib/firebase/session";
 import { getPermohonanById } from "@/lib/firebase/permohonan-repository";
 import { getKeberatanByPermohonanId, getKeberatanById } from "@/lib/firebase/keberatan-repository";
 import { getAdminEmails } from "@/lib/firebase/users-repository";
@@ -66,9 +66,11 @@ export async function submitKeberatanAction(
   permohonanId: string,
   formData: FormData
 ): Promise<void> {
-  const session = await requireVerifiedSession();
-  if (!session.email) {
-    throw new Error("Email akun tidak ditemukan. Silakan masuk kembali.");
+  const phoneRaw = String(formData.get("phone") ?? "").trim();
+  const nameRaw = String(formData.get("name") ?? "").trim();
+  
+  if (!phoneRaw || !nameRaw) {
+    throw new Error("Nama dan Nomor WhatsApp wajib diisi.");
   }
 
   // Honeypot: real users never fill this hidden field.
@@ -76,9 +78,9 @@ export async function submitKeberatanAction(
     redirect("/permohonan/terkirim");
   }
 
-  const allowed = await checkRateLimit(`submit_keberatan:${session.email}`, 3, 10 * 60 * 1000);
+  const allowed = await checkRateLimit(`submit_keberatan:${phoneRaw}`, 3, 60 * 60 * 1000);
   if (!allowed) {
-    throw new Error("Terlalu banyak percobaan. Silakan coba lagi dalam 10 menit.");
+    throw new Error("Terlalu banyak percobaan. Silakan coba lagi dalam satu jam ke depan.");
   }
 
   const turnstileToken = String(formData.get("cf-turnstile-response") ?? "");
@@ -99,8 +101,8 @@ export async function submitKeberatanAction(
   if (item.type !== "informasi") {
     throw new Error("Keberatan hanya bisa diajukan untuk permohonan informasi publik.");
   }
-  if (item.email !== session.email) {
-    throw new Error("Anda tidak memiliki akses ke permohonan ini.");
+  if (item.phone && item.phone !== phoneRaw) {
+    throw new Error("Nomor WhatsApp tidak cocok dengan data permohonan.");
   }
   const existing = await getKeberatanByPermohonanId(permohonanId);
   if (existing) {
@@ -125,8 +127,9 @@ export async function submitKeberatanAction(
     permohonanId,
     permohonanNumber: item.number ?? null,
     permohonanCategoryLabel: item.categoryLabel,
-    name: item.name,
-    email: item.email,
+    name: nameRaw,
+    email: formData.get("email")?.toString() || null,
+    phone: phoneRaw,
     reasons,
     kronologi,
     isKuasa,
@@ -148,7 +151,7 @@ export async function submitKeberatanAction(
           id: docRef.id,
           categoryLabel: item.categoryLabel,
           name: item.name,
-          email: item.email,
+          email: item.email ?? "-",
         }),
       });
     }
@@ -157,8 +160,8 @@ export async function submitKeberatanAction(
   }
 
   await logAudit({
-    uid: session.uid,
-    email: session.email,
+    uid: "warga",
+    email: formData.get("email")?.toString() || "warga@public",
     action: "create",
     target: "keberatan",
     targetId: docRef.id,
@@ -196,22 +199,7 @@ export async function updateKeberatanStatusAction(
     details: `${item?.permohonanCategoryLabel ?? ""} -> ${statusLabels[status]}`,
   });
 
-  // Best-effort: only notify when the status actually changed.
-  if (item && item.status !== status) {
-    try {
-      await sendEmail({
-        to: item.email,
-        subject: `Status keberatan Anda: ${statusLabels[status]}`,
-        html: keberatanStatusChangeEmailHtml({
-          categoryLabel: item.permohonanCategoryLabel,
-          status,
-          catatan: catatan || undefined,
-        }),
-      });
-    } catch (error) {
-      console.error("Gagal mengirim notifikasi email ke warga:", error);
-    }
-  }
+
 
   redirect(toastRedirectUrl("/admin/keberatan", "Status keberatan berhasil diperbarui."));
 }
