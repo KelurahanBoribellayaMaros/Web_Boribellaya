@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { FileText, Inbox } from "lucide-react";
+import { FileText, Inbox, MessageCircle } from "lucide-react";
 import { requireAdmin } from "@/lib/firebase/session";
 import { getPermohonanById } from "@/lib/firebase/permohonan-repository";
 import {
@@ -92,9 +92,24 @@ export default async function AdminPermohonanDetailPage({
             <dd className="text-gray-900">{item.email}</dd>
           </div>
           {item.phone && (
-            <div className="flex gap-2">
-              <dt className="w-36 shrink-0 text-gray-500">No. HP</dt>
-              <dd className="text-gray-900">{item.phone}</dd>
+            <div className="flex flex-wrap items-center gap-2">
+              <dt className="w-36 shrink-0 text-gray-500">No. WhatsApp</dt>
+              <dd className="flex items-center gap-3 text-gray-900">
+                <span className="font-mono font-medium">{item.phone}</span>
+                <a
+                  href={`https://wa.me/${item.phone.replace(/^0/, "62").replace(/[^0-9]/g, "")}?text=${encodeURIComponent(
+                    `Halo Sdr/i. ${item.name}, kami dari Pihak Kelurahan Boribellaya mengenai permohonan ${item.categoryLabel}${
+                      item.number ? ` (${item.number})` : ""
+                    }...`
+                  )}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 rounded-lg bg-emerald-600 px-3 py-1 text-xs font-semibold text-white shadow-sm transition-colors hover:bg-emerald-700"
+                >
+                  <MessageCircle className="size-3.5" />
+                  Chat WhatsApp
+                </a>
+              </dd>
             </div>
           )}
           {item.occupation && (
@@ -148,49 +163,68 @@ export default async function AdminPermohonanDetailPage({
           )}
         </dl>
 
-        <form
-          action={updatePermohonanStatusAction.bind(null, item.id)}
-          className="mt-6 flex flex-col gap-3 border-t border-gray-100 pt-6 sm:flex-row sm:items-end"
-        >
-          <div className="flex-1">
-            <label
-              htmlFor="status"
-              className="mb-1.5 block text-sm font-medium text-gray-700"
-            >
-              Status
-            </label>
-            <select
-              id="status"
-              name="status"
-              defaultValue={item.status}
-              className="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm text-gray-900 outline-none focus:border-green-600 focus:ring-2 focus:ring-green-600/20"
-            >
-              {Object.entries(statusLabels).map(([value, label]) => (
-                <option key={value} value={value}>
-                  {label}
-                </option>
-              ))}
-            </select>
-          </div>
-          <button
-            type="submit"
-            className="rounded-xl bg-[#003459] px-6 py-2.5 text-sm font-semibold text-white transition-colors hover:opacity-90"
+        <div className="mt-6 border-t border-gray-100 pt-6">
+          <h2 className="text-sm font-semibold text-gray-900">Tindak Lanjut Admin</h2>
+          
+          <form
+            action={updatePermohonanStatusAction.bind(null, item.id)}
+            className="mt-3 flex flex-col gap-3 sm:flex-row sm:items-end"
           >
-            Simpan Status
-          </button>
-        </form>
+            <div className="flex-1">
+              <label
+                htmlFor="status"
+                className="mb-1.5 block text-xs font-medium text-gray-500"
+              >
+                Ubah Status Permohonan
+              </label>
+              <select
+                id="status"
+                name="status"
+                defaultValue={item.status}
+                className="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm font-medium text-gray-900 outline-none focus:border-green-600 focus:ring-2 focus:ring-green-600/20"
+              >
+                {Object.entries(statusLabels).map(([value, label]) => (
+                  <option key={value} value={value}>
+                    {label}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <button
+              type="submit"
+              className="rounded-xl bg-[#003459] px-6 py-2.5 text-sm font-semibold text-white transition-colors hover:opacity-90 shrink-0"
+            >
+              Simpan Status
+            </button>
+          </form>
 
-        <form
-          action={deletePermohonanAction.bind(null, item.id)}
-          className="mt-4 flex justify-end border-t border-gray-100 pt-4"
-        >
-          <ConfirmSubmitButton
-            confirmMessage={`Hapus permohonan "${item.categoryLabel}" dari ${item.name}? Berkas yang diunggah (termasuk KTP/KK) juga akan ikut terhapus permanen dan tidak bisa dikembalikan.`}
-            className="rounded-xl border border-red-200 px-6 py-2.5 text-sm font-semibold text-red-600 transition-colors hover:bg-red-50"
-          >
-            Hapus Permohonan
-          </ConfirmSubmitButton>
-        </form>
+          <div className="mt-6 flex flex-wrap items-center justify-between gap-3 border-t border-gray-100 pt-4">
+            {item.phone ? (
+              <a
+                href={`https://wa.me/${item.phone.replace(/^0/, "62").replace(/[^0-9]/g, "")}?text=${encodeURIComponent(
+                  `Halo Sdr/i. ${item.name}, kami dari Pihak Kelurahan Boribellaya mengenai permohonan ${item.categoryLabel}${
+                    item.number ? ` (${item.number})` : ""
+                  }...`
+                )}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 rounded-xl bg-emerald-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-emerald-700"
+              >
+                <MessageCircle className="size-4" />
+                Hubungi via WhatsApp
+              </a>
+            ) : <div />}
+
+            <form action={deletePermohonanAction.bind(null, item.id)}>
+              <ConfirmSubmitButton
+                confirmMessage={`Hapus permohonan "${item.categoryLabel}" dari ${item.name}? Berkas yang diunggah (termasuk KTP/KK) juga akan ikut terhapus permanen dan tidak bisa dikembalikan.`}
+                className="rounded-xl border border-red-200 px-5 py-2.5 text-sm font-semibold text-red-600 transition-colors hover:bg-red-50"
+              >
+                Hapus Permohonan
+              </ConfirmSubmitButton>
+            </form>
+          </div>
+        </div>
       </div>
     </div>
   );

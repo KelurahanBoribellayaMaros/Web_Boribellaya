@@ -27,7 +27,11 @@ export function KeberatanForm({ permohonanId }: { permohonanId: string }) {
 
     setIsSubmitting(true);
     try {
-      await submitKeberatanAction(permohonanId, formData);
+      const result = await submitKeberatanAction(permohonanId, formData);
+      if (result?.error) {
+        setError(result.error);
+        setIsSubmitting(false);
+      }
     } catch (err) {
       unstable_rethrow(err);
       setError(err instanceof Error ? err.message : "Terjadi kesalahan. Silakan coba lagi.");
@@ -37,7 +41,6 @@ export function KeberatanForm({ permohonanId }: { permohonanId: string }) {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
-      {/* Honeypot: hidden from real users, bots that auto-fill every field will trip it. */}
       <div className="hidden" aria-hidden="true">
         <label htmlFor="website">Website</label>
         <input id="website" name="website" type="text" tabIndex={-1} autoComplete="off" />

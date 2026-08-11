@@ -34,6 +34,13 @@ export default async function PermohonanTerkirimPage({
           <span className="font-mono text-sm font-semibold text-gray-900">{nomor}</span>
         </div>
       )}
+
+      <div className="mx-auto mt-5 max-w-sm rounded-xl border border-amber-200/80 bg-amber-50/80 p-3.5 text-left text-xs text-amber-900 shadow-sm">
+        <p className="font-semibold">📌 Catatan Notifikasi Email:</p>
+        <p className="mt-1 text-amber-800">
+          Jika Anda tidak menemukan email konfirmasi/notifikasi di Kotak Masuk (Inbox), silakan periksa folder <strong>Spam / Junk</strong> di akun email Anda.
+        </p>
+      </div>
       <Link
         href="/"
         className="mt-6 inline-flex items-center justify-center rounded-full bg-[#003459] px-6 py-3 text-sm font-semibold text-white transition-colors hover:opacity-90"

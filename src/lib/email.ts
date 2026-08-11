@@ -18,8 +18,7 @@ function getTransporter(): nodemailer.Transporter {
 
 export function getSiteUrl(): string {
   if (process.env.SITE_URL) return process.env.SITE_URL;
-  if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`;
-  return "http://localhost:3000";
+  return "https://kel-boribellaya.maroskab.go.id";
 }
 
 // A plain-text alternative alongside the HTML body makes the message a

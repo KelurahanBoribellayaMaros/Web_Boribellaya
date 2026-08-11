@@ -51,13 +51,9 @@ export async function createPermohonanUploadUrlAction(input: {
     throw new Error("Gagal membuat URL unggah. Silakan coba lagi.");
   }
 
-  return { path: data.path, token: data.token };
+  return { path, token: data.token };
 }
 
-// A short, human-readable reference shown to citizens (the Firestore doc id
-// itself is never displayed). Purely a display label, not a lookup key, so
-// no transaction/counter is needed to guarantee uniqueness — collision odds
-// are negligible at a single kelurahan's realistic submission volume.
 function generatePermohonanNumber(type: PermohonanType): string {
   const prefix = type === "informasi" ? "INF" : "LYN";
   const datePart = new Date().toISOString().slice(0, 10).replace(/-/g, "");
@@ -67,8 +63,8 @@ function generatePermohonanNumber(type: PermohonanType): string {
 
 const emailFooter = `
   <p style="margin-top:24px;padding-top:12px;border-top:1px solid #e5e7eb;color:#6b7280;font-size:12px;">
-    Email ini dikirim oleh sistem Kelurahan Boribellaya. Ada pertanyaan?
-    Silakan balas email ini, kami akan membacanya.
+    Email ini dikirim otomatis oleh sistem Kelurahan Boribellaya (<a href="https://kel-boribellaya.maroskab.go.id" style="color:#003459;text-decoration:underline;">kel-boribellaya.maroskab.go.id</a>).<br>
+    Ada pertanyaan? Silakan balas email ini, petugas kami akan membacanya.
   </p>
 `;
 
@@ -108,7 +104,7 @@ function statusChangeEmailHtml(params: {
       <li><strong>Kategori:</strong> ${params.categoryLabel}</li>
       <li><strong>Status baru:</strong> ${statusLabels[params.status]}</li>
     </ul>
-    <p>Masuk ke akun Anda di <a href="${getSiteUrl()}">${getSiteUrl()}</a> untuk melihat detailnya.</p>
+    <p>Cek status permohonan Anda di <a href="${getSiteUrl()}/cek-status" style="color:#003459;text-decoration:underline;">${getSiteUrl()}/cek-status</a>.</p>
     ${emailFooter}
   `;
 }
@@ -143,16 +139,17 @@ export async function submitPermohonanAction(
   }
 
   const parseResult = permohonanSchema.safeParse({
-    name: formData.get("name"),
-    phone: formData.get("phone"),
-    description: formData.get("description"),
-    nik: formData.get("nik"),
-    identityCategory: formData.get("identityCategory"),
-    address: formData.get("address"),
-    occupation: formData.get("occupation"),
-    usagePurpose: formData.get("usagePurpose"),
-    email: formData.get("email"),
-    berkasJson: formData.get("berkasJson"),
+    name: formData.get("name") ?? undefined,
+    phone: formData.get("phone") ?? undefined,
+    description: formData.get("description") ?? undefined,
+    nik: formData.get("nik") ?? undefined,
+    identityCategory: formData.get("identityCategory") ?? undefined,
+    address: formData.get("address") ?? undefined,
+    occupation: formData.get("occupation") ?? undefined,
+    usagePurpose: formData.get("usagePurpose") ?? undefined,
+    copyFormat: formData.get("copyFormat") ?? undefined,
+    email: formData.get("email") ?? undefined,
+    berkasJson: formData.get("berkasJson") ?? undefined,
   });
 
   if (!parseResult.success) {
@@ -172,7 +169,7 @@ export async function submitPermohonanAction(
     copyFormat,
     berkasJson,
   } = parseResult.data;
-  
+
   // Only sent by layanan forms that require document uploads — absent
   // (and skipped) for the informasi form.
   const berkas = berkasJson ? JSON.parse(berkasJson) : undefined;
@@ -185,7 +182,7 @@ export async function submitPermohonanAction(
     category,
     categoryLabel,
     name,
-    email: email || undefined,
+    ...(email && { email }),
     phone,
     description,
     status: "baru",
@@ -244,7 +241,21 @@ export async function updatePermohonanStatusAction(
     details: `${item?.categoryLabel ?? ""} -> ${statusLabels[status]}`,
   });
 
-
+  if (item?.email) {
+    try {
+      await sendEmail({
+        to: item.email,
+        subject: `Update Status Permohonan: ${item.categoryLabel}`,
+        html: statusChangeEmailHtml({
+          type: item.type,
+          categoryLabel: item.categoryLabel,
+          status,
+        }),
+      });
+    } catch (error) {
+      console.error("Gagal mengirim email notifikasi perubahan status ke warga:", error);
+    }
+  }
 
   redirect(
     toastRedirectUrl("/admin/permohonan", "Status permohonan berhasil diperbarui.")
@@ -257,10 +268,16 @@ export async function deletePermohonanAction(id: string): Promise<void> {
   const item = await getPermohonanById(id);
 
   if (item?.berkas && item.berkas.length > 0) {
-    await supabaseAdmin.storage
+    const pathsToRemove = item.berkas.map((b) =>
+      b.path.replace(/^permohonan-berkas\//, "")
+    );
+    const { error: removeError } = await supabaseAdmin.storage
       .from(PERMOHONAN_BUCKET)
-      .remove(item.berkas.map((b) => b.path))
-      .catch(() => {});
+      .remove(pathsToRemove);
+
+    if (removeError) {
+      console.error("Gagal menghapus berkas dari Supabase:", removeError);
+    }
   }
 
   await adminDb.collection("permohonan").doc(id).delete();

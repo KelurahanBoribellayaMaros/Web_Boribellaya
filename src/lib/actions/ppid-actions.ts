@@ -44,7 +44,7 @@ export async function createPpidUploadUrlAction(input: {
     throw new Error("Gagal membuat URL unggah. Silakan coba lagi.");
   }
 
-  return { path: data.path, token: data.token };
+  return { path, token: data.token };
 }
 
 export async function createPpidDocumentAction(input: {
@@ -134,7 +134,7 @@ export async function updatePpidDocumentAction(
     const existing = await adminDb.collection("ppid_documents").doc(id).get();
     const oldPath = existing.data()?.filePath as string | undefined;
     if (oldPath) {
-      await supabaseAdmin.storage.from(PPID_BUCKET).remove([oldPath]).catch(() => {});
+      await supabaseAdmin.storage.from(PPID_BUCKET).remove([oldPath]).catch(() => { });
     }
 
     const { data: publicUrlData } = supabaseAdmin.storage
@@ -166,10 +166,11 @@ export async function deletePpidDocumentAction(id: string): Promise<void> {
   const title = doc.data()?.title as string | undefined;
 
   if (filePath) {
+    const cleanPath = filePath.replace(/^ppid-documents\//, "");
     await supabaseAdmin.storage
       .from(PPID_BUCKET)
-      .remove([filePath])
-      .catch(() => {});
+      .remove([cleanPath])
+      .catch(() => { });
   }
 
   await adminDb.collection("ppid_documents").doc(id).delete();
@@ -185,11 +186,6 @@ export async function deletePpidDocumentAction(id: string): Promise<void> {
 
   redirect(toastRedirectUrl("/admin/ppid", "Dokumen berhasil dihapus."));
 }
-
-// Public read actions for the "Informasi Publik" page — no requireAdmin,
-// this data is public by law. Kept as on-demand actions (rather than
-// fetched upfront) so the page's default load only ever pays for the
-// preview it actually shows.
 
 export async function loadMorePpidCategoryAction(
   category: PpidCategory

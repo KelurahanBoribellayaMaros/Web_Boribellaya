@@ -18,8 +18,8 @@ import { verifyTurnstileToken } from "@/lib/turnstile";
 
 const emailFooter = `
   <p style="margin-top:24px;padding-top:12px;border-top:1px solid #e5e7eb;color:#6b7280;font-size:12px;">
-    Email ini dikirim oleh sistem Kelurahan Boribellaya. Ada pertanyaan?
-    Silakan balas email ini, kami akan membacanya.
+    Email ini dikirim otomatis oleh sistem Kelurahan Boribellaya (<a href="https://kel-boribellaya.maroskab.go.id" style="color:#003459;text-decoration:underline;">kel-boribellaya.maroskab.go.id</a>).<br>
+    Ada pertanyaan? Silakan balas email ini, petugas kami akan membacanya.
   </p>
 `;
 
@@ -55,7 +55,7 @@ function keberatanStatusChangeEmailHtml(params: {
       <li><strong>Status baru:</strong> ${statusLabels[params.status]}</li>
     </ul>
     ${params.catatan ? `<p><strong>Catatan dari petugas:</strong><br>${params.catatan}</p>` : ""}
-    <p>Masuk ke akun Anda di <a href="${getSiteUrl()}">${getSiteUrl()}</a> untuk melihat detailnya.</p>
+    <p>Cek status permohonan Anda di <a href="${getSiteUrl()}/cek-status" style="color:#003459;text-decoration:underline;">${getSiteUrl()}/cek-status</a>.</p>
     ${emailFooter}
   `;
 }
@@ -65,12 +65,12 @@ const VALID_REASONS = new Set<string>(Object.keys(keberatanReasonLabels));
 export async function submitKeberatanAction(
   permohonanId: string,
   formData: FormData
-): Promise<void> {
+): Promise<{ error: string } | void> {
   const phoneRaw = String(formData.get("phone") ?? "").trim();
   const nameRaw = String(formData.get("name") ?? "").trim();
   
   if (!phoneRaw || !nameRaw) {
-    throw new Error("Nama dan Nomor WhatsApp wajib diisi.");
+    return { error: "Nama dan Nomor WhatsApp wajib diisi." };
   }
 
   // Honeypot: real users never fill this hidden field.
@@ -80,44 +80,44 @@ export async function submitKeberatanAction(
 
   const allowed = await checkRateLimit(`submit_keberatan:${phoneRaw}`, 3, 60 * 60 * 1000);
   if (!allowed) {
-    throw new Error("Terlalu banyak percobaan. Silakan coba lagi dalam satu jam ke depan.");
+    return { error: "Terlalu banyak percobaan. Silakan coba lagi dalam satu jam ke depan." };
   }
 
   const turnstileToken = String(formData.get("cf-turnstile-response") ?? "");
   if (process.env.TURNSTILE_SECRET_KEY) {
     if (!turnstileToken) {
-      throw new Error("Sistem mendeteksi aktivitas yang mencurigakan. Silakan muat ulang halaman dan coba lagi.");
+      return { error: "Sistem mendeteksi aktivitas yang mencurigakan. Silakan muat ulang halaman dan coba lagi." };
     }
     const isTurnstileValid = await verifyTurnstileToken(turnstileToken);
     if (!isTurnstileValid) {
-      throw new Error("Verifikasi keamanan gagal. Silakan coba lagi.");
+      return { error: "Verifikasi keamanan gagal. Silakan coba lagi." };
     }
   }
 
   const item = await getPermohonanById(permohonanId);
   if (!item) {
-    throw new Error("Permohonan tidak ditemukan.");
+    return { error: "Permohonan tidak ditemukan." };
   }
   if (item.type !== "informasi") {
-    throw new Error("Keberatan hanya bisa diajukan untuk permohonan informasi publik.");
+    return { error: "Keberatan hanya bisa diajukan untuk permohonan informasi publik." };
   }
   if (item.phone && item.phone !== phoneRaw) {
-    throw new Error("Nomor WhatsApp tidak cocok dengan data permohonan.");
+    return { error: "Nomor WhatsApp tidak cocok dengan data permohonan." };
   }
   const existing = await getKeberatanByPermohonanId(permohonanId);
   if (existing) {
-    throw new Error("Keberatan untuk permohonan ini sudah pernah diajukan.");
+    return { error: "Keberatan untuk permohonan ini sudah pernah diajukan." };
   }
 
   const parseResult = keberatanSchema.safeParse({
     reasons: formData.getAll("reasons").map(String),
-    kronologi: formData.get("kronologi"),
+    kronologi: formData.get("kronologi") ?? undefined,
     isKuasa: formData.get("isKuasa") === "on",
-    kuasaName: formData.get("kuasaName"),
+    kuasaName: formData.get("kuasaName") ?? undefined,
   });
 
   if (!parseResult.success) {
-    throw new Error(parseResult.error.issues[0].message);
+    return { error: parseResult.error.issues[0].message };
   }
 
   const { reasons, kronologi, isKuasa, kuasaName } = parseResult.data;
@@ -199,7 +199,21 @@ export async function updateKeberatanStatusAction(
     details: `${item?.permohonanCategoryLabel ?? ""} -> ${statusLabels[status]}`,
   });
 
-
+  if (item?.email) {
+    try {
+      await sendEmail({
+        to: item.email,
+        subject: `Update Status Keberatan: ${item.permohonanCategoryLabel}`,
+        html: keberatanStatusChangeEmailHtml({
+          categoryLabel: item.permohonanCategoryLabel,
+          status,
+          catatan: catatan || undefined,
+        }),
+      });
+    } catch (error) {
+      console.error("Gagal mengirim email notifikasi keberatan ke warga:", error);
+    }
+  }
 
   redirect(toastRedirectUrl("/admin/keberatan", "Status keberatan berhasil diperbarui."));
 }
