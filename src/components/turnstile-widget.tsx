@@ -9,13 +9,8 @@ interface TurnstileWidgetProps {
 }
 
 export function TurnstileWidget({ onVerify, className }: TurnstileWidgetProps) {
-  const [siteKey, setSiteKey] = useState<string | null>(null);
-
-  useEffect(() => {
-    // Gunakan test key dari Cloudflare jika env var tidak di-set
-    const key = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || "1x00000000000000000000AA";
-    setSiteKey(key);
-  }, []);
+  // Gunakan test key dari Cloudflare jika env var tidak di-set
+  const siteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || "1x00000000000000000000AA";
 
   if (!siteKey) return null;
 

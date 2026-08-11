@@ -85,7 +85,7 @@ export default async function CekStatusPage({
       {phone && (
         <div className="mx-auto mt-10 max-w-3xl">
           <h2 className="mb-6 text-lg font-bold text-gray-900">
-            Hasil Pencarian untuk "{phone}"
+            Hasil Pencarian untuk &quot;{phone}&quot;
           </h2>
 
           {permohonanList.length === 0 ? (
