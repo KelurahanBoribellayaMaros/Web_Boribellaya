@@ -9,7 +9,6 @@ import {
   CircleUserRound,
   FileText,
   Home,
-  Inbox,
   Landmark,
   LayoutDashboard,
   LogOut,
@@ -23,15 +22,8 @@ import {
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { logoutAction } from "@/lib/actions/auth-actions";
-import {
-  getHeaderDataAction,
-  markNotificationsSeenAction,
-} from "@/lib/actions/notification-actions";
+import { getHeaderDataAction } from "@/lib/actions/notification-actions";
 import type { Session } from "@/lib/firebase/session";
-import { statusLabels } from "@/types/permohonan";
-import type { PermohonanStatus } from "@/types/permohonan";
-import type { NotificationData, NotificationItem } from "@/types/notification";
-import { timeAgo } from "@/lib/home-data";
 
 type NavLink = (
   | { type: "anchor"; id: string }
@@ -54,18 +46,6 @@ function linkHref(link: NavLink): string {
   return link.href;
 }
 
-const statusDotClass: Record<PermohonanStatus, string> = {
-  baru: "bg-amber-500",
-  diverifikasi: "bg-blue-500",
-  selesai: "bg-green-500",
-  ditolak: "bg-red-500",
-};
-
-function notificationMessage(item: NotificationItem): string {
-  const kind = item.type === "informasi" ? "permohonan informasi" : "permohonan layanan";
-  return `Status ${kind} "${item.categoryLabel}" berubah menjadi ${statusLabels[item.status]}.`;
-}
-
 export function Header() {
   const pathname = usePathname();
   const isHome = pathname === "/";
@@ -73,17 +53,12 @@ export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeId, setActiveId] = useState("beranda");
   const [isAccountMenuOpen, setIsAccountMenuOpen] = useState(false);
-  const [isNotifOpen, setIsNotifOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const accountMenuRef = useRef<HTMLDivElement>(null);
-  const notifMenuRef = useRef<HTMLDivElement>(null);
 
-  // Fetched client-side (not passed down from the root layout) so public
-  // pages can be cached — see getHeaderDataAction for why.
+  // Fetched client-side so public pages can be cached
   const [session, setSession] = useState<Session | null>(null);
-  const [notifications, setNotifications] = useState<NotificationData | null>(null);
   const [isAuthLoaded, setIsAuthLoaded] = useState(false);
-  const [unreadCount, setUnreadCount] = useState(0);
 
   useEffect(() => {
     // Header lives in the root layout, which persists across client-side
@@ -98,8 +73,6 @@ export function Header() {
     getHeaderDataAction().then((data) => {
       if (cancelled) return;
       setSession(data.session);
-      setNotifications(data.notifications);
-      setUnreadCount(data.notifications?.unreadCount ?? 0);
       setIsAuthLoaded(true);
     });
     return () => {
@@ -108,7 +81,7 @@ export function Header() {
   }, [pathname]);
 
   useEffect(() => {
-    if (!isAccountMenuOpen && !isNotifOpen) return;
+    if (!isAccountMenuOpen) return;
 
     function handleClickOutside(event: MouseEvent) {
       if (
@@ -117,18 +90,11 @@ export function Header() {
       ) {
         setIsAccountMenuOpen(false);
       }
-      if (
-        notifMenuRef.current &&
-        !notifMenuRef.current.contains(event.target as Node)
-      ) {
-        setIsNotifOpen(false);
-      }
     }
 
     function handleKeyDown(event: KeyboardEvent) {
       if (event.key === "Escape") {
         setIsAccountMenuOpen(false);
-        setIsNotifOpen(false);
       }
     }
 
@@ -138,7 +104,7 @@ export function Header() {
       document.removeEventListener("mousedown", handleClickOutside);
       document.removeEventListener("keydown", handleKeyDown);
     };
-  }, [isAccountMenuOpen, isNotifOpen]);
+  }, [isAccountMenuOpen]);
 
   useEffect(() => {
     if (!isMenuOpen) return;
@@ -159,16 +125,7 @@ export function Header() {
     };
   }, [isMenuOpen]);
 
-  function handleNotifToggle() {
-    setIsNotifOpen((open) => {
-      const next = !open;
-      if (next && session && unreadCount > 0) {
-        setUnreadCount(0);
-        markNotificationsSeenAction().catch(() => {});
-      }
-      return next;
-    });
-  }
+
 
   useEffect(() => {
     if (!isHome) return;
@@ -277,60 +234,6 @@ export function Header() {
         </nav>
 
         <div className="flex items-center gap-1">
-          <div className="relative" ref={notifMenuRef}>
-            <button
-              type="button"
-              onClick={handleNotifToggle}
-              className="relative flex size-10 items-center justify-center rounded-full text-white transition-colors hover:bg-white/10"
-              aria-label="Notifikasi"
-              aria-expanded={isNotifOpen}
-            >
-              <Bell className="size-5" />
-              {unreadCount > 0 && (
-                <span className="absolute top-1.5 right-1.5 flex size-4 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white">
-                  {unreadCount > 9 ? "9+" : unreadCount}
-                </span>
-              )}
-            </button>
-
-            {isNotifOpen && (
-              <div className="absolute right-0 z-40 mt-2 w-80 max-w-[calc(100vw-1rem)] overflow-hidden rounded-xl border border-gray-100 bg-white shadow-lg">
-                <div className="border-b border-gray-100 px-4 py-3">
-                  <p className="text-sm font-bold text-gray-900">Notifikasi</p>
-                </div>
-                <div className="max-h-96 overflow-y-auto">
-                  {!notifications || notifications.items.length === 0 ? (
-                    <p className="px-4 py-6 text-center text-sm text-gray-500">
-                      Belum ada notifikasi.
-                    </p>
-                  ) : (
-                    <ul className="divide-y divide-gray-100">
-                      {notifications.items.map((item) => (
-                        <li
-                          key={item.id}
-                          className={`px-4 py-3 ${item.isUnread ? "bg-green-50/60" : ""}`}
-                        >
-                          <div className="flex items-start gap-2.5">
-                            <span
-                              className={`mt-1.5 size-2 shrink-0 rounded-full ${statusDotClass[item.status]}`}
-                            />
-                            <div className="min-w-0">
-                              <p className="text-sm text-gray-700">
-                                {notificationMessage(item)}
-                              </p>
-                              <p className="mt-0.5 text-xs text-gray-400">
-                                {timeAgo(item.updatedAt)}
-                              </p>
-                            </div>
-                          </div>
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-                </div>
-              </div>
-            )}
-          </div>
           {!isAuthLoaded ? (
             <div className="flex items-center" aria-hidden="true">
               <span className="size-10 shrink-0 animate-pulse rounded-full bg-white/10 sm:hidden" />
@@ -381,24 +284,7 @@ export function Header() {
                 )}
               </div>
             ) : null
-          ) : (
-            <>
-              <Link
-                href="/login"
-                className="flex size-10 items-center justify-center rounded-full text-white transition-colors hover:bg-white/10 sm:hidden"
-                aria-label="Masuk"
-              >
-                <CircleUserRound className="size-5" />
-              </Link>
-              <Link
-                href="/login"
-                className="hidden items-center gap-1.5 rounded-full border border-white/30 px-3.5 py-1.5 text-sm font-semibold text-white transition-colors hover:bg-white/10 sm:flex"
-              >
-                <CircleUserRound className="size-4" />
-                Masuk
-              </Link>
-            </>
-          )}
+          ) : null}
         </div>
       </div>
 
