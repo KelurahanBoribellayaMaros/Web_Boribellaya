@@ -32,7 +32,7 @@ export async function NewsSection() {
 
       <div className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-3">
         {news.slice(0, 3).map((item, index) => (
-          <Reveal key={item.id} delay={index * 100} className="h-full">
+          <Reveal key={item.id} delay={index * 100} className="h-full flex flex-col">
             <NewsCard {...item} />
           </Reveal>
         ))}

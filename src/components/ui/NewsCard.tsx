@@ -14,7 +14,7 @@ export function NewsCard({
   return (
     <Link
       href={`/berita/${slug}`}
-      className="group flex h-full flex-col overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-md"
+      className="group flex flex-1 flex-col overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-md"
     >
       <div className="relative aspect-video shrink-0 bg-gradient-to-br from-blue-100 to-blue-200">
         {coverImage ? (
