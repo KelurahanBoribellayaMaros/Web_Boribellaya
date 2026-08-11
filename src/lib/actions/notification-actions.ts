@@ -2,10 +2,7 @@
 
 import { adminDb } from "@/lib/firebase/admin";
 import { getSession } from "@/lib/firebase/session";
-import { requireSession } from "@/lib/firebase/session";
-import { getNotificationsForAdmin } from "@/lib/firebase/notifications-repository";
 import type { Session } from "@/lib/firebase/session";
-import type { NotificationData } from "@/types/notification";
 
 // Called client-side by Header on mount, instead of the root layout fetching
 // this server-side — cookies() (via getSession) forces the whole route tree
