@@ -6,7 +6,7 @@ import { getNews } from "@/lib/firebase/news-repository";
 // in it until the next redeploy.
 export const dynamic = "force-dynamic";
 
-const siteUrl = process.env.SITE_URL || "http://localhost:3000";
+const siteUrl = process.env.SITE_URL || "https://kel-boribellaya.maroskab.go.id";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const news = await getNews();
