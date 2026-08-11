@@ -96,9 +96,10 @@ export function Footer({ kontak }: { kontak: KontakInfo }) {
         </div>
 
         <div className="mt-10 flex flex-col items-center gap-4 border-t border-white/10 pt-6 sm:flex-row sm:justify-between">
-          <p className="text-sm text-blue-200">
-            © {year} Kelurahan Boribellaya. Melayani dengan Sepenuh Hati.
-          </p>
+          <div className="text-center text-sm text-blue-200 sm:text-left">
+            <p>© {year} Kelurahan Boribellaya.</p>
+            <p>Dikembangkan oleh Mahasiswa KKN Gel. 116 UNHAS.</p>
+          </div>
           <ul className="flex flex-wrap items-center justify-center gap-x-5 gap-y-1.5">
             {legalLinks.map((link) => (
               <li key={link.href}>
