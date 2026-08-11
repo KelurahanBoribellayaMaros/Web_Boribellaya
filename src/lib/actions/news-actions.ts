@@ -16,7 +16,9 @@ function slugify(title: string): string {
     .trim()
     .replace(/[^a-z0-9\s-]/g, "")
     .replace(/\s+/g, "-")
-    .replace(/-+/g, "-");
+    .replace(/-+/g, "-")
+    .substring(0, 80)
+    .replace(/-+$/, "");
 }
 
 function readNewsInput(formData: FormData) {
