@@ -16,13 +16,9 @@ import type { NotificationData } from "@/types/notification";
 // this resolves on the client.
 export async function getHeaderDataAction(): Promise<{
   session: Session | null;
-  notifications: NotificationData | null;
 }> {
   const session = await getSession();
-  const notifications = session?.role === "admin" && session.email
-    ? await getNotificationsForAdmin(session.uid)
-    : null;
-  return { session, notifications };
+  return { session };
 }
 
 export async function markNotificationsSeenAction(): Promise<void> {

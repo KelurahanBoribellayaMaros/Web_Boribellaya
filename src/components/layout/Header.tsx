@@ -258,7 +258,9 @@ export function Header() {
                   className="hidden items-center gap-1.5 rounded-full border border-white/30 px-3.5 py-1.5 text-sm font-semibold text-white transition-colors hover:bg-white/10 sm:flex"
                 >
                   <CircleUserRound className="size-4" />
-                  Admin
+                  <span className="hidden sm:inline">
+                    {(session.name?.split(" ")[0] ?? session.email) || "Admin"}
+                  </span>
                 </button>
 
                 {isAccountMenuOpen && (
@@ -269,7 +271,15 @@ export function Header() {
                       className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-700 transition-colors hover:bg-gray-50"
                     >
                       <LayoutDashboard className="size-4" />
-                      Dashboard
+                      Dashboard Admin
+                    </Link>
+                    <Link
+                      href="/akun"
+                      onClick={() => setIsAccountMenuOpen(false)}
+                      className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-700 transition-colors hover:bg-gray-50"
+                    >
+                      <Settings className="size-4" />
+                      Ubah Kredensial
                     </Link>
                     <form action={logoutAction}>
                       <button
