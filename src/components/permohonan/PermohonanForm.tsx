@@ -84,7 +84,11 @@ export function PermohonanForm({
       if (berkas.length > 0) {
         formData.set("berkasJson", JSON.stringify(berkas));
       }
-      await submitPermohonanAction(type, category, categoryLabel, formData);
+      const result = await submitPermohonanAction(type, category, categoryLabel, formData);
+      if (result?.error) {
+        setError(result.error);
+        setIsSubmitting(false);
+      }
     } catch (err) {
       unstable_rethrow(err);
       setError(err instanceof Error ? err.message : "Terjadi kesalahan. Silakan coba lagi.");

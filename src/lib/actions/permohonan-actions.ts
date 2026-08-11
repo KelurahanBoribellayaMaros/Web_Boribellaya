@@ -118,27 +118,27 @@ export async function submitPermohonanAction(
   category: string,
   categoryLabel: string,
   formData: FormData
-): Promise<void> {
+): Promise<{ error: string } | void> {
   const phoneRaw = String(formData.get("phone") ?? "").trim();
   if (!phoneRaw) {
-    throw new Error("Nomor WhatsApp wajib diisi.");
+    return { error: "Nomor WhatsApp wajib diisi." };
   }
 
   const allowed = await checkRateLimit(`submit_permohonan:${phoneRaw}`, 10, 60 * 60 * 1000);
   if (!allowed) {
-    throw new Error(
-      "Anda telah mengirim terlalu banyak permohonan. Silakan coba lagi dalam satu jam ke depan."
-    );
+    return {
+      error: "Anda telah mengirim terlalu banyak permohonan. Silakan coba lagi dalam satu jam ke depan."
+    };
   }
 
   const turnstileToken = String(formData.get("cf-turnstile-response") ?? "");
   if (process.env.TURNSTILE_SECRET_KEY) {
     if (!turnstileToken) {
-      throw new Error("Sistem mendeteksi aktivitas yang mencurigakan. Silakan muat ulang halaman dan coba lagi.");
+      return { error: "Sistem mendeteksi aktivitas yang mencurigakan. Silakan muat ulang halaman dan coba lagi." };
     }
     const isTurnstileValid = await verifyTurnstileToken(turnstileToken);
     if (!isTurnstileValid) {
-      throw new Error("Verifikasi keamanan gagal. Silakan coba lagi.");
+      return { error: "Verifikasi keamanan gagal. Silakan coba lagi." };
     }
   }
 
@@ -156,7 +156,7 @@ export async function submitPermohonanAction(
   });
 
   if (!parseResult.success) {
-    throw new Error(parseResult.error.issues[0].message);
+    return { error: parseResult.error.issues[0].message };
   }
 
   const {

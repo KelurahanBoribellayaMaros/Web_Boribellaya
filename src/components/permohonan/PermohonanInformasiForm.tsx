@@ -29,12 +29,17 @@ export function PermohonanInformasiForm() {
     const formData = new FormData(event.currentTarget);
 
     try {
-      await submitPermohonanAction(
+      const result = await submitPermohonanAction(
         "informasi",
         "informasi-publik",
         "Permohonan Informasi Publik",
         formData
       );
+
+      if (result?.error) {
+        setError(result.error);
+        setIsSubmitting(false);
+      }
     } catch (err) {
       unstable_rethrow(err);
       setError(err instanceof Error ? err.message : "Terjadi kesalahan. Silakan coba lagi.");
