@@ -20,11 +20,15 @@ export async function decodeSessionCookie(
 
   try {
     const decoded = await adminAuth.verifySessionCookie(sessionCookie, false);
+    if (decoded.role !== "admin") {
+      return null;
+    }
+
     return {
       uid: decoded.uid,
       email: decoded.email ?? null,
       name: decoded.name ?? null,
-      role: decoded.role === "admin" ? "admin" : "warga",
+      role: "admin",
     };
   } catch {
     return null;

@@ -31,7 +31,10 @@ export async function ServicesSection() {
       </div>
 
       <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
-        {layananItems.map((item, index) => (
+        {layananItems
+          .filter((item) => item.slug !== "cek-status")
+          .slice(0, 4)
+          .map((item, index) => (
           <Reveal key={item.slug} delay={index * 100}>
             <ServiceCard
               slug={item.slug}
