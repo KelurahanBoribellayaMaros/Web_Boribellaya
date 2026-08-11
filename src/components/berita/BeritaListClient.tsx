@@ -94,7 +94,7 @@ export function BeritaListClient({ items }: { items: NewsItem[] }) {
         <>
           <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {paginated.map((item, index) => (
-              <Reveal key={item.id} delay={(index % 6) * 80}>
+              <Reveal key={item.id} delay={(index % 6) * 80} className="h-full">
                 <NewsCard {...item} />
               </Reveal>
             ))}
