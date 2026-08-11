@@ -40,10 +40,10 @@ export function NewsCard({
           <Calendar className="size-3.5" />
           <time>{formatDate(date)}</time>
         </div>
-        <h3 className="mt-2 font-semibold text-gray-900 transition-colors group-hover:text-green-700 line-clamp-2">
+        <h3 className="mt-2 min-h-[3rem] font-semibold text-gray-900 transition-colors group-hover:text-green-700 line-clamp-2">
           {title}
         </h3>
-        <p className="mt-1 line-clamp-2 flex-1 text-sm text-gray-500">{excerpt}</p>
+        <p className="mt-1 min-h-[2.5rem] line-clamp-2 flex-1 text-sm text-gray-500">{excerpt}</p>
       </div>
     </Link>
   );
