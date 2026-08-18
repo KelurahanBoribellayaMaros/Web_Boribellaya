@@ -18,8 +18,9 @@ export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   const isAdminRoute = pathname === "/admin" || pathname.startsWith("/admin/");
+  const isAkunRoute = pathname === "/akun" || pathname.startsWith("/akun/");
 
-  if (!isAdminRoute) {
+  if (!isAdminRoute && !isAkunRoute) {
     return NextResponse.next();
   }
 
@@ -38,5 +39,5 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/admin/:path*"],
+  matcher: ["/admin/:path*", "/akun", "/akun/:path*"],
 };

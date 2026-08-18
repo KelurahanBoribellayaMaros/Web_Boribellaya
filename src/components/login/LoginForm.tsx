@@ -2,7 +2,6 @@
 
 import { useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
 import { signInWithEmailAndPassword, type AuthError } from "firebase/auth";
 import { Eye, EyeOff, Lock, LogIn, Mail } from "lucide-react";
 import { auth } from "@/lib/firebase/client";
@@ -113,7 +112,7 @@ export function LoginForm() {
           </div>
         </div>
 
-        <div className="flex items-center justify-between text-sm">
+        <div className="flex items-center text-sm">
           <label className="flex items-center gap-2 text-gray-600">
             <input
               type="checkbox"
@@ -123,9 +122,6 @@ export function LoginForm() {
             />
             Ingat Saya
           </label>
-          <Link href="/lupa-sandi" className="font-medium text-[#003459] hover:opacity-80">
-            Lupa Sandi?
-          </Link>
         </div>
 
         {error && <p className="text-sm text-red-600">{error}</p>}
